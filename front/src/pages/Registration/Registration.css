@@ -1,0 +1,368 @@
+.registration-page {
+  background: var(--bg-soft);
+  min-height: 100vh;
+}
+
+.registration-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 100px 0 60px;
+  text-align: center;
+  border-bottom: 4px solid var(--secondary);
+  background: var(--primary);
+}
+
+.hero-slider-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hero-slider-bg::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(10, 17, 40, 0.95),
+    rgba(10, 17, 40, 0.7)
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero-slider-track {
+  display: flex;
+  height: 100%;
+  width: max-content;
+  animation: scrollBanner 30s linear infinite;
+  z-index: 1;
+}
+
+.hero-slider-track img {
+  height: 100%;
+  width: 33.33vw; /* 3 images per screen */
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+@keyframes scrollBanner {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-100% / 2));
+  }
+}
+
+.hero-content-overlay {
+  position: relative;
+  z-index: 3;
+}
+
+@media (max-width: 1024px) {
+  .hero-slider-track img {
+    width: 50vw; /* 2 images on tablet */
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-slider-track img {
+    width: 100vw; /* 1 image on mobile */
+  }
+}
+
+.hero-desc {
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 600px;
+  margin: 1rem auto 0;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.registration-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* Form Styles */
+.registration-form-container {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+}
+
+.form-steps {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.step {
+  font-family: "Outfit", sans-serif;
+  font-weight: 600;
+  color: #aaa;
+  transition: all 0.3s ease;
+}
+
+.step.active {
+  color: var(--primary);
+  border-bottom: 3px solid var(--secondary);
+  padding-bottom: 1rem;
+  margin-bottom: -1.2rem; /* Pull it down over the border */
+}
+
+.advanced-form h3 {
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  font-size: 1.4rem;
+}
+
+.input-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-field.full {
+  margin-bottom: 1.5rem;
+}
+
+.input-field label {
+  font-family: "Outfit", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.input-field input,
+.input-field select,
+.input-field textarea {
+  padding: 14px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+  background: #f9f9f9;
+  transition: all 0.3s;
+}
+
+.input-field input:focus,
+.input-field select:focus,
+.input-field textarea:focus {
+  outline: none;
+  border-color: var(--secondary);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.form-next {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+/* Success Section */
+.success-section {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+  background: #10b981;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+}
+
+.success-section h3 {
+  color: #10b981;
+}
+
+.success-section p {
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Sidebar Styles */
+.registration-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sidebar-image-card {
+  width: 100%;
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-image-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sidebar-image-card .overlay-text {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to top, rgba(10, 17, 40, 0.9), transparent);
+  color: white;
+  padding: 30px 20px 15px;
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+}
+
+.info-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+}
+
+.info-card.highlight {
+  background: var(--primary);
+  color: white;
+}
+
+.info-card.highlight h4 {
+  color: var(--secondary);
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.info-card.highlight p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.info-card h4 {
+  color: var(--primary);
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 2px solid #eee;
+}
+
+.info-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.info-card ul li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.info-card ul li::before {
+  content: "•";
+  color: var(--secondary);
+  font-size: 1.5rem;
+  position: absolute;
+  left: 0;
+  top: -4px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .registration-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-steps {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .input-group {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .input-group .input-field {
+    margin-bottom: 1.5rem;
+  }
+  .registration-form-container {
+    padding: 1.5rem;
+  }
+
+  .registration-hero {
+    padding: 80px 0 50px;
+  }
+
+  .hero-desc {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .registration-form-container {
+    padding: 1.2rem;
+    border-radius: 12px;
+  }
+
+  .step {
+    font-size: 0.85rem;
+  }
+}

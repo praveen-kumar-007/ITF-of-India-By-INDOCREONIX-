@@ -1,0 +1,171 @@
+{
+  "nav": {
+    "home": "Home",
+    "news": "News",
+    "sports": "Sports",
+    "gallery": "Gallery",
+    "contact": "Contact",
+    "registration": "Player Registration",
+    "about": "About US"
+  },
+  "topbar": {
+    "official": "Official Sports Trust of India"
+  },
+  "brand": {
+    "main": "ITF OF INDIA",
+    "sub": "The Fighter Of India"
+  },
+  "hero": {
+    "title": "Empowering Athletes, Defining Excellence",
+    "subtitle": "National Multi-Sport Organization dedicated to nurturing talent across 20+ disciplines including Karate, Kabaddi, Athletics and more.",
+    "cta_join": "Join As Athlete",
+    "cta_disciplines": "Our Disciplines",
+    "notices": "Live Notices"
+  },
+  "about": {
+    "tag": "National Sports Trust",
+    "title": "Pioneering the Future of Indian Sports",
+    "description": "The ITF OF INDIA (Trust) is a premier national organization committed to the development and promotion of diverse athletic disciplines across the country.",
+    "profile_tag": "Organization Profile",
+    "desc1": "is a national-level sports trust committed to the development of athletics across India. We bridge the gap between local potential and professional success.",
+    "desc2": "Founded on the principles of discipline and perseverance, we provide specialized training in Karate, Kabaddi, and over 20 other sports to build the champions of tomorrow.",
+    "partner_btn": "Partner With Us",
+    "vision_title": "Our Vision",
+    "vision_text": "To become the premier national hub for athletic excellence, where every aspiring sportsperson in India has the platform, resources, and guidance to compete at the Olympic level.",
+    "mission_title": "Our Mission",
+    "mission_text": "We are dedicated to identifying grassroots talent, providing world-class infrastructure, and fostering a culture of discipline, integrity, and social inclusion through multi-sport programs.",
+    "leadership_tag": "Governance",
+    "leadership_title": "Executive Leadership",
+    "role_president": "President",
+    "name_president": "Dr. Arun Singh",
+    "role_secretary": "General Secretary",
+    "name_secretary": "Mr. Rajesh Kumar",
+    "role_patron": "Chief Patron",
+    "name_patron": "Smt. Meera Devi",
+    "role_director": "Technical Director",
+    "name_director": "Mr. Vikram Aditya",
+    "feature1": "Recognized by National Sports Authorities",
+    "feature2": "Integrated Development Programs",
+    "feature3": "Ethical & Transparent Governance",
+    "pillar1_title": "Social Inclusion",
+    "pillar1_desc": "Empowering marginalized communities through accessible sports infrastructure.",
+    "pillar2_title": "Athletic Excellence",
+    "pillar2_desc": "Elite coaching and pathways for international competition success.",
+    "pillar3_title": "Integrity & Trust",
+    "pillar3_desc": "Committed to the highest standards of sports administration and ethics."
+  },
+  "registration": {
+    "tag": "Join The Movement",
+    "title": "Player Registration",
+    "desc": "Official registration portal for athletes across India to join ITF OF INDIA training programs, tournaments, and sports contingents.",
+    "step1": "Personal Info",
+    "step2": "Sports Discipline",
+    "step3": "Submission",
+    "personal_info": "Personal Information",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "dob": "Date of Birth",
+    "gender": "Gender",
+    "select_gender": "Select Gender",
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "state": "State",
+    "city": "City / District",
+    "next": "Next Step",
+    "back": "Back",
+    "submit": "Submit Registration"
+  },
+  "sports": {
+    "tag": "Competitive Disciplines",
+    "title": "Nurturing Professional Talent.",
+    "card_desc": "Professional Training & Certification"
+  },
+  "footer": {
+    "desc": "The National Standard for Athletic Excellence and Professional Sports Development.",
+    "copy": "INDRA THE FIGHTER OF INDIA. NATIONAL REGISTERED TRUST.",
+    "sub_copy": "DESIGNED FOR PROFESSIONAL EXCELLENCE",
+    "quick_links": "Quick Links",
+    "our_programs": "Flagship Programs",
+    "professional_program_note": "Empowering athletes with certified training, governance-led competition, and professional pathways.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "news": {
+    "tag": "Stay Updated",
+    "title": "Latest Sports News",
+    "desc": "Official updates on tournaments, championships, and achievements from across the country.",
+    "tag_tournament": "Tournament",
+    "tag_workshop": "Workshop",
+    "tag_announcement": "Announcement",
+    "tag_infrastructure": "Infrastructure",
+    "item1_title": "State Level Karate Championship 2024 - Results Announced",
+    "item1_excerpt": "The annual state-level championship concluded with over 500 athletes participating from across Jharkhand. Discover the medal tally and top performers.",
+    "item2_title": "National Coaching Workshop: Focus on Grassroots",
+    "item2_excerpt": "ITF OF INDIA is hosting a 3-day intensive workshop for local coaches to standardize training protocols across rural sports academies.",
+    "item3_title": "Upcoming Trials for Junior Athletics Contingent",
+    "item3_excerpt": "Registration is now open for the junior athletics trials. Selected candidates will receive fully-funded training for the upcoming national games.",
+    "item4_title": "New Training Facility Inaugurated in Giridih",
+    "item4_excerpt": "Expanding our reach to provide top-tier facilities, the new center features Olympic-grade mats and strength conditioning equipment.",
+    "read_more": "Read Full Story"
+  },
+  "gallery": {
+    "tag": "Visual Excellence",
+    "title": "Official Gallery",
+    "desc": "Explore the dedication, passion, and triumphs of our athletes captured in action."
+  },
+  "contact": {
+    "tag": "Connect With Us",
+    "title": "Establish Your Future In Sports.",
+    "head_office": "HEAD OFFICE",
+    "direct_contact": "DIRECT CONTACT",
+    "official_email": "OFFICIAL EMAIL",
+    "message_placeholder": "How can we assist your athletic career?",
+    "send": "Send Official Request"
+  },
+  "disciplines": {
+    "tag": "Our Sports Portfolio",
+    "title": "Comprehensive Athletic Disciplines",
+    "desc": "We provide professional training, certification, and competition pathways across over 20+ diverse sports categories.",
+    "combat_title": "Combat Sports",
+    "team_title": "Team Sports",
+    "individual_title": "Individual Sports",
+    "combat_list": [
+      "Karate",
+      "Taekwondo",
+      "Judo",
+      "Wrestling",
+      "Boxing",
+      "Kickboxing",
+      "Mixed Martial Arts"
+    ],
+    "team_list": [
+      "Kabaddi",
+      "Football",
+      "Volleyball",
+      "Basketball",
+      "Cricket",
+      "Handball",
+      "Kho-Kho"
+    ],
+    "individual_list": [
+      "Athletics",
+      "Archery",
+      "Shooting",
+      "Fencing",
+      "Badminton",
+      "Table Tennis",
+      "Yoga Sports"
+    ],
+    "certification": "Professional Certification Available",
+    "training": "Elite Coaching Programs"
+  },
+  "stats": {
+    "disciplines": "Olympic Disciplines",
+    "athletes": "Athletes Trained",
+    "operations": "Central Operations",
+    "recognized": "Recognized Trust"
+  }
+}

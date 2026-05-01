@@ -1,0 +1,173 @@
+.sports-hero-image {
+  height: 60vh;
+  min-height: 400px;
+  position: relative;
+  background: url("/club_image/WhatsApp Image 2026-04-30 at 11.16.45 PM.jpeg");
+  background-size: cover;
+  background-position: center 25%;
+  display: flex;
+  align-items: center;
+  color: white;
+  text-align: center;
+}
+
+.sports-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(5, 10, 31, 0.8),
+    rgba(5, 10, 31, 0.6)
+  );
+  z-index: 1;
+}
+
+.sports-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.sports-hero-content h1 {
+  color: white;
+  font-size: clamp(2rem, 5vw, 4rem);
+  margin-top: 15px;
+}
+
+.sports-hero-content .lead {
+  max-width: 800px;
+  margin: 20px auto 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.sports-categories-stack {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  gap: 2.5rem;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.cat-icon {
+  font-size: 1.8rem;
+}
+
+.category-header h3 {
+  font-size: 1.7rem;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.sport-category-block {
+  padding: 0;
+}
+
+.sport-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sport-list li {
+  position: relative;
+  padding-left: 1.4rem;
+  margin-bottom: 1rem;
+  color: rgba(17, 24, 39, 0.88);
+  font-size: 1rem;
+  line-height: 1.8;
+  font-weight: 500;
+}
+
+.sport-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--secondary);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.sports-info-banner {
+  margin-top: 5rem;
+  background: var(--primary);
+  border-radius: 20px;
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 5rem;
+  color: white;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.info-item .icon {
+  font-size: 2rem;
+}
+
+.info-item p {
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .sports-hero-image {
+    min-height: 320px;
+    height: auto;
+    padding: 90px 0 60px;
+  }
+
+  .sports-categories-stack {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .sports-info-banner {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 30px;
+    text-align: center;
+  }
+
+  .info-item {
+    flex-direction: column;
+  }
+
+  .category-header {
+    justify-content: center;
+  }
+
+  .category-header h3 {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sports-hero-image {
+    min-height: 280px;
+    padding: 80px 0 50px;
+    background-position: center center;
+  }
+
+  .sports-hero-content .lead {
+    font-size: 1rem;
+  }
+
+  .sports-info-banner {
+    padding: 24px 18px;
+    gap: 1.25rem;
+  }
+}

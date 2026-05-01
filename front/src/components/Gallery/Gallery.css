@@ -1,0 +1,346 @@
+/* Advanced Gallery CSS */
+
+.gallery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3rem;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.gallery-desc {
+  max-width: 500px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* TRUE MASONRY LAYOUT */
+.advanced-gallery-grid {
+  column-count: 4;
+  column-gap: 1.5rem;
+  width: 100%;
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  background: #1a1a2e; /* dark skeleton color */
+  break-inside: avoid;
+  page-break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  margin-bottom: 1.5rem;
+  display: block;
+  width: 100%;
+}
+
+.gallery-img-wrapper {
+  width: 100%;
+  position: relative;
+  display: block;
+}
+
+.gallery-img-wrapper img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-position: top; /* Prioritize the top of the image */
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(10, 17, 40, 0.9),
+    rgba(10, 17, 40, 0.2)
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.zoom-icon {
+  font-size: 2rem;
+  color: var(--secondary);
+  margin-bottom: 10px;
+  transform: scale(0.5);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.gallery-overlay h4 {
+  color: white;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+  transform: translateY(20px);
+  transition: transform 0.4s ease;
+  text-align: center;
+  padding: 0 10px;
+}
+
+/* Hover effects */
+.gallery-item:hover .gallery-img-wrapper img {
+  transform: scale(1.05);
+}
+
+.gallery-item:hover .gallery-overlay {
+  opacity: 1;
+}
+
+.gallery-item:hover .zoom-icon {
+  transform: scale(1);
+}
+
+.gallery-item:hover .gallery-overlay h4 {
+  transform: translateY(0);
+}
+
+/* LIGHTBOX MODAL */
+.lightbox-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 17, 40, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lightbox-content img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  user-select: none;
+}
+
+.lightbox-caption {
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 15px;
+  font-family: "Outfit", sans-serif;
+  letter-spacing: 0.1em;
+  font-size: 0.9rem;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-close:hover {
+  background: var(--secondary);
+  color: var(--primary);
+  transform: rotate(90deg);
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-nav:hover {
+  background: var(--secondary);
+  color: var(--primary);
+}
+
+.lightbox-nav.prev {
+  left: 30px;
+}
+
+.lightbox-nav.next {
+  right: 30px;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 1200px) {
+  .advanced-gallery-grid {
+    column-count: 3;
+  }
+}
+
+@media (max-width: 900px) {
+  .advanced-gallery-grid {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .gallery-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .advanced-gallery-grid {
+    column-count: 1;
+    column-gap: 0;
+  }
+
+  .lightbox-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .lightbox-nav.prev {
+    left: 10px;
+  }
+  .lightbox-nav.next {
+    right: 10px;
+  }
+  .lightbox-close {
+    top: 15px;
+    right: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-auto-slider::before,
+  .gallery-auto-slider::after {
+    width: 60px;
+  }
+
+  .gallery-overlay h4 {
+    font-size: 1rem;
+  }
+}
+
+/* AUTO SLIDER (For Home Page) */
+.gallery-auto-slider {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  padding: 1rem 0;
+}
+
+.gallery-auto-slider::before,
+.gallery-auto-slider::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 150px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.gallery-auto-slider::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg-soft), transparent);
+}
+
+.gallery-auto-slider::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg-soft), transparent);
+}
+
+.slider-track {
+  display: flex;
+  width: calc(
+    300px * 18 + 1.5rem * 18
+  ); /* width of card * num of cards + gap */
+  gap: 1.5rem;
+  animation: scrollSlider 70s linear infinite;
+}
+
+.slider-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollSlider {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-300px * 9 - 1.5rem * 9));
+  } /* scroll half the track */
+}
+
+.slider-item {
+  width: 300px;
+  height: 250px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.slider-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.slider-item:hover img {
+  transform: scale(1.05);
+}
+
+.slider-item .gallery-overlay {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.slider-item:hover .gallery-overlay {
+  opacity: 1;
+}
