@@ -1,15 +1,15 @@
 {
-  "version": 3,
-  "builds": [
-    {
-      "src": "front/package.json",
-      "use": "@vercel/static-build"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ]
+    "version": 3,
+    "builds": [
+        {
+            "src": "front/package.json",
+            "use": "@vercel/static-build"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/index.html"
+        }
+    ]
 }
