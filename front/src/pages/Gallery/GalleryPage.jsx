@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import '../../components/Gallery/Gallery.css'; // Re-use the masonry CSS
 
 const GalleryPage = () => {
   const { t } = useLanguage();
   const [selectedImage, setSelectedImage] = useState(null);
+  const [galleryItems, setGalleryItems] = useState([]);
 
   const images = [
     "WhatsApp Image 2026-04-30 at 11.14.33 PM (1).jpeg",
@@ -17,6 +18,32 @@ const GalleryPage = () => {
     "WhatsApp Image 2026-04-30 at 11.16.44 PM.jpeg",
     "WhatsApp Image 2026-04-30 at 11.16.45 PM.jpeg"
   ];
+
+  useEffect(() => {
+    const loadImages = async () => {
+      const loaded = await Promise.all(
+        images.map((img) =>
+          new Promise((resolve) => {
+            const temp = new Image();
+            temp.src = `/club_image/${img}`;
+            temp.onload = () =>
+              resolve({
+                src: img,
+                width: temp.naturalWidth,
+                height: temp.naturalHeight,
+                area: temp.naturalWidth * temp.naturalHeight,
+              });
+            temp.onerror = () => resolve({ src: img, width: 1, height: 1, area: 1 });
+          })
+        )
+      );
+
+      loaded.sort((a, b) => b.area - a.area);
+      setGalleryItems(loaded);
+    };
+
+    loadImages();
+  }, []);
 
   const openLightbox = (index) => {
     setSelectedImage(index);
@@ -53,14 +80,14 @@ const GalleryPage = () => {
 
         {/* TRUE MASONRY LAYOUT */}
         <div className="advanced-gallery-grid">
-          {images.map((img, i) => (
+          {(galleryItems.length ? galleryItems : images.map((src) => ({ src }))).map((item, i) => (
             <div 
-              key={i} 
+              key={item.src || i} 
               className="gallery-item" 
               onClick={() => openLightbox(i)}
             >
               <div className="gallery-img-wrapper">
-                <img src={`/club_image/${img}`} alt={`Achievement ${i}`} loading="lazy" />
+                <img src={`/club_image/${item.src}`} alt={`Achievement ${i}`} loading="lazy" />
                 <div className="gallery-overlay">
                   <span className="zoom-icon">⛶</span>
                   <h4>View Full Size</h4>

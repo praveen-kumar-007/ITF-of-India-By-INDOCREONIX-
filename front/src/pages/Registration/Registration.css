@@ -329,6 +329,14 @@
     grid-template-columns: 1fr;
   }
 
+  .registration-sidebar {
+    width: 100%;
+  }
+
+  .registration-form-container {
+    max-width: 100%;
+  }
+
   .form-steps {
     flex-wrap: wrap;
     gap: 1rem;
@@ -336,15 +344,30 @@
 }
 
 @media (max-width: 768px) {
+  .registration-grid {
+    gap: 1.5rem;
+  }
+
   .input-group {
     grid-template-columns: 1fr;
     gap: 0;
   }
+
   .input-group .input-field {
     margin-bottom: 1.5rem;
   }
+
   .registration-form-container {
     padding: 1.5rem;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .form-next {
+    width: 100%;
   }
 
   .registration-hero {
@@ -353,6 +376,10 @@
 
   .hero-desc {
     font-size: 1rem;
+  }
+
+  .hero-slider-track img {
+    width: 100vw;
   }
 }
 
@@ -364,5 +391,20 @@
 
   .step {
     font-size: 0.85rem;
+  }
+
+  .hero-desc {
+    font-size: 0.95rem;
+  }
+
+  .input-field input,
+  .input-field select,
+  .input-field textarea {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+  }
+
+  .info-card {
+    padding: 1.5rem;
   }
 }

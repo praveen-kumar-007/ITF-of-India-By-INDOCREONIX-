@@ -68,17 +68,21 @@
 /* NAVIGATION            */
 /* ===================== */
 .sport-nav {
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
   padding: 14px 0;
-  background: rgba(5, 10, 31, 0.7);
+  background: rgba(5, 10, 31, 0.85);
   backdrop-filter: blur(15px);
   transition:
     background 0.4s ease,
     padding 0.4s ease;
+}
+
+body {
+  padding-top: 76px;
 }
 
 .sport-nav.scrolled {
@@ -411,6 +415,72 @@
   }
   .top-bar {
     display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .section {
+    padding: 60px 0;
+  }
+
+  .container {
+    padding: 0 18px;
+  }
+
+  .section-title {
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-text-side p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .brand {
+    gap: 10px;
+    max-width: 65%;
+  }
+
+  .brand-text .main {
+    font-size: 1rem;
+    white-space: normal;
+  }
+
+  .links a {
+    font-size: 0.72rem;
+  }
+
+  .lang-toggle-btn,
+  .nav-lang-btn.pill-style {
+    padding: 6px 10px;
+    font-size: 0.72rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .section {
+    padding: 50px 0;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+
+  .section-title {
+    font-size: clamp(1.6rem, 6vw, 2.4rem);
+  }
+
+  .btn-premium,
+  .btn-outline {
+    padding: 0.9rem 1.3rem;
   }
 }
 

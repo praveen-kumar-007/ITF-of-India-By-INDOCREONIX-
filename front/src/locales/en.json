@@ -74,6 +74,7 @@
     "phone": "Phone Number",
     "state": "State",
     "city": "City / District",
+    "select_district": "Select District",
     "next": "Next Step",
     "back": "Back",
     "submit": "Submit Registration"
