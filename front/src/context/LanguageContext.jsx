@@ -2,7 +2,11 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import en from '../locales/en.json';
 import hi from '../locales/hi.json';
 
-const LanguageContext = createContext();
+const LanguageContext = createContext({
+  language: 'en',
+  toggleLanguage: () => {},
+  t: (key) => key
+});
 
 export const translations = { en, hi };
 
@@ -38,4 +42,11 @@ export const LanguageProvider = ({ children }) => {
   );
 };
 
-export const useLanguage = () => useContext(LanguageContext);
+export const useLanguage = () => {
+  const context = useContext(LanguageContext);
+  if (context === undefined) {
+    console.warn("useLanguage used outside of LanguageProvider. Falling back to default values.");
+    return { language: 'en', toggleLanguage: () => {}, t: (key) => key };
+  }
+  return context;
+};

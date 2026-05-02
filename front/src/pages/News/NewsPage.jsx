@@ -36,14 +36,29 @@ const NewsPage = () => {
   ];
 
   return (
-    <div className="page-wrapper" style={{paddingTop: '60px', paddingBottom: '60px', background: 'var(--bg-soft)'}}>
-      <div className="container">
-        <div className="gallery-header">
-          <div>
-            <span className="section-tag">{t('news.tag')}</span>
-            <h1 className="section-title">{t('news.title')}</h1>
+    <div className="news-page">
+      {/* Hero Header */}
+      <section className="page-hero news-style">
+        <div className="page-hero-bg">
+          <div className="page-hero-track">
+            {["hero.png", "hero_dark.png"].map((img, i) => (
+              <img key={i} src={`/${img}`} className="page-hero-img" alt="" />
+            ))}
+            {/* Repeat for seamless loop */}
+            {["hero.png", "hero_dark.png"].map((img, i) => (
+              <img key={`dup-${i}`} src={`/${img}`} className="page-hero-img" alt="" />
+            ))}
           </div>
+          <div className="page-hero-overlay"></div>
         </div>
+        <div className="container">
+          <span className="section-tag">{t('news.tag')}</span>
+          <h1>{t('news.title')}</h1>
+          <p className="lead">Stay updated with the latest events, tournament results, and national announcements from ITF OF INDIA.</p>
+        </div>
+      </section>
+
+      <div className="container section">
 
         <div className="news-grid">
           {newsItems.map((news, i) => (

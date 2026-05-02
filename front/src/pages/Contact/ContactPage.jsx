@@ -3,15 +3,27 @@ import Contact from '../../components/Contact/Contact';
 
 const ContactPage = () => {
   return (
-    <div className="page-wrapper" style={{paddingTop: '60px'}}>
-      <div className="container" style={{marginBottom: '-40px'}}>
-        <div className="gallery-header" style={{marginBottom: 0}}>
-          <div>
-            <span className="section-tag">Reach Out To Headquarters</span>
-            <h1 className="section-title">Contact Us</h1>
+    <div className="contact-page">
+      {/* Hero Header */}
+      <section className="page-hero">
+        <div className="page-hero-bg">
+          <div className="page-hero-track">
+            {["hero.png", "about.png", "hero_dark.png"].map((img, i) => (
+              <img key={i} src={`/${img}`} className="page-hero-img" alt="" />
+            ))}
+            {/* Repeat for seamless loop */}
+            {["hero.png", "about.png", "hero_dark.png"].map((img, i) => (
+              <img key={`dup-${i}`} src={`/${img}`} className="page-hero-img" alt="" />
+            ))}
           </div>
+          <div className="page-hero-overlay"></div>
         </div>
-      </div>
+        <div className="container">
+          <span className="section-tag">Reach Out To Headquarters</span>
+          <h1>Contact Us</h1>
+          <p className="lead">Have questions about registration or upcoming trials? Our team is here to support your athletic journey.</p>
+        </div>
+      </section>
       <Contact />
     </div>
   );

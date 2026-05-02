@@ -68,18 +68,29 @@ const GalleryPage = () => {
   };
 
   return (
-    <div
-      className="page-wrapper"
-      style={{ paddingTop: "60px", paddingBottom: "60px" }}
-    >
-      <div className="container">
-        <div className="gallery-header">
-          <div>
-            <span className="section-tag">{t("about.tag")}</span>
-            <h1 className="section-title">{t("gallery.title")}</h1>
+    <div className="gallery-page">
+      {/* Hero Header */}
+      <section className="page-hero gallery-style">
+        <div className="page-hero-bg">
+          <div className="page-hero-track">
+            {images.slice(0, 5).map((img, i) => (
+              <img key={i} src={`/club_image/${img}`} className="page-hero-img" alt="" />
+            ))}
+            {/* Repeat for seamless loop */}
+            {images.slice(0, 5).map((img, i) => (
+              <img key={`dup-${i}`} src={`/club_image/${img}`} className="page-hero-img" alt="" />
+            ))}
           </div>
-          <p className="gallery-desc">{t("gallery.desc")}</p>
+          <div className="page-hero-overlay"></div>
         </div>
+        <div className="container">
+          <span className="section-tag">{t("about.tag")}</span>
+          <h1>{t("gallery.title")}</h1>
+          <p className="lead">{t("gallery.desc")}</p>
+        </div>
+      </section>
+
+      <div className="container section">
 
         {/* TRUE MASONRY LAYOUT */}
         <div className="advanced-gallery-grid">
