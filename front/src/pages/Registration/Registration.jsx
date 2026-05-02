@@ -70,10 +70,20 @@ const Registration = () => {
     pinCode: "",
     contactNumber: "",
     photo: null,
-    signature: null
+    signature: null,
+    aadharFront: null,
+    aadharBack: null,
+    email: "",
+    isEmailVerified: false,
+    otpValue: ["", "", "", "", "", ""],
+    otpSent: false,
+    toast: { message: "", type: "" },
+    transactionId: "",
+    paymentProof: null
   });
 
   const [registrationResult, setRegistrationResult] = useState(null);
+  const [errors, setErrors] = useState({});
   const receiptRef = useRef();
 
   // Age calculation logic
@@ -131,13 +141,97 @@ const Registration = () => {
     setFormData(prev => ({ ...prev, state: state, district: "" }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (step < 3) {
-      setStep(step + 1);
-      window.scrollTo(0, 0);
+  const showToast = (message, type = "info") => {
+    setFormData(prev => ({ ...prev, toast: { message, type } }));
+    setTimeout(() => {
+      setFormData(prev => ({ ...prev, toast: { message: "", type: "" } }));
+    }, 3000);
+  };
+
+  const handleSendOTP = () => {
+    if (!formData.email || !formData.email.includes('@')) {
+      setErrors(prev => ({ ...prev, email: true }));
       return;
     }
+    // Mock OTP Sending
+    setFormData(prev => ({ ...prev, otpSent: true }));
+    showToast("OTP code sent successfully to " + formData.email, "success");
+  };
+
+  const handleVerifyOTP = () => {
+    const code = formData.otpValue.join("");
+    if (code === "123456") { // Mock 6-digit OTP
+      setFormData(prev => ({ ...prev, isEmailVerified: true, otpSent: false }));
+      showToast("Email Verified Successfully!", "success");
+    } else {
+      setErrors(prev => ({ ...prev, otpValue: true }));
+      showToast("Invalid OTP! Use 123456", "error");
+    }
+  };
+
+  const handleOtpChange = (index, value) => {
+    if (isNaN(value)) return;
+    const newOtp = [...formData.otpValue];
+    newOtp[index] = value.substring(value.length - 1);
+    setFormData(prev => ({ ...prev, otpValue: newOtp }));
+
+    // Auto-focus next
+    if (value && index < 5) {
+      document.getElementById(`otp-${index + 1}`).focus();
+    }
+  };
+
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === "Backspace" && !formData.otpValue[index] && index > 0) {
+      document.getElementById(`otp-${index - 1}`).focus();
+    }
+  };
+
+  const validateStep = (currentStep) => {
+    const newErrors = {};
+    const stepFields = {
+      1: ["fullName", "fatherName", "dob", "gender", "bloodGroup", "email", "sportsDiscipline", "qualification", "fatherOccupation", "contactNumber"],
+      2: ["villageCity", "po", "ps", "block", "state", "district", "pinCode"],
+      3: ["aadharNumber", "photo", "signature", "aadharFront", "aadharBack"],
+      4: ["transactionId", "paymentProof"]
+    };
+
+    if (currentStep === 1 && !formData.isEmailVerified) {
+      newErrors.email = true;
+      showToast("Verification Required", "warning");
+    }
+
+    stepFields[currentStep].forEach(field => {
+      if (!formData[field]) {
+        newErrors[field] = true;
+      }
+    });
+
+    setErrors(newErrors);
+    
+    if (Object.keys(newErrors).length > 0) {
+      // Scroll to first error
+      const firstErrorField = Object.keys(newErrors)[0];
+      const element = document.getElementsByName(firstErrorField)[0] || document.getElementById(firstErrorField);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return false;
+    }
+    return true;
+  };
+
+  const handleNext = (e) => {
+    e.preventDefault();
+    if (validateStep(step)) {
+      setStep(step + 1);
+      window.scrollTo(0, 0);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validateStep(4)) return;
     
     // Generate Registration Number
     const regNo = `ITF/REG/${new Date().getFullYear()}/${Math.floor(1000 + Math.random() * 9000)}`;
@@ -146,7 +240,7 @@ const Registration = () => {
       date: new Date().toLocaleDateString(),
       ...formData
     });
-    setStep(4);
+    setStep(5);
     window.scrollTo(0, 0);
   };
 
@@ -154,7 +248,7 @@ const Registration = () => {
     window.print();
   };
 
-  if (step === 4 && registrationResult) {
+  if (step === 5 && registrationResult) {
     return (
       <div className="registration-page">
         <section className="registration-hero">
@@ -188,6 +282,7 @@ const Registration = () => {
             <div className="ref-box">
               <span>Your Reference ID</span>
               <div className="ref-id">{registrationResult.regNo}</div>
+              <div className="utr-badge">UTR: {registrationResult.transactionId}</div>
             </div>
 
             <div className="next-steps">
@@ -238,6 +333,18 @@ const Registration = () => {
         <div className="container">
           <div className="registration-layout">
             <div className="registration-main">
+              {formData.toast.message && (
+                <div className={`premium-toast-bar ${formData.toast.type} fade-in`}>
+                  <div className="toast-logo">
+                    <img src="/logo.jpeg" alt="ITF Logo" />
+                  </div>
+                  <div className="toast-content">
+                    <h5>Official Notification</h5>
+                    <p>{formData.toast.message}</p>
+                  </div>
+                  <div className="toast-progress-bar"></div>
+                </div>
+              )}
               <div className="form-steps no-print">
                 <div className={`step-item ${step === 1 ? "active" : ""}`}>
                   <span className="step-num">01</span>
@@ -245,11 +352,15 @@ const Registration = () => {
                 </div>
                 <div className={`step-item ${step === 2 ? "active" : ""}`}>
                   <span className="step-num">02</span>
-                  <span className="step-label">Address</span>
+                  <span className="step-label">Residency</span>
                 </div>
                 <div className={`step-item ${step === 3 ? "active" : ""}`}>
                   <span className="step-num">03</span>
-                  <span className="step-label">Sports</span>
+                  <span className="step-label">Identity</span>
+                </div>
+                <div className={`step-item ${step === 4 ? "active" : ""}`}>
+                  <span className="step-num">04</span>
+                  <span className="step-label">Payment</span>
                 </div>
               </div>
 
@@ -258,20 +369,23 @@ const Registration = () => {
                   <div className="form-section">
                     <h3>Personal Identity</h3>
                     <div className="input-group">
-                      <div className="input-field">
+                      <div className={`input-field ${errors.fullName ? 'field-error' : ''}`}>
                         <label>Full Name</label>
-                        <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} required placeholder="Full Name as per Aadhar" />
+                        <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="Full Name as per Aadhar" />
+                        {errors.fullName && <span className="error-msg">Full Name is required</span>}
                       </div>
-                      <div className="input-field">
+                      <div className={`input-field ${errors.fatherName ? 'field-error' : ''}`}>
                         <label>Father's Name</label>
-                        <input type="text" name="fatherName" value={formData.fatherName} onChange={handleInputChange} required placeholder="Father's Name" />
+                        <input type="text" name="fatherName" value={formData.fatherName} onChange={handleInputChange} placeholder="Father's Name" />
+                        {errors.fatherName && <span className="error-msg">Father's Name is required</span>}
                       </div>
                     </div>
 
                     <div className="input-group">
-                      <div className="input-field">
+                      <div className={`input-field ${errors.dob ? 'field-error' : ''}`}>
                         <label>Date of Birth</label>
-                        <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} required />
+                        <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} />
+                        {errors.dob && <span className="error-msg">Date of Birth is required</span>}
                       </div>
                       <div className="input-field">
                         <label>Calculated Age</label>
@@ -280,18 +394,19 @@ const Registration = () => {
                     </div>
 
                     <div className="input-group">
-                      <div className="input-field">
+                      <div className={`input-field ${errors.gender ? 'field-error' : ''}`}>
                         <label>Gender</label>
-                        <select name="gender" value={formData.gender} onChange={handleInputChange} required>
+                        <select name="gender" value={formData.gender} onChange={handleInputChange}>
                           <option value="">Select Gender</option>
                           <option value="Male">Male</option>
                           <option value="Female">Female</option>
                           <option value="Other">Other</option>
                         </select>
+                        {errors.gender && <span className="error-msg">Gender is required</span>}
                       </div>
-                      <div className="input-field">
+                      <div className={`input-field ${errors.bloodGroup ? 'field-error' : ''}`}>
                         <label>Blood Group</label>
-                        <select name="bloodGroup" value={formData.bloodGroup} onChange={handleInputChange} required>
+                        <select name="bloodGroup" value={formData.bloodGroup} onChange={handleInputChange}>
                           <option value="">Select Blood Group</option>
                           <option value="A+">A+</option>
                           <option value="A-">A-</option>
@@ -302,108 +417,175 @@ const Registration = () => {
                           <option value="AB+">AB+</option>
                           <option value="AB-">AB-</option>
                         </select>
+                        {errors.bloodGroup && <span className="error-msg">Blood Group is required</span>}
                       </div>
                     </div>
 
-                    <div className="input-field full">
-                      <label>Aadhar Number (12 Digits)</label>
-                      <input type="text" name="aadharNumber" value={formData.aadharNumber} onChange={handleInputChange} required placeholder="0000 0000 0000" maxLength="12" />
+                    <div className={`input-field full ${errors.email ? 'field-error' : ''}`}>
+                      <label>Email Address</label>
+                      <div className="verify-input-wrapper">
+                        <input 
+                          type="email" 
+                          name="email" 
+                          value={formData.email} 
+                          onChange={handleInputChange} 
+                          placeholder="example@email.com" 
+                          disabled={formData.isEmailVerified}
+                        />
+                        {!formData.isEmailVerified && !formData.otpSent && (
+                          <button type="button" className="verify-btn" onClick={handleSendOTP}>Send OTP</button>
+                        )}
+                        {formData.isEmailVerified && (
+                          <span className="verified-badge">✓ Verified</span>
+                        )}
+                      </div>
+                      {errors.email && !formData.isEmailVerified && <span className="error-msg">Email verification required</span>}
+                    </div>
+
+                    {formData.otpSent && !formData.isEmailVerified && (
+                      <div className="otp-verification-box glass-premium fade-in">
+                        <div className="otp-header">
+                          <div className="otp-title-group">
+                            <h4>Email Verification</h4>
+                            <p>Enter the 6-digit code to proceed</p>
+                          </div>
+                          <span className="resend-link" onClick={handleSendOTP}>Resend OTP</span>
+                        </div>
+                        
+                        <div className="otp-digit-container">
+                          {formData.otpValue.map((digit, idx) => (
+                            <input
+                              key={idx}
+                              id={`otp-${idx}`}
+                              type="text"
+                              maxLength="1"
+                              value={digit}
+                              onChange={(e) => handleOtpChange(idx, e.target.value)}
+                              onKeyDown={(e) => handleOtpKeyDown(idx, e)}
+                              className="otp-digit-box"
+                              placeholder="•"
+                            />
+                          ))}
+                        </div>
+
+                        <div className="otp-actions">
+                          <button type="button" className="btn-premium w-full" onClick={handleVerifyOTP}>Verify & Authenticate Code</button>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="input-group">
+                      <div className={`input-field ${errors.sportsDiscipline ? 'field-error' : ''}`}>
+                        <label>Sports Discipline</label>
+                        <select name="sportsDiscipline" value={formData.sportsDiscipline} onChange={handleInputChange}>
+                          <option value="">Select Discipline</option>
+                          {sportsDisciplines.map(s => <option key={s} value={s}>{s}</option>)}
+                        </select>
+                        {errors.sportsDiscipline && <span className="error-msg">Discipline is required</span>}
+                      </div>
+                      <div className={`input-field ${errors.qualification ? 'field-error' : ''}`}>
+                        <label>Educational Qualification</label>
+                        <input type="text" name="qualification" value={formData.qualification} onChange={handleInputChange} placeholder="e.g. 10th, Graduate" />
+                        {errors.qualification && <span className="error-msg">Qualification is required</span>}
+                      </div>
+                    </div>
+
+                    <div className="input-group">
+                      <div className={`input-field ${errors.fatherOccupation ? 'field-error' : ''}`}>
+                        <label>Father's Occupation</label>
+                        <input type="text" name="fatherOccupation" value={formData.fatherOccupation} onChange={handleInputChange} placeholder="Father's Occupation" />
+                        {errors.fatherOccupation && <span className="error-msg">Occupation is required</span>}
+                      </div>
+                      <div className={`input-field ${errors.contactNumber ? 'field-error' : ''}`}>
+                        <label>Primary Contact Number</label>
+                        <input type="tel" name="contactNumber" value={formData.contactNumber} onChange={handleInputChange} placeholder="10 Digit Number" maxLength="10" />
+                        {errors.contactNumber && <span className="error-msg">Contact number is required</span>}
+                      </div>
                     </div>
 
                     <div className="form-footer-actions">
-                      <button type="button" className="btn-premium" onClick={() => setStep(2)}>Next Step: Address Details →</button>
+                      <button type="button" className="btn-premium" onClick={handleNext}>Next Step: Address Details →</button>
                     </div>
                   </div>
                 )}
 
                 {step === 2 && (
                   <div className="form-section">
-                    <h3>Contact & Residency</h3>
+                    <h3>Residency Details</h3>
                     <div className="input-group">
-                      <div className="input-field">
+                      <div className={`input-field ${errors.villageCity ? 'field-error' : ''}`}>
                         <label>Village / City</label>
-                        <input type="text" name="villageCity" value={formData.villageCity} onChange={handleInputChange} required placeholder="Village or City" />
+                        <input type="text" name="villageCity" value={formData.villageCity} onChange={handleInputChange} placeholder="Village or City" />
+                        {errors.villageCity && <span className="error-msg">Village/City is required</span>}
                       </div>
-                      <div className="input-field">
+                      <div className={`input-field ${errors.po ? 'field-error' : ''}`}>
                         <label>Post Office (P.O.)</label>
-                        <input type="text" name="po" value={formData.po} onChange={handleInputChange} required placeholder="P.O." />
+                        <input type="text" name="po" value={formData.po} onChange={handleInputChange} placeholder="P.O." />
+                        {errors.po && <span className="error-msg">Post Office is required</span>}
                       </div>
                     </div>
 
                     <div className="input-group">
-                      <div className="input-field">
+                      <div className={`input-field ${errors.ps ? 'field-error' : ''}`}>
                         <label>Police Station (P.S.)</label>
-                        <input type="text" name="ps" value={formData.ps} onChange={handleInputChange} required placeholder="P.S." />
+                        <input type="text" name="ps" value={formData.ps} onChange={handleInputChange} placeholder="P.S." />
+                        {errors.ps && <span className="error-msg">Police Station is required</span>}
                       </div>
-                      <div className="input-field">
+                      <div className={`input-field ${errors.block ? 'field-error' : ''}`}>
                         <label>Block</label>
-                        <input type="text" name="block" value={formData.block} onChange={handleInputChange} required placeholder="Block Name" />
+                        <input type="text" name="block" value={formData.block} onChange={handleInputChange} placeholder="Block Name" />
+                        {errors.block && <span className="error-msg">Block is required</span>}
                       </div>
                     </div>
 
                     <div className="input-group">
-                      <div className="input-field">
+                      <div className={`input-field ${errors.state ? 'field-error' : ''}`}>
                         <label>State</label>
-                        <select name="state" value={formData.state} onChange={handleStateChange} required>
+                        <select name="state" value={formData.state} onChange={handleStateChange}>
                           <option value="">Select State</option>
                           {Object.keys(stateDistrictMap).map(s => <option key={s} value={s}>{s}</option>)}
                         </select>
+                        {errors.state && <span className="error-msg">State is required</span>}
                       </div>
-                      <div className="input-field">
+                      <div className={`input-field ${errors.district ? 'field-error' : ''}`}>
                         <label>District</label>
-                        <select name="district" value={formData.district} onChange={handleInputChange} required disabled={!formData.state}>
+                        <select name="district" value={formData.district} onChange={handleInputChange} disabled={!formData.state}>
                           <option value="">Select District</option>
                           {formData.state && stateDistrictMap[formData.state].map(d => <option key={d} value={d}>{d}</option>)}
                         </select>
+                        {errors.district && <span className="error-msg">District is required</span>}
                       </div>
                     </div>
 
-                    <div className="input-field full">
+                    <div className={`input-field full ${errors.pinCode ? 'field-error' : ''}`}>
                       <label>Pin Code</label>
-                      <input type="text" name="pinCode" value={formData.pinCode} onChange={handleInputChange} required placeholder="6 Digit Pin Code" maxLength="6" />
+                      <input type="text" name="pinCode" value={formData.pinCode} onChange={handleInputChange} placeholder="6 Digit Pin Code" maxLength="6" />
+                      {errors.pinCode && <span className="error-msg">Pin Code is required</span>}
                     </div>
 
                     <div className="form-buttons">
                       <button type="button" className="btn-outline" onClick={() => setStep(1)}>← Previous</button>
-                      <button type="button" className="btn-premium" onClick={() => setStep(3)}>Next Step: Sports & Uploads →</button>
+                      <button type="button" className="btn-premium" onClick={handleNext}>Next Step: Identity Documents →</button>
                     </div>
                   </div>
                 )}
 
                 {step === 3 && (
                   <div className="form-section">
-                    <h3>Discipline & Credentials</h3>
-                    <div className="input-group">
-                      <div className="input-field">
-                        <label>Sports Discipline</label>
-                        <select name="sportsDiscipline" value={formData.sportsDiscipline} onChange={handleInputChange} required>
-                          <option value="">Select Discipline</option>
-                          {sportsDisciplines.map(s => <option key={s} value={s}>{s}</option>)}
-                        </select>
-                      </div>
-                      <div className="input-field">
-                        <label>Educational Qualification</label>
-                        <input type="text" name="qualification" value={formData.qualification} onChange={handleInputChange} required placeholder="e.g. 10th, Graduate" />
-                      </div>
-                    </div>
-
-                    <div className="input-group">
-                      <div className="input-field">
-                        <label>Father's Occupation</label>
-                        <input type="text" name="fatherOccupation" value={formData.fatherOccupation} onChange={handleInputChange} required placeholder="Father's Occupation" />
-                      </div>
-                      <div className="input-field">
-                        <label>Primary Contact Number</label>
-                        <input type="tel" name="contactNumber" value={formData.contactNumber} onChange={handleInputChange} required placeholder="10 Digit Number" maxLength="10" />
-                      </div>
+                    <h3>Identity & Documents</h3>
+                    <div className={`input-field full ${errors.aadharNumber ? 'field-error' : ''}`} style={{ marginBottom: '2.5rem' }}>
+                      <label>Aadhar Card Number (12 Digits)</label>
+                      <input type="text" name="aadharNumber" value={formData.aadharNumber} onChange={handleInputChange} placeholder="0000 0000 0000" maxLength="12" />
+                      {errors.aadharNumber && <span className="error-msg">Aadhar Number is required</span>}
                     </div>
 
                     <div className="upload-grid">
-                      <div className={`upload-card ${formData.photo ? 'has-file' : ''}`}>
+                      <div id="photo" className={`upload-card ${formData.photo ? 'has-file' : ''} ${errors.photo ? 'card-error' : ''}`}>
                         <div className="card-icon">📷</div>
                         <div className="card-info">
                           <h4>Passport Photo</h4>
                           <p>Formal background, Max 2MB</p>
+                          {errors.photo && <span className="error-msg">Photo is required</span>}
                         </div>
                         <div className="upload-action-area">
                           {formData.photo ? (
@@ -418,17 +600,18 @@ const Registration = () => {
                               <label htmlFor="photo-upload" className="btn-premium btn-small">
                                 <span>Upload Photo</span>
                               </label>
-                              <input type="file" id="photo-upload" name="photo" accept="image/*" onChange={handleFileChange} required style={{display: 'none'}} />
+                              <input type="file" id="photo-upload" name="photo" accept="image/*" onChange={handleFileChange} style={{display: 'none'}} />
                             </div>
                           )}
                         </div>
                       </div>
 
-                      <div className={`upload-card ${formData.signature ? 'has-file' : ''}`}>
+                      <div id="signature" className={`upload-card ${formData.signature ? 'has-file' : ''} ${errors.signature ? 'card-error' : ''}`}>
                         <div className="card-icon">✍️</div>
                         <div className="card-info">
                           <h4>Athlete Signature</h4>
                           <p>Scanned copy on white paper</p>
+                          {errors.signature && <span className="error-msg">Signature is required</span>}
                         </div>
                         <div className="upload-action-area">
                           {formData.signature ? (
@@ -443,20 +626,149 @@ const Registration = () => {
                               <label htmlFor="sig-upload" className="btn-premium btn-small">
                                 <span>Upload Signature</span>
                               </label>
-                              <input type="file" id="sig-upload" name="signature" accept="image/*" onChange={handleFileChange} required style={{display: 'none'}} />
+                              <input type="file" id="sig-upload" name="signature" accept="image/*" onChange={handleFileChange} style={{display: 'none'}} />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div id="aadharFront" className={`upload-card ${formData.aadharFront ? 'has-file' : ''} ${errors.aadharFront ? 'card-error' : ''}`}>
+                        <div className="card-icon">🆔</div>
+                        <div className="card-info">
+                          <h4>Aadhar Front</h4>
+                          <p>Front side of Aadhar Card</p>
+                          {errors.aadharFront && <span className="error-msg">Front side is required</span>}
+                        </div>
+                        <div className="upload-action-area">
+                          {formData.aadharFront ? (
+                            <div className="preview-container">
+                              <img src={formData.aadharFront} alt="Aadhar Front" />
+                              <button type="button" className="change-file-btn" onClick={() => document.getElementById('aadhar-front-upload').click()}>
+                                <span>Change Front</span>
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="upload-btn-wrapper">
+                              <label htmlFor="aadhar-front-upload" className="btn-premium btn-small">
+                                <span>Upload Front</span>
+                              </label>
+                              <input type="file" id="aadhar-front-upload" name="aadharFront" accept="image/*" onChange={handleFileChange} style={{display: 'none'}} />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div id="aadharBack" className={`upload-card ${formData.aadharBack ? 'has-file' : ''} ${errors.aadharBack ? 'card-error' : ''}`}>
+                        <div className="card-icon">🆔</div>
+                        <div className="card-info">
+                          <h4>Aadhar Back</h4>
+                          <p>Back side of Aadhar Card</p>
+                          {errors.aadharBack && <span className="error-msg">Back side is required</span>}
+                        </div>
+                        <div className="upload-action-area">
+                          {formData.aadharBack ? (
+                            <div className="preview-container">
+                              <img src={formData.aadharBack} alt="Aadhar Back" />
+                              <button type="button" className="change-file-btn" onClick={() => document.getElementById('aadhar-back-upload').click()}>
+                                <span>Change Back</span>
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="upload-btn-wrapper">
+                              <label htmlFor="aadhar-back-upload" className="btn-premium btn-small">
+                                <span>Upload Back</span>
+                              </label>
+                              <input type="file" id="aadhar-back-upload" name="aadharBack" accept="image/*" onChange={handleFileChange} style={{display: 'none'}} />
                             </div>
                           )}
                         </div>
                       </div>
                     </div>
 
-                    <div className="payment-notice">
-                      <p>Note: An administrative fee of <strong>₹500.00</strong> will be payable upon physical trial verification.</p>
+                    <div className="form-buttons">
+                      <button type="button" className="btn-outline" onClick={() => setStep(2)}>← Previous</button>
+                      <button type="button" className="btn-premium" onClick={handleNext}>Proceed to Payment →</button>
+                    </div>
+                  </div>
+                )}
+
+                {step === 4 && (
+                  <div className="form-section">
+                    <h3>Secure Payment</h3>
+                    <div className="payment-summary-box glass">
+                      <div className="summary-item">
+                        <label>Athlete Name</label>
+                        <p>{formData.fullName || "—"}</p>
+                      </div>
+                      <div className="summary-item">
+                        <label>Father's Name</label>
+                        <p>{formData.fatherName || "—"}</p>
+                      </div>
+                      <div className="summary-item">
+                        <label>Date of Birth</label>
+                        <p>{formData.dob || "—"}</p>
+                      </div>
+                      <div className="summary-amount">
+                        <label>Registration Fee</label>
+                        <div className="price">₹500.00</div>
+                      </div>
+                    </div>
+
+                    <div className="payment-grid">
+                      <div className="qr-container-card glass">
+                        <div className="qr-header">
+                          <h4>Scan to Pay</h4>
+                          <p>Use any UPI App (GPay, PhonePe, Paytm)</p>
+                        </div>
+                        <div className="qr-image-wrapper">
+                          <img src="/qr_code.png" alt="Payment QR Code" />
+                        </div>
+                        <div className="qr-footer">
+                          <span>ITF OF INDIA NATIONAL TRUST</span>
+                        </div>
+                      </div>
+
+                      <div className={`payment-form-side ${errors.transactionId ? 'field-error' : ''}`}>
+                        <div className="input-field full">
+                          <label>Transaction ID / UTR Number</label>
+                          <input 
+                            type="text" 
+                            name="transactionId" 
+                            value={formData.transactionId} 
+                            onChange={handleInputChange} 
+                            placeholder="12 Digit UTR or Transaction ID" 
+                          />
+                          {errors.transactionId && <span className="error-msg">Transaction ID is required</span>}
+                        </div>
+
+                        <div id="paymentProof" className={`upload-card small-card ${formData.paymentProof ? 'has-file' : ''} ${errors.paymentProof ? 'card-error' : ''}`}>
+                          <div className="card-info">
+                            <h4>Payment Proof</h4>
+                            <p>Screenshot of success screen</p>
+                            {errors.paymentProof && <span className="error-msg">Payment proof is required</span>}
+                          </div>
+                          <div className="upload-action-area">
+                            {formData.paymentProof ? (
+                              <div className="preview-container mini">
+                                <img src={formData.paymentProof} alt="Proof" />
+                                <button type="button" className="change-file-btn" onClick={() => document.getElementById('proof-upload').click()}>Change</button>
+                              </div>
+                            ) : (
+                              <div className="upload-btn-wrapper">
+                                <label htmlFor="proof-upload" className="btn-premium btn-small">
+                                  <span>Upload Proof</span>
+                                </label>
+                                <input type="file" id="proof-upload" name="paymentProof" accept="image/*" onChange={handleFileChange} required style={{display: 'none'}} />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="form-buttons">
-                      <button type="button" className="btn-outline" onClick={() => setStep(2)}>← Previous</button>
-                      <button type="submit" className="btn-premium">Finalize Application & Get Receipt</button>
+                      <button type="button" className="btn-outline" onClick={() => setStep(3)}>← Previous</button>
+                      <button type="submit" className="btn-premium">Complete Registration & Verify →</button>
                     </div>
                   </div>
                 )}
@@ -465,19 +777,44 @@ const Registration = () => {
 
             <div className="registration-sidebar no-print">
               <div className="info-card glass">
-                <h4>Trust Documents</h4>
-                <ul>
-                  <li>Valid Government ID Required</li>
-                  <li>Recent Passport Size Photo</li>
-                  <li>Educational Credentials</li>
-                  <li>Parental Consent (if Minor)</li>
-                </ul>
+                <h4>Steps to Register</h4>
+                <div className="steps-list">
+                  <div className={`step-guide ${step >= 1 ? 'done' : ''}`}>
+                    <span className="dot"></span>
+                    <p>01. Personal Identity</p>
+                  </div>
+                  <div className={`step-guide ${step >= 2 ? 'done' : ''}`}>
+                    <span className="dot"></span>
+                    <p>02. Residency Details</p>
+                  </div>
+                  <div className={`step-guide ${step >= 3 ? 'done' : ''}`}>
+                    <span className="dot"></span>
+                    <p>03. Identity Documents</p>
+                  </div>
+                  <div className={`step-guide ${step >= 4 ? 'done' : ''}`}>
+                    <span className="dot"></span>
+                    <p>04. Payment Verification</p>
+                  </div>
+                  <div className={`step-guide ${step >= 5 ? 'done' : ''}`}>
+                    <span className="dot"></span>
+                    <p>05. Official Receipt</p>
+                  </div>
+                </div>
               </div>
-              <div className="info-card glass highlight">
-                <h4>Support Center</h4>
-                <p>Need help with registration?</p>
-                <div className="support-link">support@itfindia.org</div>
-                <div className="support-link">+91 98765 43210</div>
+
+              <div className="info-card glass danger-card">
+                <h4>Payment Notice</h4>
+                <p className="warning-text">Registration fees are <strong>Non-Refundable</strong> under any circumstances. Please verify all details before payment.</p>
+              </div>
+
+              <div className="info-card glass">
+                <h4>Required Documents</h4>
+                <ul className="doc-list">
+                  <li>Valid Aadhar Card (Front & Back)</li>
+                  <li>Recent Passport Photo</li>
+                  <li>Educational Credentials</li>
+                  <li>Signature on White Paper</li>
+                </ul>
               </div>
             </div>
           </div>
