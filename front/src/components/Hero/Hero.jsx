@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   const { t } = useLanguage();
@@ -39,8 +40,8 @@ const Hero = () => {
           <h1>{t('hero.title')}</h1>
           <p>{t('hero.subtitle')}</p>
           <div className="hero-btns">
-            <a href="#contact" className="btn-premium">{t('hero.cta_join')}</a>
-            <a href="#about" className="btn-outline">{t('hero.cta_disciplines')}</a>
+            <Link to="/registration" className="btn-premium">{t('hero.cta_join')}</Link>
+            <Link to="/sports" className="btn-outline">{t('hero.cta_disciplines')}</Link>
           </div>
         </div>
 

@@ -557,8 +557,40 @@ body {
 
 .hero-btns {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.hero-btns .btn-premium {
+  background: var(--secondary);
+  color: white;
+  border: none;
+  font-size: 0.95rem;
+  padding: 1rem 2.5rem;
+  box-shadow: 0 10px 25px rgba(147, 106, 0, 0.4);
+}
+
+.hero-btns .btn-premium:hover {
+  background: #b8860b;
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(147, 106, 0, 0.5);
+}
+
+.hero-btns .btn-outline {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  font-size: 0.95rem;
+  padding: 1rem 2.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.hero-btns .btn-outline:hover {
+  background: white;
+  color: var(--primary);
+  border-color: white;
+  transform: translateY(-3px);
 }
 
 /* ===================== */
