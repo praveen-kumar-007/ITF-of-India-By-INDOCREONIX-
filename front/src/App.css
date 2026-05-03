@@ -1521,7 +1521,7 @@ body {
 }
 
 .footer-column h4::after {
-    content: " \;
+    content: "";
  position: absolute;
  bottom: 0;
  width: 35px;
