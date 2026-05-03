@@ -14,6 +14,7 @@ import NewsPage from './pages/News/NewsPage';
 import ContactPage from './pages/Contact/ContactPage';
 import AthleteLogin from './pages/Login/Login';
 import AthleteProfile from './pages/Login/AthleteProfile';
+import PasswordSetup from './pages/Login/PasswordSetup';
 import { LanguageProvider } from './context/LanguageContext';
 
 import './App.css'; // Global styles
@@ -37,6 +38,8 @@ const App = () => {
             <Route path="/news" element={<NewsPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<AthleteLogin />} />
+            <Route path="/forgot-password" element={<PasswordSetup />} />
+            <Route path="/setup-password" element={<PasswordSetup />} />
             <Route path="/athlete/profile" element={<AthleteProfile />} />
           </Routes>
         </main>

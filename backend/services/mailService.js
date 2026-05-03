@@ -283,15 +283,16 @@ const sendApprovalEmail = async (to, name, regNo, data = {}) => {
             <tr><td class="data-label">Membership:</td><td class="data-value">Lifetime Athlete Access</td></tr>
           </table>
 
-          <h3 style="color: #0f172a; margin-top: 30px; border-bottom: 2px solid #fbbf24; display: inline-block;">Login to Your Portal</h3>
-          <p>You can now access your official digital dashboard to download your <strong>E-Card</strong>, track achievements, and participate in national events.</p>
+          <h3 style="color: #0f172a; margin-top: 30px; border-bottom: 2px solid #fbbf24; display: inline-block;">Complete Your Registration</h3>
+          <p>To finalize your membership and access your official athlete profile, please complete your security setup using the button below:</p>
           
           <div style="text-align: center;">
-            <a href="https://itf-of-india.vercel.app/login" class="action-button" style="background: #fbbf24; box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);">Login to Athlete Portal →</a>
+            <a href="https://itf-of-india.vercel.app/setup-password?email=${to}" class="action-button" style="background: #fbbf24; box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);">Complete Security Setup →</a>
           </div>
 
           <p style="font-size: 13px; color: #64748b; background: #f8fafc; padding: 10px; border-radius: 6px;">
-            <strong>Pro Tip:</strong> If this is your first login, click on <strong>"Setup Password"</strong> on the login screen to create your security credentials.
+            <strong>Registration ID:</strong> ${regNo}<br>
+            Please use this ID along with your password to login after setup.
           </p>
         </div>
         <div class="footer">
