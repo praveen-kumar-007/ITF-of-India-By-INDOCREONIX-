@@ -11,9 +11,7 @@ logs/
 
 # Build artifacts
 dist/
-dist-ssr/
 build/
-.vercel/
 
 # Environment variables
 .env

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLanguage } from "../../context/LanguageContext";
+import ImageCropper from "../../components/ImageCropper/ImageCropper";
 import "./Registration.css";
+
 
 const stateDistrictMap = {
   "Andhra Pradesh": ["Anantapur", "Annamayya", "Anakapalli", "Bapatla", "Chittoor", "East Godavari", "Eluru", "Guntur", "Krishna", "Kakinada", "Konaseema", "Kurnool", "Nandyal", "NTR", "Palnadu", "Parvathipuram Manyam", "Prakasam", "Sri Potti Sriramulu Nellore", "Srikakulam", "Visakhapatnam", "Vizianagaram", "West Godavari", "YSR Kadapa", "Alluri Sitarama Raju"],
@@ -47,6 +49,8 @@ const sportsDisciplines = [
   "Athletics", "Archery", "Shooting", "Fencing", "Badminton", "Table Tennis", "Yoga Sports"
 ];
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
 const Registration = () => {
   const { t } = useLanguage();
   const [step, setStep] = useState(1);
@@ -79,12 +83,51 @@ const Registration = () => {
     otpSent: false,
     toast: { message: "", type: "" },
     transactionId: "",
+    paymentProof: null,
+    loading: false
+  });
+
+  const [files, setFiles] = useState({
+    photo: null,
+    signature: null,
+    aadharFront: null,
+    aadharBack: null,
+    paymentProof: null
+  });
+
+  const [previews, setPreviews] = useState({
+    photo: null,
+    signature: null,
+    aadharFront: null,
+    aadharBack: null,
     paymentProof: null
   });
 
   const [registrationResult, setRegistrationResult] = useState(null);
   const [errors, setErrors] = useState({});
+  const [resendTimer, setResendTimer] = useState(0);
+  const [cropImage, setCropImage] = useState(null);
+  const [cropField, setCropField] = useState(null);
   const receiptRef = useRef();
+
+
+  useEffect(() => {
+    let interval = null;
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer((prev) => prev - 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [resendTimer]);
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   // Age calculation logic
   const calculateAge = (dobString) => {
@@ -114,7 +157,31 @@ const Registration = () => {
     return `${years} Years, ${months} Months, ${days} Days`;
   };
 
+  useEffect(() => {
+    if (formData.aadharNumber && formData.aadharNumber.length === 12) {
+      const checkAadhar = async () => {
+        try {
+          const res = await fetch(`${API_BASE_URL}/registrations/check-availability?aadharNumber=${formData.aadharNumber}`);
+          const data = await res.json();
+          if (!data.success) {
+            showToast(data.message, "error");
+            setErrors(prev => ({ ...prev, aadharNumber: true }));
+          } else {
+            setErrors(prev => {
+              const { aadharNumber, ...rest } = prev;
+              return rest;
+            });
+          }
+        } catch (err) {
+          console.error("Aadhar Check Error:", err);
+        }
+      };
+      checkAadhar();
+    }
+  }, [formData.aadharNumber]);
+
   const handleInputChange = (e) => {
+
     const { name, value } = e.target;
     setFormData(prev => {
       const newData = { ...prev, [name]: value };
@@ -126,15 +193,50 @@ const Registration = () => {
   };
 
   const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    if (files && files[0]) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setFormData(prev => ({ ...prev, [name]: event.target.result }));
-      };
-      reader.readAsDataURL(files[0]);
+    const { name, files: selectedFiles } = e.target;
+    if (selectedFiles && selectedFiles[0]) {
+      const file = selectedFiles[0];
+      
+      if (!file.type.startsWith('image/')) {
+        showToast("Only image files are allowed", "error");
+        return;
+      }
+
+      const fieldsToCrop = ['photo', 'signature', 'aadharFront', 'aadharBack'];
+      
+      if (fieldsToCrop.includes(name)) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          setCropImage(reader.result);
+          setCropField(name);
+        };
+        reader.readAsDataURL(file);
+      } else {
+
+        setFiles(prev => ({ ...prev, [name]: file }));
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          setPreviews(prev => ({ ...prev, [name]: event.target.result }));
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
+
+  const handleCropComplete = (croppedFile) => {
+    const fieldName = cropField;
+    setFiles(prev => ({ ...prev, [fieldName]: croppedFile }));
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setPreviews(prev => ({ ...prev, [fieldName]: e.target.result }));
+    };
+    reader.readAsDataURL(croppedFile);
+    
+    setCropImage(null);
+    setCropField(null);
+  };
+
 
   const handleStateChange = (e) => {
     const state = e.target.value;
@@ -148,24 +250,69 @@ const Registration = () => {
     }, 3000);
   };
 
-  const handleSendOTP = () => {
+  const handleSendOTP = async () => {
     if (!formData.email || !formData.email.includes('@')) {
       setErrors(prev => ({ ...prev, email: true }));
       return;
     }
-    // Mock OTP Sending
-    setFormData(prev => ({ ...prev, otpSent: true }));
-    showToast("OTP code sent successfully to " + formData.email, "success");
+    
+    setFormData(prev => ({ ...prev, loading: true }));
+    try {
+      // First Check if email is already registered
+      const checkRes = await fetch(`${API_BASE_URL}/registrations/check-availability?email=${formData.email}`);
+      const checkData = await checkRes.json();
+      
+      if (!checkData.success) {
+        throw new Error(checkData.message);
+      }
+
+      const response = await fetch(`${API_BASE_URL}/otp/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email })
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        setFormData(prev => ({ ...prev, otpSent: true, loading: false }));
+        setResendTimer(180); // 3 minutes
+        showToast("OTP code sent successfully to " + formData.email, "success");
+      } else {
+        throw new Error(data.message || "Failed to send OTP");
+      }
+    } catch (err) {
+      setFormData(prev => ({ ...prev, loading: false }));
+      showToast(err.message, "error");
+    }
   };
 
-  const handleVerifyOTP = () => {
+
+  const handleVerifyOTP = async () => {
     const code = formData.otpValue.join("");
-    if (code === "123456") { // Mock 6-digit OTP
-      setFormData(prev => ({ ...prev, isEmailVerified: true, otpSent: false }));
-      showToast("Email Verified Successfully!", "success");
-    } else {
+    if (code.length < 6) {
+      showToast("Please enter 6-digit code", "warning");
+      return;
+    }
+
+    setFormData(prev => ({ ...prev, loading: true }));
+    try {
+      const response = await fetch(`${API_BASE_URL}/otp/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, otp: code })
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setFormData(prev => ({ ...prev, isEmailVerified: true, otpSent: false, loading: false }));
+        showToast("Email Verified Successfully!", "success");
+      } else {
+        throw new Error(data.message || "Invalid OTP");
+      }
+    } catch (err) {
+      setFormData(prev => ({ ...prev, loading: false }));
       setErrors(prev => ({ ...prev, otpValue: true }));
-      showToast("Invalid OTP! Use 123456", "error");
+      showToast(err.message, "error");
     }
   };
 
@@ -201,9 +348,13 @@ const Registration = () => {
       showToast("Verification Required", "warning");
     }
 
+    const fileFields = ["photo", "signature", "aadharFront", "aadharBack", "paymentProof"];
+
     stepFields[currentStep].forEach(field => {
-      if (!formData[field]) {
-        newErrors[field] = true;
+      if (fileFields.includes(field)) {
+        if (!files[field]) newErrors[field] = true;
+      } else {
+        if (!formData[field]) newErrors[field] = true;
       }
     });
 
@@ -221,27 +372,92 @@ const Registration = () => {
     return true;
   };
 
-  const handleNext = (e) => {
+  const handleNext = async (e) => {
     e.preventDefault();
-    if (validateStep(step)) {
+    if (!validateStep(step)) return;
+
+    // Real-time Uniqueness Check
+    setFormData(prev => ({ ...prev, loading: true }));
+    try {
+      let query = "";
+      if (step === 1) {
+        query = `fullName=${formData.fullName}&fatherName=${formData.fatherName}&dob=${formData.dob}`;
+      } else if (step === 3) {
+        query = `aadharNumber=${formData.aadharNumber}`;
+      }
+
+      if (query) {
+        const res = await fetch(`${API_BASE_URL}/registrations/check-availability?${query}`);
+        const data = await res.json();
+        if (!data.success) {
+          throw new Error(data.message);
+        }
+      }
+
       setStep(step + 1);
       window.scrollTo(0, 0);
+    } catch (err) {
+      showToast(err.message, "error");
+    } finally {
+      setFormData(prev => ({ ...prev, loading: false }));
     }
   };
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateStep(4)) return;
     
-    // Generate Registration Number
-    const regNo = `ITF/REG/${new Date().getFullYear()}/${Math.floor(1000 + Math.random() * 9000)}`;
-    setRegistrationResult({
-      regNo: regNo,
-      date: new Date().toLocaleDateString(),
-      ...formData
-    });
-    setStep(5);
-    window.scrollTo(0, 0);
+    setFormData(prev => ({ ...prev, loading: true }));
+    showToast("Processing registration...", "info");
+
+    try {
+      const data = new FormData();
+      
+      // Append form fields
+      Object.keys(formData).forEach(key => {
+        if (!['photo', 'signature', 'aadharFront', 'aadharBack', 'paymentProof', 'otpValue', 'toast', 'loading'].includes(key)) {
+          data.append(key, formData[key]);
+        }
+      });
+
+      // Append files
+      Object.keys(files).forEach(key => {
+        if (files[key]) {
+          data.append(key, files[key]);
+        }
+      });
+
+      const response = await fetch(`${API_BASE_URL}/registrations/register`, {
+        method: 'POST',
+        body: data
+      });
+
+      let result;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        result = await response.json();
+      } else {
+        const text = await response.text();
+        throw new Error(`Server Error: ${response.status}. ${text.substring(0, 50)}...`);
+      }
+
+      if (response.ok && result.success) {
+        setRegistrationResult({
+          regNo: result.data.registrationNumber,
+          date: new Date().toLocaleDateString(),
+          ...formData
+        });
+        setStep(5);
+        window.scrollTo(0, 0);
+      } else {
+        throw new Error(result.message || "Registration failed");
+      }
+    } catch (err) {
+      console.error("Registration Submission Error:", err);
+      setFormData(prev => ({ ...prev, loading: false }));
+      showToast(err.message || "An unexpected error occurred. Please try again.", "error");
+    }
   };
 
   const handlePrint = () => {
@@ -254,14 +470,14 @@ const Registration = () => {
         <section className="registration-hero">
           <div className="hero-bg-banner no-print">
             <div className="banner-track">
-              {["11.16.42 PM", "11.16.43 PM", "11.16.44 PM", "11.16.45 PM", "11.16.42 PM (1)"].map((suffix, i) => (
-                <div className="bg-image-box" key={i}>
-                  <img src={`/club_image/WhatsApp Image 2026-04-30 at ${suffix}.jpeg`} alt="" />
+              {[1, 2, 3, 4, 5].map((num) => (
+                <div className="bg-image-box" key={num}>
+                  <img src={`/club_image/athlete_banner_${num}.jpeg`} alt="ITF India Athlete" />
                 </div>
               ))}
-              {["11.16.42 PM", "11.16.43 PM", "11.16.44 PM", "11.16.45 PM", "11.16.42 PM (1)"].map((suffix, i) => (
-                <div className="bg-image-box" key={`dup-${i}`}>
-                  <img src={`/club_image/WhatsApp Image 2026-04-30 at ${suffix}.jpeg`} alt="" />
+              {[1, 2, 3, 4, 5].map((num) => (
+                <div className="bg-image-box" key={`dup-${num}`}>
+                  <img src={`/club_image/athlete_banner_${num}.jpeg`} alt="ITF India Athlete" />
                 </div>
               ))}
             </div>
@@ -269,7 +485,7 @@ const Registration = () => {
           </div>
           <div className="container hero-content">
             <h1>Registration Successful</h1>
-            <p className="hero-desc">Your application has been received and is being processed.</p>
+            <p className="hero-desc">Your official ITF OF INDIA athlete profile has been created.</p>
           </div>
         </section>
 
@@ -286,7 +502,8 @@ const Registration = () => {
             </div>
 
             <div className="next-steps">
-              <p>Please save this ID for future trials and documentation.</p>
+              <p>Your application is currently <strong>pending for verification</strong>. After successful approval, you will receive a confirmation email at your registered Mail ID.</p>
+              <p style={{marginTop: '10px', fontSize: '0.8rem', opacity: 0.8}}>Please save this Reference ID for future trials and documentation.</p>
             </div>
 
             <div className="modal-actions">
@@ -301,20 +518,40 @@ const Registration = () => {
 
   return (
     <div className="registration-page">
+      {/* Image Cropper Modal */}
+      {cropImage && (
+        <ImageCropper 
+          image={cropImage} 
+          cropShape={cropField === 'photo' ? 'round' : 'rect'}
+          aspect={
+            cropField === 'photo' ? 1 : 
+            cropField === 'signature' ? 3 : 
+            1.58 // Standard ID card aspect ratio for Aadhar
+          }
+          onCropComplete={handleCropComplete}
+          onCancel={() => {
+            setCropImage(null);
+            setCropField(null);
+          }}
+        />
+      )}
+
+
       <section className="registration-hero">
+
         {/* Continuous Background Banner */}
         <div className="hero-bg-banner no-print">
           <div className="banner-track">
             {/* Horizontal oriented images from the collection */}
-            {["11.16.42 PM", "11.16.43 PM", "11.16.44 PM", "11.16.45 PM", "11.16.42 PM (1)"].map((suffix, i) => (
-              <div className="bg-image-box" key={i}>
-                <img src={`/club_image/WhatsApp Image 2026-04-30 at ${suffix}.jpeg`} alt="" />
+            {[1, 2, 3, 4, 5].map((num) => (
+              <div className="bg-image-box" key={num}>
+                <img src={`/club_image/athlete_banner_${num}.jpeg`} alt="ITF India Athlete" />
               </div>
             ))}
             {/* Repeat for seamless loop */}
-            {["11.16.42 PM", "11.16.43 PM", "11.16.44 PM", "11.16.45 PM", "11.16.42 PM (1)"].map((suffix, i) => (
-              <div className="bg-image-box" key={`dup-${i}`}>
-                <img src={`/club_image/WhatsApp Image 2026-04-30 at ${suffix}.jpeg`} alt="" />
+            {[1, 2, 3, 4, 5].map((num) => (
+              <div className="bg-image-box" key={`dup-${num}`}>
+                <img src={`/club_image/athlete_banner_${num}.jpeg`} alt="ITF India Athlete" />
               </div>
             ))}
           </div>
@@ -339,7 +576,7 @@ const Registration = () => {
                     <img src="/logo.jpeg" alt="ITF Logo" />
                   </div>
                   <div className="toast-content">
-                    <h5>Official Notification</h5>
+                    <h5>ITF India Portal</h5>
                     <p>{formData.toast.message}</p>
                   </div>
                   <div className="toast-progress-bar"></div>
@@ -433,7 +670,14 @@ const Registration = () => {
                           disabled={formData.isEmailVerified}
                         />
                         {!formData.isEmailVerified && !formData.otpSent && (
-                          <button type="button" className="verify-btn" onClick={handleSendOTP}>Send OTP</button>
+                          <button 
+                            type="button" 
+                            className="verify-btn" 
+                            onClick={handleSendOTP} 
+                            disabled={formData.loading}
+                          >
+                            {formData.loading ? "Sending..." : "Send OTP"}
+                          </button>
                         )}
                         {formData.isEmailVerified && (
                           <span className="verified-badge">✓ Verified</span>
@@ -449,7 +693,12 @@ const Registration = () => {
                             <h4>Email Verification</h4>
                             <p>Enter the 6-digit code to proceed</p>
                           </div>
-                          <span className="resend-link" onClick={handleSendOTP}>Resend OTP</span>
+                          <span 
+                            className={`resend-link ${formData.loading || resendTimer > 0 ? 'disabled' : ''}`} 
+                            onClick={(!formData.loading && resendTimer === 0) ? handleSendOTP : null}
+                          >
+                            {formData.loading ? "Processing..." : (resendTimer > 0 ? `Resend in ${formatTime(resendTimer)}` : "Resend OTP")}
+                          </span>
                         </div>
                         
                         <div className="otp-digit-container">
@@ -469,7 +718,14 @@ const Registration = () => {
                         </div>
 
                         <div className="otp-actions">
-                          <button type="button" className="btn-premium w-full" onClick={handleVerifyOTP}>Verify & Authenticate Code</button>
+                          <button 
+                            type="button" 
+                            className="btn-premium w-full" 
+                            onClick={handleVerifyOTP}
+                            disabled={formData.loading}
+                          >
+                            {formData.loading ? "Verifying..." : "Verify & Authenticate Code"}
+                          </button>
                         </div>
                       </div>
                     )}
@@ -580,7 +836,7 @@ const Registration = () => {
                     </div>
 
                     <div className="upload-grid">
-                      <div id="photo" className={`upload-card ${formData.photo ? 'has-file' : ''} ${errors.photo ? 'card-error' : ''}`}>
+                      <div id="photo" className={`upload-card ${previews.photo ? 'has-file' : ''} ${errors.photo ? 'card-error' : ''}`}>
                         <div className="card-icon">📷</div>
                         <div className="card-info">
                           <h4>Passport Photo</h4>
@@ -588,9 +844,9 @@ const Registration = () => {
                           {errors.photo && <span className="error-msg">Photo is required</span>}
                         </div>
                         <div className="upload-action-area">
-                          {formData.photo ? (
+                          {previews.photo ? (
                             <div className="preview-container">
-                              <img src={formData.photo} alt="Passport" />
+                              <img src={previews.photo} alt="Passport" />
                               <button type="button" className="change-file-btn" onClick={() => document.getElementById('photo-upload').click()}>
                                 <span>Change Photo</span>
                               </button>
@@ -606,7 +862,7 @@ const Registration = () => {
                         </div>
                       </div>
 
-                      <div id="signature" className={`upload-card ${formData.signature ? 'has-file' : ''} ${errors.signature ? 'card-error' : ''}`}>
+                      <div id="signature" className={`upload-card ${previews.signature ? 'has-file' : ''} ${errors.signature ? 'card-error' : ''}`}>
                         <div className="card-icon">✍️</div>
                         <div className="card-info">
                           <h4>Athlete Signature</h4>
@@ -614,9 +870,9 @@ const Registration = () => {
                           {errors.signature && <span className="error-msg">Signature is required</span>}
                         </div>
                         <div className="upload-action-area">
-                          {formData.signature ? (
+                          {previews.signature ? (
                             <div className="preview-container">
-                              <img src={formData.signature} alt="Signature" />
+                              <img src={previews.signature} alt="Signature" />
                               <button type="button" className="change-file-btn" onClick={() => document.getElementById('sig-upload').click()}>
                                 <span>Change Signature</span>
                               </button>
@@ -632,7 +888,7 @@ const Registration = () => {
                         </div>
                       </div>
 
-                      <div id="aadharFront" className={`upload-card ${formData.aadharFront ? 'has-file' : ''} ${errors.aadharFront ? 'card-error' : ''}`}>
+                      <div id="aadharFront" className={`upload-card ${previews.aadharFront ? 'has-file' : ''} ${errors.aadharFront ? 'card-error' : ''}`}>
                         <div className="card-icon">🆔</div>
                         <div className="card-info">
                           <h4>Aadhar Front</h4>
@@ -640,9 +896,9 @@ const Registration = () => {
                           {errors.aadharFront && <span className="error-msg">Front side is required</span>}
                         </div>
                         <div className="upload-action-area">
-                          {formData.aadharFront ? (
+                          {previews.aadharFront ? (
                             <div className="preview-container">
-                              <img src={formData.aadharFront} alt="Aadhar Front" />
+                              <img src={previews.aadharFront} alt="Aadhar Front" />
                               <button type="button" className="change-file-btn" onClick={() => document.getElementById('aadhar-front-upload').click()}>
                                 <span>Change Front</span>
                               </button>
@@ -658,7 +914,7 @@ const Registration = () => {
                         </div>
                       </div>
 
-                      <div id="aadharBack" className={`upload-card ${formData.aadharBack ? 'has-file' : ''} ${errors.aadharBack ? 'card-error' : ''}`}>
+                      <div id="aadharBack" className={`upload-card ${previews.aadharBack ? 'has-file' : ''} ${errors.aadharBack ? 'card-error' : ''}`}>
                         <div className="card-icon">🆔</div>
                         <div className="card-info">
                           <h4>Aadhar Back</h4>
@@ -666,9 +922,9 @@ const Registration = () => {
                           {errors.aadharBack && <span className="error-msg">Back side is required</span>}
                         </div>
                         <div className="upload-action-area">
-                          {formData.aadharBack ? (
+                          {previews.aadharBack ? (
                             <div className="preview-container">
-                              <img src={formData.aadharBack} alt="Aadhar Back" />
+                              <img src={previews.aadharBack} alt="Aadhar Back" />
                               <button type="button" className="change-file-btn" onClick={() => document.getElementById('aadhar-back-upload').click()}>
                                 <span>Change Back</span>
                               </button>
@@ -741,16 +997,16 @@ const Registration = () => {
                           {errors.transactionId && <span className="error-msg">Transaction ID is required</span>}
                         </div>
 
-                        <div id="paymentProof" className={`upload-card small-card ${formData.paymentProof ? 'has-file' : ''} ${errors.paymentProof ? 'card-error' : ''}`}>
+                        <div id="paymentProof" className={`upload-card small-card ${previews.paymentProof ? 'has-file' : ''} ${errors.paymentProof ? 'card-error' : ''}`}>
                           <div className="card-info">
                             <h4>Payment Proof</h4>
                             <p>Screenshot of success screen</p>
                             {errors.paymentProof && <span className="error-msg">Payment proof is required</span>}
                           </div>
                           <div className="upload-action-area">
-                            {formData.paymentProof ? (
+                            {previews.paymentProof ? (
                               <div className="preview-container mini">
-                                <img src={formData.paymentProof} alt="Proof" />
+                                <img src={previews.paymentProof} alt="Proof" />
                                 <button type="button" className="change-file-btn" onClick={() => document.getElementById('proof-upload').click()}>Change</button>
                               </div>
                             ) : (
@@ -767,8 +1023,10 @@ const Registration = () => {
                     </div>
 
                     <div className="form-buttons">
-                      <button type="button" className="btn-outline" onClick={() => setStep(3)}>← Previous</button>
-                      <button type="submit" className="btn-premium">Complete Registration & Verify →</button>
+                      <button type="button" className="btn-outline" onClick={() => setStep(3)} disabled={formData.loading}>← Previous</button>
+                      <button type="submit" className="btn-premium" disabled={formData.loading}>
+                        {formData.loading ? "Verifying & Saving..." : "Complete Registration & Verify →"}
+                      </button>
                     </div>
                   </div>
                 )}

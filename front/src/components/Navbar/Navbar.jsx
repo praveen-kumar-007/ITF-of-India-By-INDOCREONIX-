@@ -18,7 +18,9 @@ const Navbar = () => {
       <nav className={`sport-nav ${isScrolled ? 'scrolled' : ''}`}>
         <div className="container nav-content">
           <Link to="/" className="brand" style={{textDecoration: 'none'}}>
-            <img src="/logo.jpeg" alt="ITF" className="logo" />
+            <div className="logo-frame">
+              <img src="/logo.jpeg" alt="ITF" className="logo" />
+            </div>
             <div className="brand-text">
               <span className="main">{t('brand.main')}</span>
               <span className="sub">{t('brand.sub')}</span>
@@ -59,7 +61,9 @@ const Navbar = () => {
         <div className="mobile-menu-content">
           <div className="mobile-menu-header">
             <div className="menu-logo">
-              <img src="/logo.jpeg" alt="Logo" />
+              <div className="logo-frame small">
+                <img src="/logo.jpeg" alt="Logo" />
+              </div>
               <div>
                 <h4 className="main">{t('brand.main')}</h4>
                 <span className="sub">{t('brand.sub')}</span>
@@ -100,7 +104,9 @@ const Navbar = () => {
 
           <div className="mobile-menu-footer">
             <div className="affiliate-box">
-              <img src="/logo.jpeg" alt="Affiliate Logo" className="footer-affiliate-logo" />
+              <div className="logo-frame small">
+                <img src="/logo.jpeg" alt="Affiliate Logo" className="footer-affiliate-logo" />
+              </div>
               <div className="affiliate-text">
                 <p className="title">ITF OF INDIA TRUST</p>
                 <p className="sub">NATIONAL MULTI-SPORT ORGANIZATION</p>
