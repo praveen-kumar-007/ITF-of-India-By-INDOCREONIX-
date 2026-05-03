@@ -113,7 +113,11 @@ const updateRegistrationStatus = async (req, res, next) => {
     if (!athlete) return sendError(res, 404, 'Athlete not found');
 
     // 2. Update Status
-    await updateData('registrations', id, { status });
+    const updateFields = { status };
+    if (status === 'rejected' && reason) {
+      updateFields.rejectionReason = reason;
+    }
+    await updateData('registrations', id, updateFields);
 
     // 3. Trigger Status Emails [ASYNC]
     if (status === 'approved') {

@@ -45,7 +45,17 @@ const PlayerDetails = () => {
   };
 
   const handleStatusUpdate = async (status) => {
-    if (!window.confirm(`Are you sure you want to ${status}?`)) return;
+    let reason = '';
+    if (status === 'rejected') {
+      reason = window.prompt('Please provide a reason for rejection:');
+      if (reason === null) return; // Cancelled
+      if (!reason.trim()) {
+        showToast('Rejection reason is required', 'error');
+        return;
+      }
+    } else {
+      if (!window.confirm(`Are you sure you want to ${status}?`)) return;
+    }
 
     setIsUpdating(true);
     try {
@@ -56,12 +66,12 @@ const PlayerDetails = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ status })
+        body: JSON.stringify({ status, reason })
       });
       const result = await response.json();
       if (result.success) {
         showToast(`${status} successful`, 'success');
-        setPlayer({ ...player, status });
+        setPlayer({ ...player, status, rejectionReason: reason });
       } else {
         showToast(result.message || 'Update failed', 'error');
       }
