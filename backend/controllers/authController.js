@@ -241,7 +241,8 @@ const getSystemHealth = async (req, res, next) => {
     const envStatus = {
       JWT_SECRET: !!process.env.JWT_SECRET,
       FIREBASE_DATABASE_URL: !!process.env.FIREBASE_DATABASE_URL,
-      CLOUDINARY_URL: !!process.env.CLOUDINARY_URL,
+      CLOUDINARY_NAME: !!process.env.CLOUDINARY_CLOUD_NAME,
+      CLOUDINARY_KEY: !!process.env.CLOUDINARY_API_KEY,
       RESEND_API_KEY: !!process.env.RESEND_API_KEY,
       NODE_ENV: process.env.NODE_ENV || 'development'
     };

@@ -37,6 +37,13 @@ const SystemHealth = () => {
 
   useEffect(() => {
     fetchHealth();
+    
+    // Auto-refresh every 10 seconds for "real-time" experience
+    const interval = setInterval(() => {
+      fetchHealth();
+    }, 10000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleRefresh = () => {
@@ -69,7 +76,13 @@ const SystemHealth = () => {
     <div className="system-health-page fade-in">
       <div className="page-header">
         <div>
-          <h1>System Integrity</h1>
+          <div className="title-row">
+            <h1>System Integrity</h1>
+            <div className="live-indicator">
+              <div className="dot"></div>
+              <span>LIVE</span>
+            </div>
+          </div>
           <p>Real-time monitor for ITF India infrastructure.</p>
         </div>
         <button 
