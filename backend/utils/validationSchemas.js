@@ -28,18 +28,26 @@ const adminUpdateSchema = Joi.object({
  */
 const athleteRegistrationSchema = Joi.object({
   fullName: Joi.string().required().trim(),
+  fatherName: Joi.string().required().trim(),
   email: Joi.string().email().required().trim(),
-  phone: Joi.string().required().trim(),
+  contactNumber: Joi.string().required().trim(),
   dob: Joi.string().required(),
+  age: Joi.string().allow('', null),
   gender: Joi.string().valid('Male', 'Female', 'Other').required(),
-  discipline: Joi.string().required(),
-  address: Joi.string().required(),
+  sportsDiscipline: Joi.string().required(),
+  bloodGroup: Joi.string().required(),
+  qualification: Joi.string().required(),
+  fatherOccupation: Joi.string().required(),
+  villageCity: Joi.string().required(),
+  po: Joi.string().required(),
+  ps: Joi.string().required(),
+  block: Joi.string().required(),
   aadharNumber: Joi.string().length(12).pattern(/^[0-9]+$/).required(),
   state: Joi.string().required(),
   district: Joi.string().required(),
-  pincode: Joi.string().length(6).pattern(/^[0-9]+$/).required(),
-  // Files are handled by multer, so we just check for existence if needed
-  // or validate other text fields
+  pinCode: Joi.string().length(6).pattern(/^[0-9]+$/).required(),
+  transactionId: Joi.string().required().trim(),
+  // Files are handled by multer separately
 }).unknown(true); // Allow other fields for now as registration is complex
 
 /**
