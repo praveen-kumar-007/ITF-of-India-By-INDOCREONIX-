@@ -41,21 +41,108 @@ const requestPasswordSetup = async (req, res, next) => {
 
     // 5. Send Email via Unified Mail Service (Resend)
     const subject = "Athlete Portal Verification Code";
+    const logoUrl = 'https://res.cloudinary.com/dgfpfxkpk/image/upload/q_auto/f_auto/v1777829890/logo_hdbywh.png';
+    
     const htmlContent = `
-      <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 500px; margin: auto;">
-        <div style="text-align: center; margin-bottom: 20px;">
-          <img src="https://itfindia.com/logo.jpeg" alt="ITF Logo" style="width: 80px; border-radius: 50%;">
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          .email-container {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+          }
+          .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 40px 20px;
+            text-align: center;
+          }
+          .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #fbbf24;
+            padding: 5px;
+            background: white;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+          }
+          .content {
+            padding: 40px 35px;
+            color: #1e293b;
+            line-height: 1.6;
+          }
+          .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 16px;
+            text-align: center;
+          }
+          .otp-box {
+            background: #f8fafc;
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 32px 0;
+            text-align: center;
+          }
+          .otp-code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: 12px;
+            color: #b45309;
+            margin: 0;
+          }
+          .footer {
+            background-color: #f1f5f9;
+            padding: 24px;
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+          }
+          .org-name {
+            color: #fbbf24;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            display: block;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="email-container">
+          <div class="header">
+            <img src="${logoUrl}" alt="ITF Logo" class="logo">
+            <span class="org-name">ITF OF INDIA</span>
+          </div>
+          <div class="content">
+            <h1 class="title">Access Verification</h1>
+            <p>Hello <strong>${athlete.fullName}</strong>,</p>
+            <p>You have requested a verification code to access the official <strong>ITF OF INDIA Athlete Portal</strong>.</p>
+            
+            <div class="otp-box">
+              <h2 class="otp-code">${otp}</h2>
+              <p style="font-size: 13px; color: #64748b; margin-top: 10px;">Valid for the next 10 minutes</p>
+            </div>
+            
+            <p style="font-size: 14px; color: #475569;">Use this code to securely setup or reset your portal credentials. If you did not initiate this request, please contact our administrative department immediately.</p>
+          </div>
+          <div class="footer">
+            <p>© ${new Date().getFullYear()} ITF OF INDIA - National Multi-Sport Organization Trust</p>
+            <p>This is an automated security notification. Please do not reply.</p>
+          </div>
         </div>
-        <h2 style="color: #0a1128; text-align: center;">ITF OF INDIA</h2>
-        <p>Hello <strong>${athlete.fullName}</strong>,</p>
-        <p>Your verification code for the Athlete Portal is:</p>
-        <div style="background: #f4f7f9; padding: 15px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 10px; color: #b8860b; border-radius: 8px; margin: 20px 0;">
-          ${otp}
-        </div>
-        <p style="text-align: center; color: #666; font-size: 14px;">This code is valid for 10 minutes.</p>
-        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-        <p style="font-size: 12px; color: #999; text-align: center;">ITF of India - National Multi-Sport Organization</p>
-      </div>
+      </body>
+      </html>
     `;
 
     try {
