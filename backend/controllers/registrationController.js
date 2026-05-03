@@ -65,8 +65,9 @@ const registerAthlete = async (req, res, next) => {
     const registrationData = { ...formData, ...uploadedUrls, registrationNumber: regNo, status: 'pending' };
     const docId = await saveData('registrations', registrationData);
 
-    // [ASYNC] Send Pending Verification Email
-    sendPendingEmail(formData.email, formData.fullName, regNo).catch(err => console.error("Pending Email Error:", err));
+    // [ASYNC] Send Pending Verification Email with Details
+    sendPendingEmail(formData.email, formData.fullName, regNo, registrationData)
+      .catch(err => console.error("Pending Email Error:", err));
 
     sendSuccess(res, 201, 'Athlete registered successfully', { id: docId, registrationNumber: regNo });
   } catch (error) {
@@ -116,7 +117,7 @@ const updateRegistrationStatus = async (req, res, next) => {
 
     // 3. Trigger Status Emails [ASYNC]
     if (status === 'approved') {
-      sendApprovalEmail(athlete.email, athlete.fullName, athlete.registrationNumber)
+      sendApprovalEmail(athlete.email, athlete.fullName, athlete.registrationNumber, athlete)
         .catch(err => console.error("Approval Email Error:", err));
     } else if (status === 'rejected') {
       sendRejectionEmail(athlete.email, athlete.fullName, reason)

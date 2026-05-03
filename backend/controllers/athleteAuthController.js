@@ -34,10 +34,6 @@ const requestPasswordSetup = async (req, res, next) => {
       otpExpiry
     });
 
-    // [DEV ONLY] Print OTP to console
-    console.log(`\x1b[33m%s\x1b[0m`, `-----------------------------------------`);
-    console.log(`\x1b[33m%s\x1b[0m`, `[DEV] OTP for ${email}: ${otp}`);
-    console.log(`\x1b[33m%s\x1b[0m`, `-----------------------------------------`);
 
     // 5. Send Email via Unified Mail Service (Resend)
     const subject = "Athlete Portal Verification Code";
@@ -152,9 +148,7 @@ const requestPasswordSetup = async (req, res, next) => {
       console.error('Email Send Error:', error);
     }
 
-    sendSuccess(res, 200, 'OTP sent to your registered email.', {
-      devOtp: process.env.NODE_ENV === 'development' ? otp : null
-    });
+    sendSuccess(res, 200, 'OTP sent to your registered email.');
   } catch (error) {
     next(error);
   }

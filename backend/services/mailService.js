@@ -52,90 +52,123 @@ const getEmailStyles = () => `
       margin: 0 auto;
       background-color: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 16px;
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
     }
     .header {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      padding: 40px 20px;
+      background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+      padding: 50px 20px;
       text-align: center;
+      position: relative;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #fbbf24, #f59e0b, #fbbf24);
     }
     .logo {
-      width: 80px;
-      height: 80px;
+      width: 90px;
+      height: 90px;
       border-radius: 50%;
-      border: 3px solid #fbbf24;
-      padding: 5px;
+      border: 4px solid #ffffff;
+      padding: 4px;
       background: white;
-      box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+      box-shadow: 0 0 25px rgba(251, 191, 36, 0.4);
     }
     .content {
-      padding: 40px 35px;
+      padding: 45px 40px;
       color: #1e293b;
-      line-height: 1.6;
+      line-height: 1.7;
     }
     .title {
-      font-size: 24px;
-      font-weight: 700;
+      font-size: 26px;
+      font-weight: 800;
       color: #0f172a;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       text-align: center;
+      letter-spacing: -0.5px;
     }
     .status-badge {
       display: inline-block;
-      padding: 8px 16px;
-      border-radius: 99px;
-      font-size: 14px;
-      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
       text-transform: uppercase;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      letter-spacing: 1px;
     }
-    .status-pending { background: #fef3c7; color: #92400e; }
-    .status-approved { background: #dcfce7; color: #166534; }
-    .status-rejected { background: #fee2e2; color: #991b1b; }
+    .status-pending { 
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); 
+      color: #92400e; 
+      border: 1px solid #fcd34d;
+    }
+    .status-approved { 
+      background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); 
+      color: #166534; 
+      border: 1px solid #86efac;
+    }
+    .status-rejected { 
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); 
+      color: #991b1b; 
+      border: 1px solid #fca5a5;
+    }
     
     .data-table {
       width: 100%;
-      border-collapse: collapse;
-      margin: 25px 0;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 30px 0;
       background: #f8fafc;
-      border-radius: 12px;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
       overflow: hidden;
     }
     .data-table td {
-      padding: 12px 15px;
+      padding: 16px 20px;
       border-bottom: 1px solid #e2e8f0;
-      font-size: 14px;
+      font-size: 15px;
     }
+    .data-table tr:last-child td { border-bottom: none; }
     .data-label { color: #64748b; font-weight: 600; width: 40%; }
-    .data-value { color: #1e293b; font-weight: 500; }
+    .data-value { color: #0f172a; font-weight: 700; }
     
     .action-button {
       display: inline-block;
-      background: #fbbf24;
-      color: #0f172a;
-      padding: 14px 28px;
-      border-radius: 8px;
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      color: #0f172a !important;
+      padding: 16px 35px;
+      border-radius: 12px;
       text-decoration: none;
-      font-weight: 700;
-      margin: 25px 0;
+      font-weight: 800;
+      margin: 30px 0;
       text-align: center;
+      box-shadow: 0 10px 20px -5px rgba(245, 158, 11, 0.4);
+      transition: transform 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 14px;
     }
     .footer {
       background-color: #f1f5f9;
-      padding: 24px;
+      padding: 35px 24px;
       text-align: center;
-      font-size: 12px;
+      font-size: 13px;
       color: #64748b;
       border-top: 1px solid #e2e8f0;
     }
     .org-name {
       color: #fbbf24;
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin-top: 10px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-top: 15px;
       display: block;
+      font-size: 18px;
     }
   </style>
 `;
@@ -182,8 +215,8 @@ const sendOTPEmail = async (to, otp) => {
 /**
  * Send Registration Pending Email
  */
-const sendPendingEmail = async (to, name, regNo) => {
-  const subject = 'Application Received - ITF OF INDIA Registration';
+const sendPendingEmail = async (to, name, regNo, data = {}) => {
+  const subject = `Welcome to ITF OF INDIA, ${name}! 🇮🇳`;
   const html = `
     <!DOCTYPE html>
     <html>
@@ -195,20 +228,26 @@ const sendPendingEmail = async (to, name, regNo) => {
           <span class="org-name">ITF OF INDIA</span>
         </div>
         <div class="content">
-          <div style="text-align: center;"><span class="status-badge status-pending">Verification Pending</span></div>
-          <h1 class="title">Application Received</h1>
+          <div style="text-align: center;"><span class="status-badge status-pending">Verification in Progress</span></div>
+          <h1 class="title">Registration Received!</h1>
           <p>Hello <strong>${name}</strong>,</p>
-          <p>Your official registration for the <strong>ITF OF INDIA</strong> has been successfully received. Our administrative board is currently reviewing your documents.</p>
+          <p>Thank you for choosing the <strong>ITF OF INDIA</strong>. Your official registration has been successfully received and is now under technical review.</p>
           
           <table class="data-table">
+            <tr><td class="data-label">Athlete Name:</td><td class="data-value">${name}</td></tr>
             <tr><td class="data-label">Reference ID:</td><td class="data-value">${regNo}</td></tr>
-            <tr><td class="data-label">Current Status:</td><td class="data-value">Awaiting Official Review</td></tr>
+            ${data.sportsDiscipline ? `<tr><td class="data-label">Discipline:</td><td class="data-value">${data.sportsDiscipline}</td></tr>` : ''}
+            ${data.district ? `<tr><td class="data-label">District/State:</td><td class="data-value">${data.district}, ${data.state}</td></tr>` : ''}
+            <tr><td class="data-label">Status:</td><td class="data-value">Technical Verification</td></tr>
           </table>
 
-          <p>Please allow <strong>24-48 hours</strong> for the verification process to complete. You will receive another email once your application is approved.</p>
+          <div style="background: #eff6ff; border-radius: 8px; padding: 15px; border: 1px solid #dbeafe; color: #1e40af; font-size: 14px;">
+            <strong>Note:</strong> Our board will verify your Aadhar card and payment proof. This typically takes <strong>24 to 48 hours</strong>.
+          </div>
         </div>
         <div class="footer">
-          <p>ITF of India - National Multi-Sport Organization Trust</p>
+          <p>ITF OF INDIA - National Multi-Sport Organization Trust</p>
+          <p>Indra the Fighter of India</p>
         </div>
       </div>
     </body>
@@ -220,8 +259,8 @@ const sendPendingEmail = async (to, name, regNo) => {
 /**
  * Send Approval Email
  */
-const sendApprovalEmail = async (to, name, regNo) => {
-  const subject = 'Application Approved - Welcome to ITF OF INDIA';
+const sendApprovalEmail = async (to, name, regNo, data = {}) => {
+  const subject = `Congrats ${name}! Your Athlete ID is Approved 🏆`;
   const html = `
     <!DOCTYPE html>
     <html>
@@ -233,27 +272,31 @@ const sendApprovalEmail = async (to, name, regNo) => {
           <span class="org-name">ITF OF INDIA</span>
         </div>
         <div class="content">
-          <div style="text-align: center;"><span class="status-badge status-approved">Officially Approved</span></div>
-          <h1 class="title">Welcome to the Organization</h1>
-          <p>Dear <strong>${name}</strong>,</p>
-          <p>Congratulations! Your athlete registration with the <strong>ITF OF INDIA</strong> has been officially <strong>Approved</strong>.</p>
+          <div style="text-align: center;"><span class="status-badge status-approved">Officially Verified</span></div>
+          <h1 class="title" style="color: #16a34a;">Congratulations ${name}!</h1>
+          <p>We are proud to inform you that your application for the <strong>ITF OF INDIA</strong> has been officially <strong>Approved</strong>.</p>
           
           <table class="data-table">
-            <tr><td class="data-label">Registration No:</td><td class="data-value">${regNo}</td></tr>
-            <tr><td class="data-label">Member Status:</td><td class="data-value">Active Member</td></tr>
+            <tr><td class="data-label">Registration ID:</td><td class="data-value">${regNo}</td></tr>
+            <tr><td class="data-label">Athlete Name:</td><td class="data-value">${name}</td></tr>
+            ${data.sportsDiscipline ? `<tr><td class="data-label">Sport/Discipline:</td><td class="data-value">${data.sportsDiscipline}</td></tr>` : ''}
+            <tr><td class="data-label">Membership:</td><td class="data-value">Lifetime Athlete Access</td></tr>
           </table>
 
-          <h3 style="color: #0f172a; margin-top: 30px;">Next Steps: Set Your Password</h3>
-          <p>To access your official athlete profile and download your E-Card, you must set your portal password using the link below:</p>
+          <h3 style="color: #0f172a; margin-top: 30px; border-bottom: 2px solid #fbbf24; display: inline-block;">Login to Your Portal</h3>
+          <p>You can now access your official digital dashboard to download your <strong>E-Card</strong>, track achievements, and participate in national events.</p>
           
           <div style="text-align: center;">
-            <a href="https://itf-of-india.vercel.app/setup-password?email=${to}" class="action-button">Set Portal Password →</a>
+            <a href="https://itf-of-india.vercel.app/login" class="action-button" style="background: #fbbf24; box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);">Login to Athlete Portal →</a>
           </div>
 
-          <p style="font-size: 14px; color: #64748b;">Alternatively, visit the Athlete Login page and use the "Setup Password" option.</p>
+          <p style="font-size: 13px; color: #64748b; background: #f8fafc; padding: 10px; border-radius: 6px;">
+            <strong>Pro Tip:</strong> If this is your first login, click on <strong>"Setup Password"</strong> on the login screen to create your security credentials.
+          </p>
         </div>
         <div class="footer">
           <p>© ${new Date().getFullYear()} ITF OF INDIA - National Multi-Sport Organization Trust</p>
+          <p>Indra the Fighter of India</p>
         </div>
       </div>
     </body>
@@ -266,7 +309,7 @@ const sendApprovalEmail = async (to, name, regNo) => {
  * Send Rejection Email
  */
 const sendRejectionEmail = async (to, name, reason = "Documentation criteria not met") => {
-  const subject = 'Application Update - ITF OF INDIA Registration';
+  const subject = `Update regarding your Registration - ${name}`;
   const html = `
     <!DOCTYPE html>
     <html>
@@ -278,20 +321,21 @@ const sendRejectionEmail = async (to, name, reason = "Documentation criteria not
           <span class="org-name">ITF OF INDIA</span>
         </div>
         <div class="content">
-          <div style="text-align: center;"><span class="status-badge status-rejected">Application Rejected</span></div>
+          <div style="text-align: center;"><span class="status-badge status-rejected">Review Completed</span></div>
           <h1 class="title">Registration Update</h1>
           <p>Hello <strong>${name}</strong>,</p>
-          <p>Thank you for your interest in the <strong>ITF OF INDIA</strong>. After reviewing your submission, our board has decided not to move forward with your application at this time.</p>
+          <p>Thank you for your application to the <strong>ITF OF INDIA</strong>. After a thorough review of your submitted documents, we regret to inform you that your application could not be approved at this stage.</p>
           
-          <div style="background: #fff1f2; border-left: 4px solid #e11d48; padding: 15px; margin: 20px 0;">
-            <p style="margin: 0; font-weight: 600; color: #9f1239;">Reason for Rejection:</p>
-            <p style="margin: 5px 0 0; color: #be123c;">${reason}</p>
+          <div style="background: #fff1f2; border-left: 4px solid #e11d48; padding: 20px; margin: 25px 0; border-radius: 0 8px 8px 0;">
+            <p style="margin: 0; font-weight: 700; color: #9f1239; text-transform: uppercase; font-size: 12px;">Reason for Rejection:</p>
+            <p style="margin: 8px 0 0; color: #be123c; font-size: 15px; line-height: 1.5;">${reason}</p>
           </div>
 
-          <p>If you believe this is a mistake or would like to re-apply with corrected documents, please visit our website or contact our regional support center.</p>
+          <p style="color: #64748b; font-size: 14px;">Common reasons include blurred document photos, incorrect payment screenshots, or mismatched Aadhar details. You are welcome to re-apply with corrected information.</p>
         </div>
         <div class="footer">
-          <p>ITF of India - National Multi-Sport Organization Trust</p>
+          <p>ITF OF INDIA - National Multi-Sport Organization Trust</p>
+          <p>Indra the Fighter of India</p>
         </div>
       </div>
     </body>
