@@ -51,6 +51,15 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'UP', timestamp: new Date() });
 });
 
+// Root Welcome Route
+app.get('/', (req, res) => {
+  res.status(200).json({ 
+    success: true, 
+    message: 'ITF OF INDIA Backend API is running successfully.',
+    health: '/health'
+  });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 
