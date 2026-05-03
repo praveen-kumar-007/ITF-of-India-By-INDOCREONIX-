@@ -1,7 +1,20 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { saveData, queryData, getDataById, getAllData, deleteData, updateData } = require('../services/firebaseService');
-const { uploadToCloudinary, deleteFromCloudinary } = require('../services/cloudinaryService');
+const { 
+  saveData, 
+  queryData, 
+  getDataById, 
+  getAllData, 
+  deleteData, 
+  updateData,
+  checkFirebaseHealth 
+} = require('../services/firebaseService');
+const { 
+  uploadToCloudinary, 
+  deleteFromCloudinary, 
+  checkCloudinaryHealth 
+} = require('../services/cloudinaryService');
+const { checkMailHealth } = require('../services/mailService');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
 const { logAudit } = require('../utils/logger');
 
@@ -210,13 +223,42 @@ const updateAdmin = async (req, res, next) => {
 
 
 
+/**
+ * Get System Health (Super Admin Only)
+ */
+const getSystemHealth = async (req, res, next) => {
+  try {
+    const firebase = await checkFirebaseHealth();
+    const cloudinary = await checkCloudinaryHealth();
+    const mail = checkMailHealth();
+
+    const healthData = {
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      nodeVersion: process.version,
+      platform: process.platform,
+      memory: process.memoryUsage(),
+      services: {
+        firebase,
+        cloudinary,
+        mail
+      }
+    };
+
+    sendSuccess(res, 200, 'System health retrieved successfully', healthData);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   login,
   createAdmin,
   getAllAdmins,
   deleteAdmin,
   updateProfile,
-  updateAdmin
+  updateAdmin,
+  getSystemHealth
 };
 
 

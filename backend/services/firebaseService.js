@@ -82,11 +82,29 @@ const updateData = async (path, id, data) => {
   });
 };
 
+/**
+ * Check Firebase connection health
+ * @returns {Promise<Object>}
+ */
+const checkFirebaseHealth = async () => {
+  try {
+    const snapshot = await db.ref('.info/connected').once('value');
+    const isConnected = snapshot.val();
+    return { 
+      status: isConnected ? 'healthy' : 'unhealthy', 
+      message: isConnected ? 'Firebase connected' : 'Firebase disconnected' 
+    };
+  } catch (error) {
+    return { status: 'unhealthy', message: error.message };
+  }
+};
+
 module.exports = {
   saveData,
   getAllData,
   getDataById,
   deleteData,
   queryData,
-  updateData
+  updateData,
+  checkFirebaseHealth
 };

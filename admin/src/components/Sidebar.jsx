@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, FileText, LogOut, Shield, User, Trash2 } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, LogOut, Shield, User, Trash2, Activity } from 'lucide-react';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -47,10 +47,16 @@ const Sidebar = ({ isOpen, onClose }) => {
           Applications
         </Link>
         {user.role === 'superadmin' && (
-          <Link to="/manage-admins" className={`nav-item ${location.pathname === '/manage-admins' ? 'active' : ''}`} onClick={handleLinkClick}>
-            <Shield size={20} />
-            Manage Admins
-          </Link>
+          <>
+            <Link to="/manage-admins" className={`nav-item ${location.pathname === '/manage-admins' ? 'active' : ''}`} onClick={handleLinkClick}>
+              <Shield size={20} />
+              Manage Admins
+            </Link>
+            <Link to="/system-health" className={`nav-item ${location.pathname === '/system-health' ? 'active' : ''}`} onClick={handleLinkClick}>
+              <Activity size={20} />
+              System Health
+            </Link>
+          </>
         )}
         <Link to="/profile" className={`nav-item ${location.pathname === '/profile' ? 'active' : ''}`} onClick={handleLinkClick}>
           <User size={20} />

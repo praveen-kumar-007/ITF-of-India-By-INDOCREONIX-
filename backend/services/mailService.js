@@ -61,6 +61,19 @@ const sendOTPEmail = async (to, otp) => {
   }
 };
 
+/**
+ * Check Mail service health
+ * @returns {Object}
+ */
+const checkMailHealth = () => {
+  return {
+    status: resend ? 'healthy' : 'warning',
+    mode: resend ? 'production' : 'mock',
+    message: resend ? 'Mail service is ready' : 'Mail service is running in MOCK mode (Check console for OTPs)'
+  };
+};
+
 module.exports = {
-  sendOTPEmail
+  sendOTPEmail,
+  checkMailHealth
 };

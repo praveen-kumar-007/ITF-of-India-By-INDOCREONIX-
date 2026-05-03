@@ -34,7 +34,21 @@ const deleteFromCloudinary = async (publicId) => {
   return await cloudinary.uploader.destroy(publicId);
 };
 
+/**
+ * Check Cloudinary connection health
+ * @returns {Promise<Object>}
+ */
+const checkCloudinaryHealth = async () => {
+  try {
+    const result = await cloudinary.api.ping();
+    return { status: 'healthy', message: 'Cloudinary connection is active', details: result };
+  } catch (error) {
+    return { status: 'unhealthy', message: error.message };
+  }
+};
+
 module.exports = {
   uploadToCloudinary,
-  deleteFromCloudinary
+  deleteFromCloudinary,
+  checkCloudinaryHealth
 };
