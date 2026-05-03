@@ -1,6 +1,7 @@
 const { saveData, getAllData, getDataById, updateData, deleteData } = require('../services/firebaseService');
 const { uploadToCloudinary, deleteFromCloudinary } = require('../services/cloudinaryService');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
+const { sendPendingEmail, sendApprovalEmail, sendRejectionEmail } = require('../services/mailService');
 
 /**
  * Helper to extract Public ID from Cloudinary URL
@@ -64,6 +65,9 @@ const registerAthlete = async (req, res, next) => {
     const registrationData = { ...formData, ...uploadedUrls, registrationNumber: regNo, status: 'pending' };
     const docId = await saveData('registrations', registrationData);
 
+    // [ASYNC] Send Pending Verification Email
+    sendPendingEmail(formData.email, formData.fullName, regNo).catch(err => console.error("Pending Email Error:", err));
+
     sendSuccess(res, 201, 'Athlete registered successfully', { id: docId, registrationNumber: regNo });
   } catch (error) {
     next(error);
@@ -101,8 +105,24 @@ const getRegistrationById = async (req, res, next) => {
 const updateRegistrationStatus = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, reason } = req.body;
+
+    // 1. Get current data for email info
+    const athlete = await getDataById('registrations', id);
+    if (!athlete) return sendError(res, 404, 'Athlete not found');
+
+    // 2. Update Status
     await updateData('registrations', id, { status });
+
+    // 3. Trigger Status Emails [ASYNC]
+    if (status === 'approved') {
+      sendApprovalEmail(athlete.email, athlete.fullName, athlete.registrationNumber)
+        .catch(err => console.error("Approval Email Error:", err));
+    } else if (status === 'rejected') {
+      sendRejectionEmail(athlete.email, athlete.fullName, reason)
+        .catch(err => console.error("Rejection Email Error:", err));
+    }
+
     sendSuccess(res, 200, `Status updated to ${status}`);
   } catch (error) {
     next(error);
