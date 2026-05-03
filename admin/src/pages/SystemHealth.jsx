@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Database, Mail, Cloud, Server, RefreshCw, AlertCircle, CheckCircle2, Clock, Cpu, HardDrive } from 'lucide-react';
+import { 
+  ShieldCheck, Database, Mail, Cloud, Server, RefreshCw, 
+  AlertCircle, CheckCircle2, Clock, Cpu, HardDrive, 
+  Users, Trash2, Key, Globe, TrendingUp 
+} from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import './SystemHealth.css';
 
@@ -58,6 +62,8 @@ const SystemHealth = () => {
   };
 
   const services = data?.services || {};
+  const stats = data?.stats || {};
+  const env = data?.env || {};
 
   return (
     <div className="system-health-page fade-in">
@@ -73,6 +79,25 @@ const SystemHealth = () => {
         >
           <RefreshCw size={18} /> {refreshing ? 'Scanning...' : 'Refresh Status'}
         </button>
+      </div>
+
+      {/* Database Statistics Section */}
+      <div className="health-section-title">
+        <TrendingUp size={18} /> Resource Statistics
+      </div>
+      <div className="stats-strip">
+        <div className="stat-pill">
+          <Users size={16} /> 
+          <span>Total Athletes:</span> <strong>{stats.totalAthletes}</strong>
+        </div>
+        <div className="stat-pill">
+          <ShieldCheck size={16} /> 
+          <span>Total Admins:</span> <strong>{stats.totalAdmins}</strong>
+        </div>
+        <div className="stat-pill">
+          <Trash2 size={16} /> 
+          <span>Trash Items:</span> <strong>{stats.trashItems}</strong>
+        </div>
       </div>
 
       <div className="health-grid">
@@ -128,6 +153,22 @@ const SystemHealth = () => {
             <span>Operating System: {data.platform}</span>
           </div>
         </div>
+      </div>
+
+      {/* Environment Config Section */}
+      <div className="health-section-title">
+        <Key size={18} /> Configuration Audit
+      </div>
+      <div className="env-checklist">
+        {Object.entries(env).map(([key, value]) => (
+          <div key={key} className={`env-item ${value ? 'configured' : 'missing'}`}>
+            <div className="env-status-dot"></div>
+            <span className="env-key">{key}</span>
+            <span className="env-value">
+              {key === 'NODE_ENV' ? value.toUpperCase() : (value ? 'CONFIGURED' : 'MISSING')}
+            </span>
+          </div>
+        ))}
       </div>
 
       <div className="security-status">

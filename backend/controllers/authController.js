@@ -232,12 +232,32 @@ const getSystemHealth = async (req, res, next) => {
     const cloudinary = await checkCloudinaryHealth();
     const mail = checkMailHealth();
 
+    // Get basic stats
+    const adminCount = (await getAllData('admins')).length;
+    const athleteCount = (await getAllData('registrations')).length;
+    const trashCount = (await getAllData('recycle_bin')).length;
+
+    // Check environment variables (masking values)
+    const envStatus = {
+      JWT_SECRET: !!process.env.JWT_SECRET,
+      FIREBASE_DATABASE_URL: !!process.env.FIREBASE_DATABASE_URL,
+      CLOUDINARY_URL: !!process.env.CLOUDINARY_URL,
+      RESEND_API_KEY: !!process.env.RESEND_API_KEY,
+      NODE_ENV: process.env.NODE_ENV || 'development'
+    };
+
     const healthData = {
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
       nodeVersion: process.version,
       platform: process.platform,
       memory: process.memoryUsage(),
+      stats: {
+        totalAdmins: adminCount,
+        totalAthletes: athleteCount,
+        trashItems: trashCount
+      },
+      env: envStatus,
       services: {
         firebase,
         cloudinary,

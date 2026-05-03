@@ -263,6 +263,88 @@
   border-radius: 8px;
 }
 
+.health-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1.25rem;
+  margin-top: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stats-strip {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: white;
+  border-radius: 100px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  font-size: 0.95rem;
+  color: #475569;
+}
+
+.stat-pill strong {
+  color: #0f172a;
+  font-size: 1.1rem;
+}
+
+.env-checklist {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.env-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #f1f5f9;
+}
+
+.env-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.env-item.configured .env-status-dot { background: var(--status-healthy); box-shadow: 0 0 10px var(--status-healthy); }
+.env-item.missing .env-status-dot { background: var(--status-unhealthy); box-shadow: 0 0 10px var(--status-unhealthy); }
+
+.env-key {
+  font-weight: 600;
+  color: #475569;
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.env-value {
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.configured .env-value { color: var(--status-healthy); }
+.missing .env-value { color: var(--status-unhealthy); }
+
 @media (max-width: 1024px) {
   .system-health-page { padding: 1.5rem; }
   .page-header h1 { font-size: 2rem; }
@@ -271,6 +353,8 @@
 @media (max-width: 768px) {
   .page-header { margin-bottom: 2rem; }
   .health-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .stats-strip { gap: 1rem; }
+  .stat-pill { width: 100%; justify-content: center; }
   .security-status {
     flex-direction: column;
     text-align: center;
