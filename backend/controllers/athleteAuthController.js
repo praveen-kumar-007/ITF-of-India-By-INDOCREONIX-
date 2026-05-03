@@ -11,7 +11,10 @@ apiKey.apiKey = process.env.BREVO_API_KEY;
 
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 const SENDER_EMAIL = 'itfofindia2013@gmail.com';
-const JWT_SECRET = process.env.JWT_SECRET || 'your-athlete-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error('CRITICAL ERROR: JWT_SECRET is not defined in environment variables.');
+}
 
 /**
  * Request OTP for first-time password setup or Forgot Password

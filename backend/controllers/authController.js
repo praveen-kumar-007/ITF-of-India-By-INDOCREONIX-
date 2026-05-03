@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const { saveData, queryData, getDataById, getAllData, deleteData, updateData } = require('../services/firebaseService');
 const { uploadToCloudinary, deleteFromCloudinary } = require('../services/cloudinaryService');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
+const { logAudit } = require('../utils/logger');
 
 /**
  * Admin Login
@@ -17,17 +18,20 @@ const login = async (req, res, next) => {
 
 
     if (!admin) {
+      await logAudit('LOGIN_FAILED', { email, reason: 'user_not_found', ip: req.ip });
       return sendError(res, 401, 'Invalid credentials');
     }
 
     // Check if admin is verified/active
     if (admin.status !== 'active') {
+      await logAudit('LOGIN_BLOCKED', { email, reason: 'account_inactive', ip: req.ip });
       return sendError(res, 403, 'Your account is not active. Please contact Super Admin.');
     }
 
     // Verify password
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
+      await logAudit('LOGIN_FAILED', { email, reason: 'wrong_password', ip: req.ip });
       return sendError(res, 401, 'Invalid credentials');
     }
 
@@ -37,6 +41,8 @@ const login = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
+
+    await logAudit('LOGIN_SUCCESS', { id: admin.id, email: admin.email, role: admin.role, ip: req.ip });
 
     sendSuccess(res, 200, 'Login successful', {
       token,

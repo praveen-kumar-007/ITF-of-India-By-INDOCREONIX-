@@ -8,12 +8,29 @@ const registrationRoutes = require('./routes/registrationRoutes');
 const otpRoutes = require('./routes/otpRoutes');
 const authRoutes = require('./routes/authRoutes');
 const { protect } = require('./middleware/authMiddleware');
+const { apiLimiter } = require('./middleware/rateLimiter');
 
 const app = express();
 
+// Trust proxy for rate limiting behind reverse proxies (Heroku, Cloudflare, Nginx, etc.)
+app.set('trust proxy', 1);
+
 // Middleware
+app.disable('x-powered-by'); // Hide server technology
 app.use(helmet({
-  contentSecurityPolicy: false,
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "res.cloudinary.com"],
+      connectSrc: ["'self'", "https://api.cloudinary.com"]
+    },
+  },
+  xssFilter: true,
+  noSniff: true,
+  hidePoweredBy: true,
+  frameguard: { action: 'deny' } // Prevent clickjacking
 })); // Security headers
 
 const allowedOrigins = [
@@ -32,7 +49,12 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || origin.startsWith('http://localhost:')) {
+    
+    // In production, strictly check against allowedOrigins
+    const isAllowed = allowedOrigins.includes(origin) || 
+                     (process.env.NODE_ENV === 'development' && origin.startsWith('http://localhost:'));
+    
+    if (isAllowed) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -43,8 +65,11 @@ app.use(cors({
 
 app.use(morgan('dev')); // Logging
 app.use(compression()); // Compress responses
-app.use(express.json()); // Body parser
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10kb' })); // Body parser with limit to prevent DoS
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// Rate Limiting
+app.use('/api', apiLimiter);
 
 // Health Check
 app.get('/health', (req, res) => {

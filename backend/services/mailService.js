@@ -3,7 +3,11 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+if (!resend) {
+  console.warn('\x1b[33m%s\x1b[0m', 'WARNING: RESEND_API_KEY is missing. Email service will run in MOCK mode.');
+}
 
 /**
  * Send OTP Email
@@ -12,6 +16,11 @@ const resend = new Resend(process.env.RESEND_API_KEY);
  */
 const sendOTPEmail = async (to, otp) => {
   try {
+    if (!resend) {
+      console.log(`\x1b[36m%s\x1b[0m`, `[MOCK EMAIL] To: ${to} | Subject: ITF OF INDIA Verification | OTP: ${otp}`);
+      return { id: 'mock-id', message: 'Sent in mock mode' };
+    }
+
     const { data, error } = await resend.emails.send({
       from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
       to: [to],

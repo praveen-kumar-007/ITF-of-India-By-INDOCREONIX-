@@ -10,6 +10,9 @@ const {
   deleteRegistration
 } = require('../controllers/registrationController');
 const { protect, authorize } = require('../middleware/authMiddleware');
+const { authLimiter } = require('../middleware/rateLimiter');
+const validate = require('../middleware/validateMiddleware');
+const { athleteRegistrationSchema } = require('../utils/validationSchemas');
 
 // Define file upload fields
 const cpUpload = upload.fields([
@@ -25,7 +28,7 @@ router.get('/check-availability', (req, res, next) => {
   const { checkAvailability } = require('../controllers/registrationController');
   checkAvailability(req, res, next);
 });
-router.post('/register', cpUpload, registerAthlete); // Public
+router.post('/register', authLimiter, cpUpload, validate(athleteRegistrationSchema), registerAthlete); // Public
 
 router.get('/', protect, getRegistrations);
 router.get('/:id', protect, getRegistrationById);
