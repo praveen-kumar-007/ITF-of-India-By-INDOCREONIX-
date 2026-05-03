@@ -116,31 +116,8 @@ const PlayerDetails = () => {
         <button className="minimal-back" onClick={() => navigate(-1)}>
           <ArrowLeft size={18} /> <span>Back</span>
         </button>
-        <div className="quick-actions-bar">
-          <button
-            className="mini-btn approve"
-            onClick={() => handleStatusUpdate('approved')}
-            disabled={player.status === 'approved' || isUpdating}
-          >
-            <CheckCircle size={16} /> Approve
-          </button>
-          <button
-            className="mini-btn reject"
-            onClick={() => handleStatusUpdate('rejected')}
-            disabled={player.status === 'rejected' || isUpdating}
-          >
-            <XCircle size={16} /> Reject
-          </button>
-          <button
-            className="mini-btn delete"
-            onClick={handleDelete}
-            disabled={isUpdating}
-          >
-            <Trash2 size={16} /> Delete
-          </button>
-          <div className={`status-pill-minimal status-${player.status}`}>
-            {player.status}
-          </div>
+        <div className="status-pill-minimal status-${player.status}">
+          {player.status}
         </div>
       </header>
 
@@ -239,6 +216,35 @@ const PlayerDetails = () => {
               <Info size={14} />
               <span>Verify UTR before status update.</span>
             </div>
+          </div>
+        </div>
+
+        {/* Section 6: Final Action Panel */}
+        <div className="glass-panel action-panel">
+          <div className="panel-head"><Shield size={16} /> Administrative Decision</div>
+          <p className="action-hint">Please ensure all details and payment proofs are verified before proceeding.</p>
+          <div className="final-actions">
+            <button
+              className="action-btn approve"
+              onClick={() => handleStatusUpdate('approved')}
+              disabled={player.status === 'approved' || isUpdating}
+            >
+              <CheckCircle size={18} /> Approve
+            </button>
+            <button
+              className="action-btn reject"
+              onClick={() => handleStatusUpdate('rejected')}
+              disabled={player.status === 'rejected' || isUpdating}
+            >
+              <XCircle size={18} /> Reject
+            </button>
+            <button
+              className="action-btn delete"
+              onClick={handleDelete}
+              disabled={isUpdating}
+            >
+              <Trash2 size={18} /> Delete
+            </button>
           </div>
         </div>
       </div>

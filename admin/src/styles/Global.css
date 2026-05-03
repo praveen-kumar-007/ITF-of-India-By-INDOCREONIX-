@@ -53,6 +53,13 @@ body {
   background-color: var(--bg-light);
   position: relative;
   z-index: 1;
+  margin-left: 280px; /* Fixed Sidebar Width */
+}
+
+@media (max-width: 1024px) {
+  .admin-main-content {
+    margin-left: 0;
+  }
 }
 
 .mobile-header {

@@ -12,6 +12,8 @@ import Registration from './pages/Registration/Registration';
 import GalleryPage from './pages/Gallery/GalleryPage';
 import NewsPage from './pages/News/NewsPage';
 import ContactPage from './pages/Contact/ContactPage';
+import AthleteLogin from './pages/Login/Login';
+import AthleteProfile from './pages/Login/AthleteProfile';
 import { LanguageProvider } from './context/LanguageContext';
 
 import './App.css'; // Global styles
@@ -34,6 +36,8 @@ const App = () => {
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/news" element={<NewsPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/login" element={<AthleteLogin />} />
+            <Route path="/athlete/profile" element={<AthleteProfile />} />
           </Routes>
         </main>
 

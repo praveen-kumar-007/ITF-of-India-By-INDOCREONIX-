@@ -60,6 +60,16 @@
     background: white;
     box-shadow: 0 15px 30px rgba(0,0,0,0.2);
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+}
+
+.profile-avatar.placeholder {
+    background: #f1f5f9;
+    color: var(--primary);
+    border: 4px dashed rgba(255,255,255,0.3);
 }
 
 .profile-avatar:hover {

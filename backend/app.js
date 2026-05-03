@@ -61,8 +61,11 @@ app.use('/api/auth', authRoutes);
 // and "protect registration routes".
 // I'll protect the GET and PATCH routes in registrationRoutes.js instead of here.
 
+const athleteAuthRoutes = require('./routes/athleteAuthRoutes');
+
 app.use('/api/registrations', registrationRoutes);
 app.use('/api/otp', otpRoutes);
+app.use('/api/athlete', athleteAuthRoutes);
 
 // 404 Handler
 app.use((req, res, next) => {

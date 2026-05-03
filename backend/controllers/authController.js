@@ -44,7 +44,8 @@ const login = async (req, res, next) => {
         id: admin.id, 
         email: admin.email, 
         role: admin.role || 'admin', 
-        fullName: admin.fullName 
+        fullName: admin.fullName,
+        photo: admin.photo || '' 
       }
     });
 

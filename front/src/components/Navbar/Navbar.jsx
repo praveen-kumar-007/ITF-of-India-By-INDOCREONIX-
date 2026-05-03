@@ -6,10 +6,22 @@ const Navbar = () => {
   const { language, toggleLanguage, t } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [athlete, setAthlete] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
+    
+    // Check for logged in athlete
+    const savedAthlete = localStorage.getItem('athlete');
+    if (savedAthlete) {
+      try {
+        setAthlete(JSON.parse(savedAthlete));
+      } catch (err) {
+        console.error("Error parsing athlete data", err);
+      }
+    }
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -36,6 +48,18 @@ const Navbar = () => {
             <li><Link to="/gallery">{t('nav.gallery')}</Link></li>
             <li><Link to="/contact">{t('nav.contact')}</Link></li>
             <li><Link to="/registration" className="nav-cta-btn">{t('nav.registration')}</Link></li>
+            
+            {athlete ? (
+              <li>
+                <Link to="/athlete/profile" className="nav-profile-link">
+                  <div className="nav-avatar-frame">
+                    <img src={athlete.photo || athlete.photoUrl || '/default-avatar.png'} alt="Profile" />
+                  </div>
+                </Link>
+              </li>
+            ) : (
+              <li><Link to="/login" className="nav-login-btn">Login</Link></li>
+            )}
           </ul>
 
           <div className="nav-actions">
@@ -100,6 +124,19 @@ const Navbar = () => {
             <Link to="/contact" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
               {t('nav.contact')}
             </Link>
+
+            {athlete ? (
+              <Link to="/athlete/profile" className="mobile-link mobile-profile-active" onClick={() => setIsMenuOpen(false)}>
+                <div className="mobile-nav-avatar">
+                   <img src={athlete.photo || athlete.photoUrl || '/default-avatar.png'} alt="Profile" />
+                </div>
+                <span>My Profile</span>
+              </Link>
+            ) : (
+              <Link to="/login" className="mobile-link login-special" onClick={() => setIsMenuOpen(false)}>
+                Athlete Login
+              </Link>
+            )}
           </nav>
 
           <div className="mobile-menu-footer">

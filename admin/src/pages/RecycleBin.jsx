@@ -105,20 +105,28 @@ const RecycleBin = () => {
     <div className="recycle-bin-page">
       <header className="trash-header">
         <div className="title-area">
-          <button className="back-btn" onClick={() => navigate(-1)}><ArrowLeft size={20} /></button>
-          <h1><Trash2 size={24} /> Recycle Bin</h1>
+          <button className="back-btn" onClick={() => navigate(-1)}>
+            <ArrowLeft size={20} />
+            <span>Back</span>
+          </button>
+          <h1><Trash2 size={28} className="header-icon" /> Recycle Bin</h1>
           <p>Profiles deleted within the last 30 days are stored here.</p>
         </div>
-        <div className="trash-stats">
-          {user.role === 'superadmin' && (
-            <button className="btn-empty-trash" onClick={handleEmptyTrash}>
-              <Trash size={16} /> Empty Bin
+        
+        <div className="header-actions">
+          <div className="stat-pill">
+            <div className="stat-content">
+              <span className="stat-count">{deletedPlayers.length}</span>
+              <span className="stat-label">Items in Trash</span>
+            </div>
+          </div>
+          
+          {user.role === 'superadmin' && deletedPlayers.length > 0 && (
+            <button className="btn-empty-trash premium-btn" onClick={handleEmptyTrash}>
+              <Trash size={18} />
+              <span>Empty Bin</span>
             </button>
           )}
-          <div className="stat-card">
-            <span className="count">{deletedPlayers.length}</span>
-            <span className="label">Deleted Items</span>
-          </div>
         </div>
       </header>
 
@@ -150,7 +158,13 @@ const RecycleBin = () => {
               <div key={player.id} className="trash-card glass-premium fade-in">
                 <div className="card-top">
                   <div className="player-avatar">
-                    <img src={player.photo} alt="" />
+                    {player.photo ? (
+                      <img src={player.photo} alt={player.fullName} />
+                    ) : (
+                      <div className="player-avatar placeholder">
+                        <User size={32} />
+                      </div>
+                    )}
                   </div>
                   <div className="player-info">
                     <h3>{player.fullName}</h3>

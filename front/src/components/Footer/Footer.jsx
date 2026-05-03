@@ -19,12 +19,7 @@ const Footer = () => {
         </div>
 
         <div className="footer-column footer-links">
-          <h4>
-            <span className="footer-heading-icon">
-              <img src="/logo.jpeg" alt="ITF icon" />
-            </span>
-            {t("footer.quick_links")}
-          </h4>
+          <h4>{t("footer.quick_links")}</h4>
           <ul className="footer-list">
             <li>
               <Link to="/">{t("nav.home")}</Link>
@@ -51,12 +46,7 @@ const Footer = () => {
         </div>
 
         <div className="footer-column footer-contact">
-          <h4>
-            <span className="footer-heading-icon">
-              <img src="/logo.jpeg" alt="ITF icon" />
-            </span>
-            {t("contact.tag")}
-          </h4>
+          <h4>{t("contact.tag")}</h4>
           <address className="footer-contact-block">
             <p>
               <strong>{t("contact.head_office")}:</strong>

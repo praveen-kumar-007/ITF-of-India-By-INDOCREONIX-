@@ -1,16 +1,18 @@
 .sidebar {
   width: 280px;
-  flex-shrink: 0;
-  background: var(--sidebar-bg);
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
   background: linear-gradient(180deg, #0a1128 0%, #050a1f 100%);
   color: white;
   padding: 2.5rem 1.5rem;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1001;
   box-shadow: 10px 0 30px rgba(0,0,0,0.2);
+  overflow-y: auto; /* Allow sidebar itself to scroll if items exceed height */
 }
 
 @media (max-width: 1024px) {
@@ -58,9 +60,11 @@
   font-size: 1.25rem;
   font-weight: 900;
   letter-spacing: -0.02em;
-  background: linear-gradient(45deg, #fff, #ffd700);
+  background: linear-gradient(45deg, #ffffff, #ffd700);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: transparent; /* Fallback for transparency */
   text-transform: uppercase;
   line-height: 1.1;
 }

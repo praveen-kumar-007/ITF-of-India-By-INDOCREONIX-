@@ -87,12 +87,18 @@ const Profile = () => {
       <div className="profile-container">
         <div className="profile-card">
           <div className="profile-header">
-            <div className="profile-avatar-wrapper">
-              <img 
-                src={photoPreview || '/default-avatar.png'} 
-                alt="Profile" 
-                className="profile-avatar"
-              />
+            <div className="profile-avatar-wrapper" onClick={() => fileInputRef.current?.click()}>
+              {photoPreview ? (
+                <img 
+                  src={photoPreview} 
+                  alt="Profile" 
+                  className="profile-avatar"
+                />
+              ) : (
+                <div className="profile-avatar placeholder">
+                  <User size={60} />
+                </div>
+              )}
               <button 
                 type="button"
                 className="edit-avatar-btn" 

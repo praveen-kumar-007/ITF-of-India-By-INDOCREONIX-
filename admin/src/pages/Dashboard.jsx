@@ -248,11 +248,17 @@ const Dashboard = () => {
               <tr key={reg.id}>
                 <td>
                   <div className="athlete-info">
-                    <img 
-                      src={reg.photo || 'https://via.placeholder.com/40'} 
-                      className="athlete-photo"
-                      alt="" 
-                    />
+                    {reg.photo ? (
+                      <img 
+                        src={reg.photo} 
+                        className="athlete-photo"
+                        alt={reg.fullName} 
+                      />
+                    ) : (
+                      <div className="athlete-photo placeholder">
+                        <User size={20} />
+                      </div>
+                    )}
                     <div>
                       <div style={{ fontWeight: 700, color: '#1e293b' }}>{reg.fullName}</div>
                       <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{reg.email}</div>
