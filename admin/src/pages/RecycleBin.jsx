@@ -74,9 +74,15 @@ const RecycleBin = () => {
       });
       const result = await response.json();
       if (result.success) {
-        showToast('Athlete profile restored successfully', 'success');
-        setActionModal({ ...actionModal, isOpen: false });
         fetchDeletedPlayers();
+        setActionModal({
+          isOpen: true,
+          title: 'Restored',
+          message: 'Athlete profile has been restored to pending status.',
+          type: 'success',
+          confirmText: 'Done',
+          onConfirm: () => setActionModal({ ...actionModal, isOpen: false })
+        });
       }
     } catch (error) {
       showToast('Restore failed', 'error');
@@ -106,9 +112,15 @@ const RecycleBin = () => {
       });
       const result = await response.json();
       if (result.success) {
-        showToast('Deleted permanently from Database and Cloudinary', 'success');
-        setActionModal({ ...actionModal, isOpen: false });
         fetchDeletedPlayers();
+        setActionModal({
+          isOpen: true,
+          title: 'Permanently Deleted',
+          message: 'The record and all associated files have been removed forever.',
+          type: 'success',
+          confirmText: 'Acknowledged',
+          onConfirm: () => setActionModal({ ...actionModal, isOpen: false })
+        });
       }
     } catch (error) {
       showToast('Permanent deletion failed', 'error');
@@ -138,9 +150,15 @@ const RecycleBin = () => {
       });
       const result = await response.json();
       if (result.success) {
-        showToast('Recycle Bin emptied successfully', 'success');
-        setActionModal({ ...actionModal, isOpen: false });
         fetchDeletedPlayers();
+        setActionModal({
+          isOpen: true,
+          title: 'Bin Emptied',
+          message: 'All items have been cleared from the Recycle Bin.',
+          type: 'success',
+          confirmText: 'Done',
+          onConfirm: () => setActionModal({ ...actionModal, isOpen: false })
+        });
       }
     } catch (error) {
       showToast('Action failed', 'error');

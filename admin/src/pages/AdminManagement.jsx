@@ -95,9 +95,16 @@ const AdminManagement = () => {
       
       const result = await response.json();
       if (result.success) {
-        showToast(editAdmin ? 'Admin updated successfully' : 'Admin created successfully', 'success');
         setShowModal(false);
         fetchAdmins();
+        setActionModal({
+          isOpen: true,
+          title: 'Success!',
+          message: editAdmin ? 'Admin account updated successfully.' : 'New admin account created successfully.',
+          type: 'success',
+          confirmText: 'Great',
+          onConfirm: () => setActionModal({ ...actionModal, isOpen: false })
+        });
       } else {
         showToast(result.message || 'Action failed', 'error');
       }
@@ -131,9 +138,15 @@ const AdminManagement = () => {
       });
       const result = await response.json();
       if (result.success) {
-        showToast('Admin deleted successfully', 'success');
-        setActionModal({ ...actionModal, isOpen: false });
         fetchAdmins();
+        setActionModal({
+          isOpen: true,
+          title: 'Deleted',
+          message: 'The admin account has been removed permanently.',
+          type: 'success',
+          confirmText: 'Done',
+          onConfirm: () => setActionModal({ ...actionModal, isOpen: false })
+        });
       } else {
         showToast(result.message || 'Failed to delete admin', 'error');
       }

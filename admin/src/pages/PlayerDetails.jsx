@@ -99,9 +99,17 @@ const PlayerDetails = () => {
       });
       const result = await response.json();
       if (result.success) {
-        showToast(`${status} successful`, 'success');
         setPlayer({ ...player, status, rejectionReason: reason });
-        setModal({ ...modal, isOpen: false });
+        setModal({
+          isOpen: true,
+          type: 'success',
+          title: 'Update Successful',
+          message: `The athlete's status has been successfully updated to ${status}. Notification email has been sent.`,
+          showInput: false,
+          confirmText: 'Done',
+          onConfirm: () => setModal({ ...modal, isOpen: false }),
+          inputValue: ''
+        });
       } else {
         showToast(result.message || 'Update failed', 'error');
       }
@@ -136,9 +144,16 @@ const PlayerDetails = () => {
       });
       const result = await response.json();
       if (result.success) {
-        showToast('Athlete moved to Recycle Bin', 'success');
-        setModal({ ...modal, isOpen: false });
-        navigate('/');
+        setModal({
+          isOpen: true,
+          type: 'success',
+          title: 'Moved to Trash',
+          message: `${player.fullName} has been moved to the Recycle Bin successfully.`,
+          showInput: false,
+          confirmText: 'Go to Dashboard',
+          onConfirm: () => navigate('/'),
+          inputValue: ''
+        });
       }
     } catch (error) {
       showToast('Delete failed', 'error');
