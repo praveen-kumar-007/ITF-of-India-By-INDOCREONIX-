@@ -10,22 +10,45 @@ if (!resend) {
 }
 
 /**
- * Send OTP Email
+ * Generic Send Email function
  * @param {string} to - Recipient email
- * @param {string} otp - One-time password
+ * @param {string} subject - Email subject
+ * @param {string} html - HTML content
  */
-const sendOTPEmail = async (to, otp) => {
+const sendEmail = async (to, subject, html) => {
   try {
     if (!resend) {
-      console.log(`\x1b[36m%s\x1b[0m`, `[MOCK EMAIL] To: ${to} | Subject: ITF OF INDIA Verification | OTP: ${otp}`);
+      console.log(`\x1b[36m%s\x1b[0m`, `[MOCK EMAIL] To: ${to} | Subject: ${subject}`);
       return { id: 'mock-id', message: 'Sent in mock mode' };
     }
 
     const { data, error } = await resend.emails.send({
       from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
       to: [to],
-      subject: 'ITF OF INDIA - Email Verification',
-      html: `
+      subject: subject,
+      html: html
+    });
+
+    if (error) {
+      console.error('Resend Error:', error);
+      throw new Error('Failed to send email');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Mail Service Error:', error);
+    throw error;
+  }
+};
+
+/**
+ * Send OTP Email
+ * @param {string} to - Recipient email
+ * @param {string} otp - One-time password
+ */
+const sendOTPEmail = async (to, otp) => {
+  const subject = 'ITF OF INDIA - Email Verification';
+  const html = `
         <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden;">
           <div style="background-color: #000; padding: 20px; text-align: center;">
             <h1 style="color: #FFD700; margin: 0; font-size: 24px; letter-spacing: 2px;">ITF OF INDIA</h1>
@@ -46,19 +69,8 @@ const sendOTPEmail = async (to, otp) => {
             </div>
           </div>
         </div>
-      `
-    });
-
-    if (error) {
-      console.error('Resend Error:', error);
-      throw new Error('Failed to send OTP email');
-    }
-
-    return data;
-  } catch (error) {
-    console.error('Mail Service Error:', error);
-    throw error;
-  }
+      `;
+  return sendEmail(to, subject, html);
 };
 
 /**
@@ -74,6 +86,7 @@ const checkMailHealth = () => {
 };
 
 module.exports = {
+  sendEmail,
   sendOTPEmail,
   checkMailHealth
 };

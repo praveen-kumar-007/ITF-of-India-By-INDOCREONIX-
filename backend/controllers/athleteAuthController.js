@@ -1,16 +1,9 @@
-const SibApiV3Sdk = require('sib-api-v3-sdk');
 const { queryData, updateData, getDataById } = require('../services/firebaseService');
+const { sendEmail } = require('../services/mailService');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// Brevo Configuration
-const defaultClient = SibApiV3Sdk.ApiClient.instance;
-const apiKey = defaultClient.authentications['api-key'];
-apiKey.apiKey = process.env.BREVO_API_KEY;
-
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-const SENDER_EMAIL = 'itfofindia2013@gmail.com';
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
   console.error('CRITICAL ERROR: JWT_SECRET is not defined in environment variables.');
@@ -46,10 +39,9 @@ const requestPasswordSetup = async (req, res, next) => {
     console.log(`\x1b[33m%s\x1b[0m`, `[DEV] OTP for ${email}: ${otp}`);
     console.log(`\x1b[33m%s\x1b[0m`, `-----------------------------------------`);
 
-    // 5. Send Email via Brevo
-    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-    sendSmtpEmail.subject = "Athlete Portal Verification Code";
-    sendSmtpEmail.htmlContent = `
+    // 5. Send Email via Unified Mail Service (Resend)
+    const subject = "Athlete Portal Verification Code";
+    const htmlContent = `
       <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 500px; margin: auto;">
         <div style="text-align: center; margin-bottom: 20px;">
           <img src="https://itfindia.com/logo.jpeg" alt="ITF Logo" style="width: 80px; border-radius: 50%;">
@@ -65,14 +57,12 @@ const requestPasswordSetup = async (req, res, next) => {
         <p style="font-size: 12px; color: #999; text-align: center;">ITF of India - National Multi-Sport Organization</p>
       </div>
     `;
-    sendSmtpEmail.sender = { "name": "ITF India", "email": SENDER_EMAIL };
-    sendSmtpEmail.to = [{ "email": email, "name": athlete.fullName }];
 
     try {
-      const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
-      console.log('Brevo OTP Email sent successfully:', data.messageId);
+      await sendEmail(email, subject, htmlContent);
+      console.log('OTP Email sent successfully via Resend');
     } catch (error) {
-      console.error('Brevo API Error:', error);
+      console.error('Email Send Error:', error);
     }
 
     sendSuccess(res, 200, 'OTP sent to your registered email.', {
