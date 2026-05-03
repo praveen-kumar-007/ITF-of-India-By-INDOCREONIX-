@@ -3,6 +3,8 @@ import { UserPlus, Trash2, Mail, Shield, User, Star, Eye, Camera, Edit2, X, Save
 import { useToast } from '../context/ToastContext';
 import './AdminManagement.css';
 
+import ActionModal from '../components/ActionModal';
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const AdminManagement = () => {
@@ -20,6 +22,15 @@ const AdminManagement = () => {
     status: 'active'
   });
   const [submitting, setSubmitting] = useState(false);
+
+  // Custom Modal State
+  const [actionModal, setActionModal] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: () => {}
+  });
 
   const fetchAdmins = async () => {
     try {
@@ -94,14 +105,22 @@ const AdminManagement = () => {
       console.error('Error:', error);
       showToast('An error occurred', 'error');
     } finally {
-
       setSubmitting(false);
     }
   };
 
-  const handleDeleteAdmin = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this admin?')) return;
-    
+  const handleDeleteAdmin = (id, name) => {
+    setActionModal({
+      isOpen: true,
+      title: 'Delete Admin Account?',
+      message: `Are you sure you want to permanently delete the admin account for ${name}? This action cannot be undone.`,
+      type: 'danger',
+      onConfirm: () => executeDeleteAdmin(id)
+    });
+  };
+
+  const executeDeleteAdmin = async (id) => {
+    setSubmitting(true);
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`${API_BASE_URL}/auth/${id}`, {
@@ -113,6 +132,7 @@ const AdminManagement = () => {
       const result = await response.json();
       if (result.success) {
         showToast('Admin deleted successfully', 'success');
+        setActionModal({ ...actionModal, isOpen: false });
         fetchAdmins();
       } else {
         showToast(result.message || 'Failed to delete admin', 'error');
@@ -120,8 +140,9 @@ const AdminManagement = () => {
     } catch (error) {
       console.error('Error deleting admin:', error);
       showToast('Error deleting admin', 'error');
+    } finally {
+      setSubmitting(false);
     }
-
   };
 
   const getRoleIcon = (role) => {
@@ -190,7 +211,7 @@ const AdminManagement = () => {
                 </button>
                 <button 
                   className="btn-icon delete" 
-                  onClick={() => handleDeleteAdmin(admin.id)}
+                  onClick={() => handleDeleteAdmin(admin.id, admin.fullName)}
                   title="Delete Admin"
                 >
                   <Trash2 size={18} />
@@ -291,6 +312,16 @@ const AdminManagement = () => {
           </div>
         </div>
       )}
+
+      <ActionModal 
+        isOpen={actionModal.isOpen}
+        onClose={() => setActionModal({ ...actionModal, isOpen: false })}
+        onConfirm={actionModal.onConfirm}
+        title={actionModal.title}
+        message={actionModal.message}
+        type={actionModal.type}
+        loading={submitting}
+      />
     </main>
   );
 };

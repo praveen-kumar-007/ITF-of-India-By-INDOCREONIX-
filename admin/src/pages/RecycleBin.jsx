@@ -7,16 +7,28 @@ import { useToast } from '../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 import './RecycleBin.css';
 
+import ActionModal from '../components/ActionModal';
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const RecycleBin = () => {
   const [deletedPlayers, setDeletedPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const { showToast } = useToast();
   const navigate = useNavigate();
 
+  // Custom Modal State
+  const [actionModal, setActionModal] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'info',
+    confirmText: 'Confirm',
+    onConfirm: () => {}
+  });
 
   useEffect(() => {
     fetchDeletedPlayers();
@@ -41,8 +53,19 @@ const RecycleBin = () => {
     }
   };
 
-  const handleRestore = async (id) => {
-    if (!window.confirm('Restore this athlete profile?')) return;
+  const handleRestore = (id, name) => {
+    setActionModal({
+      isOpen: true,
+      title: 'Restore Profile?',
+      message: `Are you sure you want to restore the athlete profile for ${name}?`,
+      type: 'info',
+      confirmText: 'Yes, Restore',
+      onConfirm: () => executeRestore(id)
+    });
+  };
+
+  const executeRestore = async (id) => {
+    setIsProcessing(true);
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`${API_BASE_URL}/registrations/${id}/restore`, {
@@ -52,15 +75,29 @@ const RecycleBin = () => {
       const result = await response.json();
       if (result.success) {
         showToast('Athlete profile restored successfully', 'success');
+        setActionModal({ ...actionModal, isOpen: false });
         fetchDeletedPlayers();
       }
     } catch (error) {
       showToast('Restore failed', 'error');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  const handlePermanentDelete = async (id) => {
-    if (!window.confirm('PERMANENT DELETE: This will remove all data and files from Cloudinary forever. Continue?')) return;
+  const handlePermanentDelete = (id, name) => {
+    setActionModal({
+      isOpen: true,
+      title: 'Permanent Delete?',
+      message: `WARNING: This will permanently remove ${name}'s data and files from the database and Cloudinary. This action is irreversible.`,
+      type: 'danger',
+      confirmText: 'Delete Forever',
+      onConfirm: () => executePermanentDelete(id)
+    });
+  };
+
+  const executePermanentDelete = async (id) => {
+    setIsProcessing(true);
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`${API_BASE_URL}/registrations/${id}/permanent`, {
@@ -70,15 +107,29 @@ const RecycleBin = () => {
       const result = await response.json();
       if (result.success) {
         showToast('Deleted permanently from Database and Cloudinary', 'success');
+        setActionModal({ ...actionModal, isOpen: false });
         fetchDeletedPlayers();
       }
     } catch (error) {
       showToast('Permanent deletion failed', 'error');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  const handleEmptyTrash = async () => {
-    if (!window.confirm('WARNING: This will PERMANENTLY delete ALL items in the recycle bin and their files from Cloudinary. This action cannot be undone. Continue?')) return;
+  const handleEmptyTrash = () => {
+    setActionModal({
+      isOpen: true,
+      title: 'Empty Recycle Bin?',
+      message: `CRITICAL WARNING: This will permanently delete ALL items in the recycle bin and their associated files. This cannot be undone.`,
+      type: 'danger',
+      confirmText: 'Empty Bin Now',
+      onConfirm: executeEmptyTrash
+    });
+  };
+
+  const executeEmptyTrash = async () => {
+    setIsProcessing(true);
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`${API_BASE_URL}/registrations/empty-trash`, {
@@ -88,10 +139,13 @@ const RecycleBin = () => {
       const result = await response.json();
       if (result.success) {
         showToast('Recycle Bin emptied successfully', 'success');
+        setActionModal({ ...actionModal, isOpen: false });
         fetchDeletedPlayers();
       }
     } catch (error) {
       showToast('Action failed', 'error');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -178,10 +232,10 @@ const RecycleBin = () => {
                   </div>
                 </div>
                 <div className="card-actions">
-                  <button className="btn-restore" onClick={() => handleRestore(player.id)}>
+                  <button className="btn-restore" onClick={() => handleRestore(player.id, player.fullName)}>
                     <RotateCcw size={16} /> Restore
                   </button>
-                  <button className="btn-permanent" onClick={() => handlePermanentDelete(player.id)}>
+                  <button className="btn-permanent" onClick={() => handlePermanentDelete(player.id, player.fullName)}>
                     <Trash size={16} /> Delete Forever
                   </button>
                   <button className="btn-view-trash" onClick={() => navigate(`/athletes/${player.id}`)}>
@@ -199,6 +253,17 @@ const RecycleBin = () => {
           )}
         </div>
       )}
+
+      <ActionModal 
+        isOpen={actionModal.isOpen}
+        onClose={() => setActionModal({ ...actionModal, isOpen: false })}
+        onConfirm={actionModal.onConfirm}
+        title={actionModal.title}
+        message={actionModal.message}
+        type={actionModal.type}
+        confirmText={actionModal.confirmText}
+        loading={isProcessing}
+      />
     </div>
   );
 };

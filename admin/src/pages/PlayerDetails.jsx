@@ -9,6 +9,8 @@ import {
 import { useToast } from '../context/ToastContext';
 import './PlayerDetails.css';
 
+import ActionModal from '../components/ActionModal';
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const PlayerDetails = () => {
@@ -18,6 +20,18 @@ const PlayerDetails = () => {
   const [player, setPlayer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
+
+  // Modal State
+  const [modal, setModal] = useState({
+    isOpen: false,
+    type: 'info',
+    title: '',
+    message: '',
+    showInput: false,
+    confirmText: '',
+    onConfirm: () => {},
+    inputValue: ''
+  });
 
   useEffect(() => {
     fetchPlayerDetails();
@@ -44,19 +58,34 @@ const PlayerDetails = () => {
     }
   };
 
-  const handleStatusUpdate = async (status) => {
-    let reason = '';
-    if (status === 'rejected') {
-      reason = window.prompt('Please provide a reason for rejection:');
-      if (reason === null) return; // Cancelled
-      if (!reason.trim()) {
-        showToast('Rejection reason is required', 'error');
-        return;
-      }
-    } else {
-      if (!window.confirm(`Are you sure you want to ${status}?`)) return;
+  const handleStatusUpdate = (status) => {
+    if (status === 'approved') {
+      setModal({
+        isOpen: true,
+        type: 'success',
+        title: 'Approve Athlete?',
+        message: `Are you sure you want to approve ${player.fullName}? This will grant them portal access.`,
+        showInput: false,
+        confirmText: 'Yes, Approve',
+        onConfirm: () => executeStatusUpdate('approved'),
+        inputValue: ''
+      });
+    } else if (status === 'rejected') {
+      setModal({
+        isOpen: true,
+        type: 'danger',
+        title: 'Reject Athlete?',
+        message: `Please specify why you are rejecting ${player.fullName}'s application.`,
+        showInput: true,
+        inputPlaceholder: 'e.g., Blurred Aadhar card, Invalid payment proof...',
+        confirmText: 'Confirm Rejection',
+        onConfirm: (reason) => executeStatusUpdate('rejected', reason),
+        inputValue: ''
+      });
     }
+  };
 
+  const executeStatusUpdate = async (status, reason = '') => {
     setIsUpdating(true);
     try {
       const token = localStorage.getItem('token');
@@ -72,6 +101,7 @@ const PlayerDetails = () => {
       if (result.success) {
         showToast(`${status} successful`, 'success');
         setPlayer({ ...player, status, rejectionReason: reason });
+        setModal({ ...modal, isOpen: false });
       } else {
         showToast(result.message || 'Update failed', 'error');
       }
@@ -83,8 +113,20 @@ const PlayerDetails = () => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!window.confirm('Move this athlete to Recycle Bin?')) return;
+  const handleDelete = () => {
+    setModal({
+      isOpen: true,
+      type: 'warning',
+      title: 'Move to Trash?',
+      message: `You are about to move ${player.fullName} to the Recycle Bin. This action can be undone later.`,
+      showInput: false,
+      confirmText: 'Move to Trash',
+      onConfirm: executeDelete,
+      inputValue: ''
+    });
+  };
+
+  const executeDelete = async () => {
     setIsUpdating(true);
     try {
       const token = localStorage.getItem('token');
@@ -95,6 +137,7 @@ const PlayerDetails = () => {
       const result = await response.json();
       if (result.success) {
         showToast('Athlete moved to Recycle Bin', 'success');
+        setModal({ ...modal, isOpen: false });
         navigate('/');
       }
     } catch (error) {
@@ -258,6 +301,21 @@ const PlayerDetails = () => {
           </div>
         </div>
       </div>
+
+      <ActionModal 
+        isOpen={modal.isOpen}
+        onClose={() => setModal({ ...modal, isOpen: false })}
+        onConfirm={modal.onConfirm}
+        title={modal.title}
+        message={modal.message}
+        type={modal.type}
+        showInput={modal.showInput}
+        inputPlaceholder={modal.inputPlaceholder}
+        inputValue={modal.inputValue}
+        onInputChange={(val) => setModal({ ...modal, inputValue: val })}
+        confirmText={modal.confirmText}
+        loading={isUpdating}
+      />
     </div>
   );
 };
