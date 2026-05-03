@@ -13,12 +13,45 @@ import { ToastProvider } from './context/ToastContext';
 
 import './styles/Global.css';
 
+import { useEffect } from 'react';
+
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
   if (!token) {
     return <Navigate to="/login" replace />;
   }
+  return children;
+};
+
+// Idle Session Timeout Component (2 Hours)
+const IdleTimer = ({ children }) => {
+  useEffect(() => {
+    let timeout;
+    const TIMEOUT_MS = 2 * 60 * 60 * 1000; // 2 hours
+
+    const logout = () => {
+      localStorage.clear(); // Clear all session data
+      window.location.href = '/login'; // Redirect to login
+    };
+
+    const resetTimer = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(logout, TIMEOUT_MS);
+    };
+
+    // Track user activity
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+    events.forEach(event => window.addEventListener(event, resetTimer));
+
+    resetTimer(); // Initialize timer
+
+    return () => {
+      clearTimeout(timeout);
+      events.forEach(event => window.removeEventListener(event, resetTimer));
+    };
+  }, []);
+
   return children;
 };
 
@@ -36,38 +69,40 @@ function App() {
             path="/*" 
             element={
               <ProtectedRoute>
-                <div className={`admin-layout ${sidebarOpen ? 'sidebar-open' : ''}`}>
-                  <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-                  
-                  {/* Mobile Header */}
-                  <header className="mobile-header">
-                    <button className="menu-toggle" onClick={toggleSidebar}>
-                      {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-                    </button>
-                    <div className="mobile-logo">
-                      <div className="mobile-logo-wrapper">
-                        <img src="/logo.jpeg" alt="Logo" />
+                <IdleTimer>
+                  <div className={`admin-layout ${sidebarOpen ? 'sidebar-open' : ''}`}>
+                    <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+                    
+                    {/* Mobile Header */}
+                    <header className="mobile-header">
+                      <button className="menu-toggle" onClick={toggleSidebar}>
+                        {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+                      </button>
+                      <div className="mobile-logo">
+                        <div className="mobile-logo-wrapper">
+                          <img src="/logo.jpeg" alt="Logo" />
+                        </div>
+                        <span>ITF Admin</span>
                       </div>
-                      <span>ITF Admin</span>
+                    </header>
+
+
+                    {/* Overlay for mobile sidebar */}
+                    {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)}></div>}
+
+                    <div className="admin-main-content">
+                      <Routes>
+                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/athletes/:id" element={<PlayerDetails />} />
+                        <Route path="/manage-admins" element={<AdminManagement />} />
+                        <Route path="/system-health" element={<SystemHealth />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/recycle-bin" element={<RecycleBin />} />
+                      </Routes>
+
                     </div>
-                  </header>
-
-
-                  {/* Overlay for mobile sidebar */}
-                  {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)}></div>}
-
-                  <div className="admin-main-content">
-                    <Routes>
-                      <Route path="/" element={<Dashboard />} />
-                      <Route path="/athletes/:id" element={<PlayerDetails />} />
-                      <Route path="/manage-admins" element={<AdminManagement />} />
-                      <Route path="/system-health" element={<SystemHealth />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/recycle-bin" element={<RecycleBin />} />
-                    </Routes>
-
                   </div>
-                </div>
+                </IdleTimer>
               </ProtectedRoute>
             } 
           />
