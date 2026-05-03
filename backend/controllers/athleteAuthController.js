@@ -5,10 +5,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // Brevo Configuration
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-const apiKey = apiInstance.authentications['apiKey'];
+const defaultClient = SibApiV3Sdk.ApiClient.instance;
+const apiKey = defaultClient.authentications['api-key'];
 apiKey.apiKey = process.env.BREVO_API_KEY;
 
+const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 const SENDER_EMAIL = 'itfofindia2013@gmail.com';
 const JWT_SECRET = process.env.JWT_SECRET || 'your-athlete-secret-key';
 
