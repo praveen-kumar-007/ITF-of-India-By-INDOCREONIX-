@@ -11,7 +11,7 @@
 }
 
 .admin-header h1 {
-    font-size: 1.875rem;
+    font-size: 1.5rem;
     font-weight: 800;
     color: var(--text-primary);
 }
@@ -100,7 +100,7 @@
 
 .admin-details h3 {
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .admin-details p {
@@ -193,6 +193,7 @@
 .admin-modal h2 {
     margin-bottom: 1.5rem;
     font-weight: 800;
+    font-size: 1.25rem;
 }
 
 .form-group {

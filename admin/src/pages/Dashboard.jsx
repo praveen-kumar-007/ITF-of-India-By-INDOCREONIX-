@@ -203,7 +203,7 @@ const Dashboard = () => {
   return (
     <main className="dashboard-container animate-fade-in">
       {/* Welcome Hero Section */}
-      <section className="welcome-hero glass-premium">
+      <section className="welcome-hero">
         <div className="hero-content">
           <div className="hero-badge">
             <ShieldCheck size={14} /> <span>Admin Secure Access</span>
@@ -298,29 +298,29 @@ const Dashboard = () => {
           </div>
           <div className="health-summary-card glass-premium">
             <div className="health-header">
-              <div className="health-status-dot active"></div>
-              <span>Systems Online</span>
+              <div className={`health-status-dot ${(!healthData || (healthData?.firebase?.status === 'connected' && healthData?.cloudinary?.status === 'connected')) ? 'active' : 'warning'}`}></div>
+              <span>{(!healthData || (healthData?.firebase?.status === 'connected' && healthData?.cloudinary?.status === 'connected')) ? 'Systems Online' : 'System Notice'}</span>
             </div>
             <div className="health-items">
               <div className="h-item">
                 <Database size={16} />
                 <span>Firebase DB</span>
-                <span className={`h-val ${healthData?.firebase?.status === 'connected' ? 'active' : 'error'}`}>
-                  {healthData?.firebase?.status === 'connected' ? 'Optimal' : 'Issues'}
+                <span className={`h-val ${(!healthData || healthData?.firebase?.status === 'connected') ? 'active' : 'error'}`}>
+                  {(!healthData || healthData?.firebase?.status === 'connected') ? 'Connected' : 'Issues'}
                 </span>
               </div>
               <div className="h-item">
                 <Cloud size={16} />
                 <span>Cloudinary</span>
-                <span className={`h-val ${healthData?.cloudinary?.status === 'connected' ? 'active' : 'error'}`}>
-                  {healthData?.cloudinary?.status === 'connected' ? 'Healthy' : 'Issues'}
+                <span className={`h-val ${(!healthData || healthData?.cloudinary?.status === 'connected') ? 'active' : 'error'}`}>
+                  {(!healthData || healthData?.cloudinary?.status === 'connected') ? 'Connected' : 'Issues'}
                 </span>
               </div>
               <div className="h-item">
                 <Mail size={16} />
                 <span>Mail Gateway</span>
-                <span className={`h-val ${healthData?.mail?.status === 'connected' ? 'active' : 'error'}`}>
-                  {healthData?.mail?.status === 'connected' ? 'Active' : 'Issues'}
+                <span className={`h-val ${(!healthData || healthData?.mail?.status === 'connected') ? 'active' : 'error'}`}>
+                  {(!healthData || healthData?.mail?.status === 'connected') ? 'Connected' : 'Issues'}
                 </span>
               </div>
             </div>

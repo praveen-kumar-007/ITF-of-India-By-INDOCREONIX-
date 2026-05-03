@@ -259,10 +259,18 @@ const getSystemHealth = async (req, res, next) => {
         trashItems: trashCount
       },
       env: envStatus,
-      services: {
-        firebase,
-        cloudinary,
-        mail
+      // Flattened services for easier frontend access
+      firebase: { 
+        status: firebase.status === 'healthy' ? 'connected' : 'error',
+        message: firebase.message 
+      },
+      cloudinary: { 
+        status: cloudinary.status === 'healthy' ? 'connected' : 'error',
+        message: cloudinary.message 
+      },
+      mail: { 
+        status: mail.status === 'healthy' ? 'connected' : 'error',
+        message: mail.message 
       }
     };
 
