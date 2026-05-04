@@ -149,6 +149,61 @@
   color: #fbbf24;
 }
 
+.header-main-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.master-clock-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(15, 23, 42, 0.05);
+  padding: 0.75rem 1.25rem;
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  width: fit-content;
+}
+
+.time-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 45px;
+}
+
+.time-unit span {
+  font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.time-unit label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.time-sep {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #cbd5e1;
+  padding-bottom: 12px;
+}
+
+.time-unit.ms {
+  min-width: 60px;
+}
+
+.time-unit.ms span {
+  color: #fbbf24;
+}
+
 .header-action-group {
   display: flex;
   align-items: center;

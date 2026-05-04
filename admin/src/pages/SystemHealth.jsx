@@ -14,6 +14,7 @@ const SystemHealth = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [secondsSinceSync, setSecondsSinceSync] = useState(0);
   const [liveUptime, setLiveUptime] = useState(0);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   const fetchHealth = async () => {
     try {
@@ -53,9 +54,15 @@ const SystemHealth = () => {
       setLiveUptime((prev) => prev + 1);
     }, 1000);
 
+    // High-precision clock (every 10ms)
+    const masterClock = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 10);
+
     return () => {
       clearInterval(refreshTimer);
       clearInterval(tickTimer);
+      clearInterval(masterClock);
     };
   }, []);
 
@@ -81,8 +88,19 @@ const SystemHealth = () => {
     const days = Math.floor(seconds / (3600 * 24));
     const hours = Math.floor((seconds % (3600 * 24)) / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
-    return `${days}d ${hours}h ${mins}m`;
+    const secs = seconds % 60;
+    return `${days}d ${hours}h ${mins}m ${secs}s`;
   };
+
+  const formatDetailedTime = (date) => {
+    const h = date.getHours().toString().padStart(2, '0');
+    const m = date.getMinutes().toString().padStart(2, '0');
+    const s = date.getSeconds().toString().padStart(2, '0');
+    const ms = date.getMilliseconds().toString().padStart(3, '0');
+    return { h, m, s, ms };
+  };
+
+  const timeParts = formatDetailedTime(currentTime);
 
   const services = data?.services || {};
   const stats = data?.stats || {};
@@ -91,7 +109,7 @@ const SystemHealth = () => {
   return (
     <div className="system-health-page fade-in">
       <div className="page-header">
-        <div>
+        <div className="header-main-info">
           <div className="title-row">
             <h1>System Integrity</h1>
             <div className="live-indicator">
@@ -99,7 +117,15 @@ const SystemHealth = () => {
               <span>LIVE</span>
             </div>
           </div>
-          <p>Real-time monitor for ITF India infrastructure.</p>
+          <div className="master-clock-display">
+            <div className="time-unit"><span>{timeParts.h}</span><label>HRS</label></div>
+            <div className="time-sep">:</div>
+            <div className="time-unit"><span>{timeParts.m}</span><label>MIN</label></div>
+            <div className="time-sep">:</div>
+            <div className="time-unit"><span>{timeParts.s}</span><label>SEC</label></div>
+            <div className="time-sep">:</div>
+            <div className="time-unit ms"><span>{timeParts.ms}</span><label>MS</label></div>
+          </div>
         </div>
         <div className="header-action-group">
           <button 
