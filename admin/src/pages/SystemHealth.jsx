@@ -133,7 +133,7 @@ const SystemHealth = () => {
             onClick={handleRefresh}
             disabled={refreshing}
           >
-            <RefreshCw size={18} /> {refreshing ? 'Syncing...' : 'Refresh Status'}
+            <RefreshCw size={18} /> <span>{refreshing ? 'Syncing...' : 'Refresh Status'}</span>
           </button>
         </div>
       </div>
