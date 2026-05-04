@@ -20,9 +20,14 @@ const requestPasswordSetup = async (req, res, next) => {
 
     // 1. Find athlete by Email
     const athletes = await queryData('registrations', 'email', email.trim());
-    if (athletes.length === 0) return sendError(res, 404, 'No approved account found with this email.');
+    if (athletes.length === 0) return sendError(res, 404, 'No account found with this email.');
 
     const athlete = athletes[0];
+
+    // Check if in Recycle Bin
+    if (athlete.status === 'deleted') {
+      return sendError(res, 403, 'Account suspended or moved to trash. Please contact administrator.');
+    }
 
     // 3. Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -225,6 +230,11 @@ const loginAthlete = async (req, res, next) => {
     }
 
     if (!athlete) return sendError(res, 404, 'Invalid credentials.');
+
+    // Check if in Recycle Bin
+    if (athlete.status === 'deleted') {
+      return sendError(res, 403, 'Access denied. Your account is in the recycle bin.');
+    }
 
     // 3. Check if password is set
     if (!athlete.isPasswordSet) {
