@@ -917,7 +917,16 @@ const Registration = () => {
 
                     <div className={`input-field full ${errors.pinCode ? 'field-error' : ''}`}>
                       <label>Pin Code</label>
-                      <input type="text" name="pinCode" value={formData.pinCode} onChange={handleInputChange} placeholder="6 Digit Pin Code" maxLength="6" />
+                      <input 
+                        type="text" 
+                        name="pinCode" 
+                        value={formData.pinCode} 
+                        onChange={handleInputChange} 
+                        placeholder="6 Digit Pin Code" 
+                        maxLength="6" 
+                        inputMode="numeric" 
+                        pattern="[0-9]*" 
+                      />
                       {errors.pinCode && <span className="error-msg">Pin Code is required</span>}
                     </div>
 
@@ -933,7 +942,16 @@ const Registration = () => {
                     <h3>Identity & Documents</h3>
                     <div className={`input-field full ${errors.aadharNumber ? 'field-error' : ''}`} style={{ marginBottom: '2.5rem' }}>
                       <label>Aadhar Card Number (12 Digits)</label>
-                      <input type="text" name="aadharNumber" value={formData.aadharNumber} onChange={handleInputChange} placeholder="0000 0000 0000" maxLength="12" />
+                      <input 
+                        type="text" 
+                        name="aadharNumber" 
+                        value={formData.aadharNumber} 
+                        onChange={handleInputChange} 
+                        placeholder="0000 0000 0000" 
+                        maxLength="12" 
+                        inputMode="numeric" 
+                        pattern="[0-9]*" 
+                      />
                       {errors.aadharNumber && <span className="error-msg">Aadhar Number is required</span>}
                     </div>
 
@@ -1106,6 +1124,8 @@ const Registration = () => {
                             value={formData.transactionId} 
                             onChange={handleInputChange} 
                             placeholder="12 Digit UTR or Transaction ID" 
+                            inputMode="numeric" 
+                            pattern="[0-9]*" 
                           />
                           {errors.transactionId && <span className="error-msg">Transaction ID is required</span>}
                         </div>
