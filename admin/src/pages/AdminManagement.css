@@ -321,7 +321,7 @@
 
     .action-btns .btn-icon {
         flex: 0 1 auto;
-        min-width: 80px;
+        min-width: 60px;
         padding: 0.6rem;
     }
 }

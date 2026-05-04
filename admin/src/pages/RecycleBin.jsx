@@ -250,15 +250,15 @@ const RecycleBin = () => {
                   </div>
                 </div>
                 <div className="card-actions">
-                  <button className="btn-restore" onClick={() => handleRestore(player.id, player.fullName)}>
-                    <RotateCcw size={16} /> Restore
-                  </button>
-                  <button className="btn-permanent" onClick={() => handlePermanentDelete(player.id, player.fullName)}>
-                    <Trash size={16} /> Delete Forever
-                  </button>
-                  <button className="btn-view-trash" onClick={() => navigate(`/athletes/${player.id}`)}>
-                    <Eye size={16} />
-                  </button>
+                    <button className="premium-btn btn-gradient-green btn-restore" onClick={() => handleRestore(player.id, player.fullName)} title="Restore Athlete">
+                        <RefreshCcw size={16} /> Restore
+                    </button>
+                    <button className="premium-btn btn-gradient-red btn-permanent" onClick={() => handlePermanentDelete(player.id, player.fullName)} title="Delete Permanently">
+                        <Trash2 size={16} /> Delete
+                    </button>
+                    <button className="premium-btn btn-gradient-slate btn-view-trash" onClick={() => navigate(`/athletes/${player.id}`)} title="View Profile">
+                        <Eye size={16} />
+                    </button>
                 </div>
               </div>
             ))

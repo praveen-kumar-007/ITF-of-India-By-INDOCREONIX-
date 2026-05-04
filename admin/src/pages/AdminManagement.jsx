@@ -216,14 +216,14 @@ const AdminManagement = () => {
               </span>
               <div className="action-btns">
                 <button 
-                  className="btn-icon" 
+                  className="premium-btn btn-gradient-blue btn-icon" 
                   onClick={() => handleOpenEdit(admin)}
                   title="Edit Admin"
                 >
                   <Edit2 size={18} />
                 </button>
                 <button 
-                  className="btn-icon delete" 
+                  className="premium-btn btn-gradient-red btn-icon" 
                   onClick={() => handleDeleteAdmin(admin.id, admin.fullName)}
                   title="Delete Admin"
                 >

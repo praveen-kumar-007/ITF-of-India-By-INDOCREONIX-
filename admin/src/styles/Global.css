@@ -301,6 +301,37 @@ body {
   color: white;
 }
 
+/* Attractive Gradient Buttons */
+.premium-btn.btn-gradient-green {
+  background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 176, 155, 0.3);
+}
+
+.premium-btn.btn-gradient-red {
+  background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 65, 108, 0.3);
+}
+
+.premium-btn.btn-gradient-blue {
+  background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(33, 147, 176, 0.3);
+}
+
+.premium-btn.btn-gradient-gold {
+  background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
+}
+
+.premium-btn.btn-gradient-slate {
+  background: linear-gradient(135deg, #475569 0%, #64748b 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(71, 85, 105, 0.3);
+}
+
 .premium-btn.btn-success {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;

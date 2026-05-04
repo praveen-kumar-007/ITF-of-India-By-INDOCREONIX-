@@ -397,4 +397,9 @@
   }
   .last-sync { margin: 0; }
   .status-info h3 { font-size: 1.5rem; }
+
+  .refresh-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
