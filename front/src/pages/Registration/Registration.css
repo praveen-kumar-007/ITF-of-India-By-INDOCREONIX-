@@ -93,7 +93,7 @@
   background: linear-gradient(135deg, #ffca28, #ff8f00);
   color: #050a1f;
   padding: 14px 45px;
-  border-radius: 0; /* Professional sharp edges */
+  border-radius: 0; 
   font-weight: 900;
   margin-top: 2rem;
   box-shadow: 0 15px 45px rgba(255, 143, 0, 0.4);
@@ -102,9 +102,19 @@
   letter-spacing: 0.1em;
   position: relative;
   overflow: hidden;
-  clip-path: polygon(15px 0%, 100% 0%, calc(100% - 15px) 100%, 0% 100%); /* Unique attractive chamfer */
-  white-space: nowrap; /* Guaranteed one line */
+  clip-path: polygon(15px 0%, 100% 0%, calc(100% - 15px) 100%, 0% 100%);
+  white-space: nowrap;
   animation: float 3s ease-in-out infinite;
+  max-width: 95%; /* Prevent going out of screen */
+}
+
+@media (max-width: 600px) {
+  .fee-callout {
+    padding: 10px 25px;
+    font-size: 0.75rem;
+    gap: 8px;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  }
 }
 
 .fee-callout::before {
