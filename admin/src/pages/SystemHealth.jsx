@@ -12,6 +12,8 @@ const SystemHealth = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [countdown, setCountdown] = useState(10);
+  const [secondsSinceSync, setSecondsSinceSync] = useState(0);
 
   const fetchHealth = async () => {
     try {
@@ -24,6 +26,8 @@ const SystemHealth = () => {
       const result = await response.json();
       if (result.success) {
         setData(result.data);
+        setSecondsSinceSync(0);
+        setCountdown(10);
       } else {
         showToast(result.message || 'Failed to fetch health data', 'error');
       }
@@ -38,24 +42,42 @@ const SystemHealth = () => {
   useEffect(() => {
     fetchHealth();
     
-    // Auto-refresh every 10 seconds for "real-time" experience
-    const interval = setInterval(() => {
-      fetchHealth();
-    }, 10000);
+    // Auto-refresh countdown logic
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          fetchHealth();
+          return 10;
+        }
+        return prev - 1;
+      });
+    }, 1000);
 
-    return () => clearInterval(interval);
+    // Relative sync time logic
+    const syncTimer = setInterval(() => {
+      setSecondsSinceSync((prev) => prev + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+      clearInterval(syncTimer);
+    };
   }, []);
 
   const handleRefresh = () => {
     setRefreshing(true);
+    setCountdown(10);
     fetchHealth();
   };
 
   if (loading) {
     return (
       <div className="health-loading">
-        <RefreshCw className="animate-spin" size={48} />
-        <p>Analyzing System Services...</p>
+        <div className="pulse-loader">
+          <ShieldCheck size={64} className="loader-icon" />
+          <div className="pulse-ring"></div>
+        </div>
+        <p>Synchronizing System Infrastructure...</p>
       </div>
     );
   }
@@ -85,13 +107,21 @@ const SystemHealth = () => {
           </div>
           <p>Real-time monitor for ITF India infrastructure.</p>
         </div>
-        <button 
-          className={`refresh-btn ${refreshing ? 'spinning' : ''}`} 
-          onClick={handleRefresh}
-          disabled={refreshing}
-        >
-          <RefreshCw size={18} /> {refreshing ? 'Retrieving Data...' : 'Refresh Status'}
-        </button>
+        <div className="header-action-group">
+          <div className="refresh-countdown">
+            <div className="countdown-ring" style={{ '--progress': `${(countdown / 10) * 100}%` }}>
+              <Clock size={14} />
+            </div>
+            <span>Next sync in {countdown}s</span>
+          </div>
+          <button 
+            className={`refresh-btn ${refreshing ? 'spinning' : ''}`} 
+            onClick={handleRefresh}
+            disabled={refreshing}
+          >
+            <RefreshCw size={18} /> {refreshing ? 'Syncing...' : 'Force Refresh'}
+          </button>
+        </div>
       </div>
 
       {/* Database Statistics Section */}
@@ -191,7 +221,8 @@ const SystemHealth = () => {
           <p>Rate limiting, Helmet protection, and JWT integrity are fully operational.</p>
         </div>
         <div className="last-sync">
-          LAST SYNC: {new Date(data.timestamp).toLocaleTimeString()}
+          <Clock size={12} />
+          {secondsSinceSync < 5 ? 'Just Now' : `Synced ${secondsSinceSync}s ago`}
         </div>
       </div>
     </div>
