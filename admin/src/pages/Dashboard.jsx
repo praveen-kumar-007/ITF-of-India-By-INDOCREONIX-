@@ -210,7 +210,7 @@ const Dashboard = () => {
           </div>
           <h1>Welcome Back, Commander</h1>
           <p>The ITF India portal is operating at peak performance. You have <strong>{stats.pending}</strong> pending applications requiring your review.</p>
-          <div className="hero-actions">
+          <div className="hero-footer">
             <button className="btn-hero-primary" onClick={() => navigate('/registrations')}>
               View All Registrations <ArrowRight size={18} />
             </button>

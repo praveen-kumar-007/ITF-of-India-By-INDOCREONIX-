@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Trash2, RefreshCcw, Trash, Search, Filter, 
+  Trash2, RefreshCw, Trash, Search, Filter, 
   Calendar, User, AlertTriangle, Eye, ArrowLeft
 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
@@ -250,7 +250,7 @@ const RecycleBin = () => {
                 </div>
                 <div className="card-actions">
                     <button className="premium-btn btn-gradient-green btn-restore" onClick={() => handleRestore(player.id, player.fullName)} title="Restore Athlete">
-                        <RefreshCcw size={16} /> Restore
+                        <RefreshCw size={16} /> Restore
                     </button>
                     <button className="premium-btn btn-gradient-red btn-permanent" onClick={() => handlePermanentDelete(player.id, player.fullName)} title="Delete Permanently">
                         <Trash2 size={16} /> Delete

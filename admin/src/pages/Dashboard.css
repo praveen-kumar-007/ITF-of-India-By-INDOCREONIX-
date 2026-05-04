@@ -17,6 +17,7 @@
     color: white;
     position: relative;
     overflow: hidden;
+    text-align: center;
 }
 
 .welcome-hero::before {
@@ -31,8 +32,12 @@
 }
 
 .hero-content {
-    max-width: 600px;
+    max-width: 800px;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
 }
 
 .hero-badge {
@@ -833,7 +838,7 @@ td {
 }
 
 @media (max-width: 480px) {
-    .hero-actions {
+    .hero-footer {
         width: 100%;
     }
     .btn-hero-primary {
