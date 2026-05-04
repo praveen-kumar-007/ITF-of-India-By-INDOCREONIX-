@@ -984,8 +984,17 @@ const Registration = () => {
     };
 
     localStorage.setItem("itf_reg_draft", JSON.stringify(draftToSave));
-    localStorage.setItem("itf_reg_step", step.toString());
+    if (step < 5) {
+      localStorage.setItem("itf_reg_step", step.toString());
+    }
   }, [formData, step]);
+
+  // Fallback: If step is 5 but no registrationResult, reset to step 1
+  useEffect(() => {
+    if (step === 5 && !registrationResult) {
+      setStep(1);
+    }
+  }, [step, registrationResult]);
 
   const clearDraft = () => {
     localStorage.removeItem("itf_reg_draft");
