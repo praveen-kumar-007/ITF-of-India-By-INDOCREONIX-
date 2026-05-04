@@ -46,7 +46,7 @@ const ReceiptGenerator = () => {
       date: new Date().toLocaleDateString(),
       amount: '500'
     };
-    navigate('/admin/receipt-preview', { state: { receiptData: sampleData } });
+    navigate('/receipt-preview', { state: { receiptData: sampleData } });
   };
 
   const handleGenerate = (e) => {
@@ -55,7 +55,7 @@ const ReceiptGenerator = () => {
       ...formData,
       date: new Date(formData.date).toLocaleDateString()
     };
-    navigate('/admin/receipt-preview', { state: { receiptData: finalData } });
+    navigate('/receipt-preview', { state: { receiptData: finalData } });
   };
 
   return (

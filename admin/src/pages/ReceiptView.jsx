@@ -19,7 +19,7 @@ const ReceiptView = () => {
         <div className="error-card">
           <h2>No Receipt Data</h2>
           <p>Please go back and fill the generator form first.</p>
-          <button className="btn-outline" onClick={() => navigate('/admin/receipt-generator')}>
+          <button className="btn-outline" onClick={() => navigate('/receipt-generator')}>
             <ArrowLeft size={18} />
             Back to Generator
           </button>
