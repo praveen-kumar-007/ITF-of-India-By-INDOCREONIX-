@@ -92,16 +92,18 @@
   gap: 12px;
   background: linear-gradient(135deg, #ffca28, #ff8f00);
   color: #050a1f;
-  padding: 14px 35px;
-  border-radius: 50px;
+  padding: 14px 45px;
+  border-radius: 0; /* Professional sharp edges */
   font-weight: 900;
   margin-top: 2rem;
-  box-shadow: 0 10px 40px rgba(255, 143, 0, 0.4), 0 0 0 4px rgba(255, 202, 40, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 15px 45px rgba(255, 143, 0, 0.4);
+  border: none;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
   position: relative;
   overflow: hidden;
+  clip-path: polygon(15px 0%, 100% 0%, calc(100% - 15px) 100%, 0% 100%); /* Unique attractive chamfer */
+  white-space: nowrap; /* Guaranteed one line */
   animation: float 3s ease-in-out infinite;
 }
 
@@ -175,21 +177,25 @@
 }
 
 .step-num {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   background: #f1f5f9;
-  border-radius: 50%;
+  border-radius: 6px; /* Attractive professional corner */
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: #64748b;
-  border: 1px solid #e2e8f0;
+  border: 2px solid #e2e8f0;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .active .step-num {
-  background: var(--primary);
-  color: white;
+  background: linear-gradient(135deg, var(--primary), #0f172a);
+  color: #ffd700; /* Distinct gold highlight */
+  border-color: #ffd700;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+  transform: scale(1.1) rotate(5deg);
 }
 
 /* Form Styles */
