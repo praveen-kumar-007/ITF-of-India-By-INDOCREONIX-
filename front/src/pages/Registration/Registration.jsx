@@ -87,7 +87,8 @@ const Registration = () => {
     paymentProof: null,
     loading: false,
     paymentSettings: {
-      upiUrl: '',
+      upiId: '',
+      merchantName: '',
       amount: '500'
     }
   });
@@ -1001,9 +1002,9 @@ const Registration = () => {
                           <p>Use any UPI App (GPay, PhonePe, Paytm)</p>
                         </div>
                         <div className="qr-image-wrapper">
-                          {formData.paymentSettings?.upiUrl ? (
+                          {formData.paymentSettings?.upiId ? (
                             <QRCodeSVG 
-                              value={`${formData.paymentSettings.upiUrl}&am=${formData.paymentSettings.amount}`} 
+                              value={`upi://pay?pa=${formData.paymentSettings.upiId}&pn=${encodeURIComponent(formData.paymentSettings.merchantName)}&am=${formData.paymentSettings.amount}&cu=INR`} 
                               size={180}
                               level="H"
                               includeMargin={true}

@@ -10,7 +10,8 @@ const PaymentSettings = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
-    upiUrl: '',
+    upiId: '',
+    merchantName: '',
     amount: ''
   });
 
@@ -24,7 +25,8 @@ const PaymentSettings = () => {
       const result = await response.json();
       if (result.success) {
         setFormData({
-          upiUrl: result.data.upiUrl || '',
+          upiId: result.data.upiId || '',
+          merchantName: result.data.merchantName || '',
           amount: result.data.amount || ''
         });
       }
@@ -95,16 +97,31 @@ const PaymentSettings = () => {
             <div className="input-group">
               <label>
                 <LinkIcon size={16} /> 
-                UPI Payment URL
+                Official UPI ID
               </label>
               <input 
                 type="text" 
-                placeholder="upi://pay?pa=8340302054@ibl&pn=..." 
-                value={formData.upiUrl}
-                onChange={(e) => setFormData({...formData, upiUrl: e.target.value})}
+                placeholder="e.g., 8340302054@ibl" 
+                value={formData.upiId}
+                onChange={(e) => setFormData({...formData, upiId: e.target.value})}
                 required
               />
-              <p className="helper-text">Paste the raw UPI payment URL here. Parameters like Name and Merchant Code are included in this URL.</p>
+              <p className="helper-text">Enter the VPA/UPI ID where registration fees should be sent.</p>
+            </div>
+
+            <div className="input-group">
+              <label>
+                <CreditCard size={16} /> 
+                Account Holder Name
+              </label>
+              <input 
+                type="text" 
+                placeholder="e.g., Indra Kumar Rishi" 
+                value={formData.merchantName}
+                onChange={(e) => setFormData({...formData, merchantName: e.target.value})}
+                required
+              />
+              <p className="helper-text">Official name associated with the UPI ID.</p>
             </div>
 
             <div className="input-group">
@@ -159,7 +176,7 @@ const PaymentSettings = () => {
                   </div>
                   <div className="mock-details">
                      <p>Scan to Pay using any UPI App</p>
-                     <span>{formData.upiUrl ? formData.upiUrl.substring(0, 30) + '...' : 'UPI ID not set'}</span>
+                     <span>{formData.upiId ? `Pay to: ${formData.upiId}` : 'UPI ID not set'}</span>
                   </div>
                 </div>
              </div>

@@ -12,7 +12,8 @@ exports.getPaymentSettings = async (req, res) => {
     if (!settings) {
       // Default fallback
       return sendSuccess(res, {
-        upiUrl: 'upi://pay?pa=8340302054@ibl&pn=Indra Kumar Rishi',
+        upiId: '8340302054@ibl',
+        merchantName: 'Indra Kumar Rishi',
         amount: '100'
       });
     }
@@ -27,21 +28,22 @@ exports.getPaymentSettings = async (req, res) => {
 // @route   PATCH /api/settings/payment
 // @access  Private (Super Admin)
 exports.updatePaymentSettings = async (req, res) => {
-  const { upiUrl, amount } = req.body;
+  const { upiId, merchantName, amount } = req.body;
   
-  if (!upiUrl || !amount) {
-    return sendError(res, 400, 'UPI URL and Amount are required');
+  if (!upiId || !merchantName || !amount) {
+    return sendError(res, 400, 'UPI ID, Merchant Name, and Amount are required');
   }
 
   try {
     await db.ref('settings/payment').set({
-      upiUrl,
+      upiId,
+      merchantName,
       amount,
       updatedAt: new Date().toISOString(),
       updatedBy: req.user.email
     });
     
-    sendSuccess(res, { upiUrl, amount }, 'Payment settings updated successfully');
+    sendSuccess(res, { upiId, merchantName, amount }, 'Payment settings updated successfully');
   } catch (error) {
     sendError(res, 500, error.message);
   }
