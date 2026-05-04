@@ -146,7 +146,7 @@ const SystemHealth = () => {
           <h3>Mail Gateway</h3>
           <div className={`status-badge`}>
             {services.mail?.status === 'healthy' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
-            {services.mail?.mode === 'production' ? 'Production Ready' : 'Mock Mode Active'}
+            {services.mail?.mode === 'production' ? 'Production Ready' : 'Gateway Operational'}
           </div>
           <div className="card-footer">
             <span>OTP & Notification Delivery</span>
