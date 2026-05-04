@@ -118,6 +118,10 @@ const SystemHealth = () => {
             </div>
           </div>
           <div className="master-clock-display">
+            <div className="clock-label">
+              <span className="flag-icon">🇮🇳</span>
+              <span className="timezone-text">IST</span>
+            </div>
             <div className="time-unit"><span>{timeParts.h}</span><label>HRS</label></div>
             <div className="time-sep">:</div>
             <div className="time-unit"><span>{timeParts.m}</span><label>MIN</label></div>

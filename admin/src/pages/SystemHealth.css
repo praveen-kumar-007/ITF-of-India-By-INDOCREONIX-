@@ -166,6 +166,29 @@
   width: fit-content;
 }
 
+.clock-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-right: 0.75rem;
+  margin-right: 0.5rem;
+  border-right: 2px solid #e2e8f0;
+}
+
+.flag-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.timezone-text {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #1e3a8a;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
 .time-unit {
   display: flex;
   flex-direction: column;
@@ -509,10 +532,24 @@
 
   .master-clock-display {
     padding: 0.4rem 0.6rem;
-    gap: 0.25rem;
+    gap: 0.15rem;
     border-radius: 10px;
     transform: scale(0.85);
     transform-origin: left center;
+  }
+
+  .clock-label {
+    padding-right: 0.4rem;
+    margin-right: 0.2rem;
+    border-right-width: 1px;
+  }
+
+  .flag-icon {
+    font-size: 1rem;
+  }
+
+  .timezone-text {
+    font-size: 0.5rem;
   }
 
   .time-unit {
