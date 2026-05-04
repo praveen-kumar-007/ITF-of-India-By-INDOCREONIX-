@@ -86,6 +86,7 @@ const Registration = () => {
     transactionId: "",
     paymentProof: null,
     loading: false,
+    kitSize: "", // New Field
     paymentSettings: {
       upiId: '',
       merchantName: '',
@@ -400,7 +401,7 @@ const Registration = () => {
   const validateStep = (currentStep) => {
     const newErrors = {};
     const stepFields = {
-      1: ["fullName", "fatherName", "dob", "gender", "bloodGroup", "email", "sportsDiscipline", "qualification", "fatherOccupation", "contactNumber"],
+      1: ["fullName", "fatherName", "dob", "gender", "bloodGroup", "kitSize", "email", "sportsDiscipline", "qualification", "fatherOccupation", "contactNumber"],
       2: ["villageCity", "po", "ps", "block", "state", "district", "pinCode"],
       3: ["aadharNumber", "photo", "signature", "aadharFront", "aadharBack"],
       4: ["transactionId", "paymentProof"]
@@ -722,6 +723,23 @@ const Registration = () => {
                           <option value="AB-">AB-</option>
                         </select>
                         {errors.bloodGroup && <span className="error-msg">Blood Group is required</span>}
+                      </div>
+                    </div>
+
+                    <div className="input-group">
+                      <div className={`input-field ${errors.kitSize ? 'field-error' : ''}`}>
+                        <label>Official Kit Size</label>
+                        <select name="kitSize" value={formData.kitSize} onChange={handleInputChange}>
+                          <option value="">Choose Uniform Size</option>
+                          <option value="S">S (Small)</option>
+                          <option value="M">M (Medium)</option>
+                          <option value="L">L (Large)</option>
+                          <option value="XL">XL (Extra Large)</option>
+                        </select>
+                        {errors.kitSize && <span className="error-msg">Kit Size is required</span>}
+                      </div>
+                      <div className="input-field">
+                         {/* Empty field for spacing or another field */}
                       </div>
                     </div>
 

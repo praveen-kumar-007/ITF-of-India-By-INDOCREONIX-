@@ -213,6 +213,7 @@ const PlayerDetails = () => {
             <div className="d-cell"><label>Age</label><p>{player.age}</p></div>
             <div className="d-cell"><label>Gender</label><p>{player.gender}</p></div>
             <div className="d-cell"><label>Blood</label><p>{player.bloodGroup || 'N/A'}</p></div>
+            <div className="d-cell"><label>Kit Size</label><p className="accent-gold">{player.kitSize || 'Not Selected'}</p></div>
             <div className="d-cell"><label>Aadhar</label><p>{player.aadharNumber}</p></div>
           </div>
         </div>

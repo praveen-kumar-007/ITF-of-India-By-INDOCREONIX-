@@ -221,6 +221,12 @@ const AthleteProfile = () => {
                     <span className="value">{athlete.bloodGroup}</span>
                   </div>
                 )}
+                {athlete.kitSize && (
+                  <div className="data-field">
+                    <label>Official Kit Size</label>
+                    <span className="value accent-gold">{athlete.kitSize}</span>
+                  </div>
+                )}
                 <div className="data-field">
                   <label>Aadhar ID (Masked)</label>
                   <span className="value">XXXX XXXX {athlete.aadharNumber ? athlete.aadharNumber.slice(-4) : '####'}</span>
