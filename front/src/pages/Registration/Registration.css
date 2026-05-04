@@ -1876,7 +1876,6 @@
     padding: 0 !important;
     background: #fff !important;
     -webkit-print-color-adjust: exact !important;
-    color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
@@ -1951,19 +1950,13 @@
     color: #fbbf24 !important; 
     border: 1pt solid #fbbf24 !important;
     -webkit-print-color-adjust: exact;
-    color-adjust: exact;
     print-color-adjust: exact;
   }
 
-  .doc-logo {
-    -webkit-filter: none !important;
-    filter: none !important;
-  }
 
   .official-seal {
     width: 120pt !important;
     height: 120pt !important;
-    opacity: 1 !important;
   }
 
   .sig-line {
