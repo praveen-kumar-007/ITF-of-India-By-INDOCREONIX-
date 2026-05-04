@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UserPlus, Trash2, Mail, Shield, User, Star, Eye, Camera, Edit2, X, Save } from 'lucide-react';
+import { UserPlus, Trash2, Mail, Shield, User, Star, Eye, Camera, Edit2, X, Save, EyeOff } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import './AdminManagement.css';
 
@@ -21,6 +21,7 @@ const AdminManagement = () => {
     role: 'admin',
     status: 'active'
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   // Custom Modal State
@@ -171,7 +172,7 @@ const AdminManagement = () => {
   if (loading) return (
     <div className="loading-spinner">
       <div className="spinner"></div>
-      <p>Loading Admin List...</p>
+      <p>Synchronizing Administrative Data...</p>
     </div>
   );
 
@@ -298,16 +299,27 @@ const AdminManagement = () => {
                   </select>
                 </div>
               </div>
-              <div className="form-group">
+              <div className="form-group password-field">
                 <label>{editAdmin ? 'New Password (optional)' : 'Initial Password'}</label>
-                <input 
-                  type="password" 
-                  required={!editAdmin} 
-                  minLength={6}
-                  value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
-                  placeholder={editAdmin ? 'Leave blank to keep current' : '••••••••'}
-                />
+                <div className="input-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  <input 
+                    type={showPassword ? "text" : "password"} 
+                    required={!editAdmin} 
+                    minLength={6}
+                    value={formData.password}
+                    onChange={(e) => setFormData({...formData, password: e.target.value})}
+                    placeholder={editAdmin ? 'Leave blank to keep current' : '••••••••'}
+                    style={{ width: '100%' }}
+                  />
+                  <button 
+                    type="button" 
+                    className="toggle-password"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ position: 'absolute', right: '15px', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
               <div className="modal-actions">
                 <button type="submit" className="submit-btn" disabled={submitting}>

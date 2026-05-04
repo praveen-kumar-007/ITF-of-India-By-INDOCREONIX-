@@ -220,7 +220,7 @@ const RecycleBin = () => {
       {loading ? (
         <div className="loader-container">
           <div className="loader"></div>
-          <p>Scanning Trash...</p>
+          <p>Retrieving Deleted Records...</p>
         </div>
       ) : (
         <div className="trash-grid">

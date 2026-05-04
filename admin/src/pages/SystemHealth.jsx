@@ -55,7 +55,7 @@ const SystemHealth = () => {
     return (
       <div className="health-loading">
         <RefreshCw className="animate-spin" size={48} />
-        <p>Analyzing System Integrity...</p>
+        <p>Analyzing System Services...</p>
       </div>
     );
   }
@@ -90,7 +90,7 @@ const SystemHealth = () => {
           onClick={handleRefresh}
           disabled={refreshing}
         >
-          <RefreshCw size={18} /> {refreshing ? 'Scanning...' : 'Refresh Status'}
+          <RefreshCw size={18} /> {refreshing ? 'Retrieving Data...' : 'Refresh Status'}
         </button>
       </div>
 

@@ -195,7 +195,7 @@ const Dashboard = () => {
     return (
       <div className="loading-spinner">
         <div className="spinner"></div>
-        <p>Assembling Command Center...</p>
+        <p>Loading System Analytics...</p>
       </div>
     );
   }
@@ -206,10 +206,10 @@ const Dashboard = () => {
       <section className="welcome-hero">
         <div className="hero-content">
           <div className="hero-badge">
-            <ShieldCheck size={14} /> <span>Admin Secure Access</span>
+            <ShieldCheck size={14} /> <span>Administrative Access</span>
           </div>
-          <h1>Welcome Back, Commander</h1>
-          <p>The ITF India portal is operating at peak performance. You have <strong>{stats.pending}</strong> pending applications requiring your review.</p>
+          <h1>System Overview</h1>
+          <p>The administrative portal is fully operational. There are <strong>{stats.pending}</strong> pending athlete registrations requiring verification.</p>
           <div className="hero-footer">
             <button className="btn-hero-primary" onClick={() => navigate('/registrations')}>
               View All Registrations <ArrowRight size={18} />
@@ -299,7 +299,7 @@ const Dashboard = () => {
           <div className="health-summary-card glass-premium">
             <div className="health-header">
               <div className={`health-status-dot ${(!healthData || (healthData?.firebase?.status === 'connected' && healthData?.cloudinary?.status === 'connected')) ? 'active' : 'warning'}`}></div>
-              <span>{(!healthData || (healthData?.firebase?.status === 'connected' && healthData?.cloudinary?.status === 'connected')) ? 'Systems Online' : 'System Notice'}</span>
+              <span>{(!healthData || (healthData?.firebase?.status === 'connected' && healthData?.cloudinary?.status === 'connected')) ? 'All Systems Operational' : 'System Alert'}</span>
             </div>
             <div className="health-items">
               <div className="h-item">

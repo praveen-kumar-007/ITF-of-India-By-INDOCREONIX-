@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import './Login.css';
 
 import { useToast } from '../context/ToastContext';
@@ -8,6 +9,7 @@ const LoginPage = () => {
   const { showToast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -66,15 +68,24 @@ const LoginPage = () => {
               required 
             />
           </div>
-          <div className="input-field">
+          <div className="input-field password-field">
             <label>Password</label>
-            <input 
-              type="password" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              placeholder="••••••••"
-              required 
-            />
+            <div className="input-wrapper">
+              <input 
+                type={showPassword ? "text" : "password"} 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                placeholder="••••••••"
+                required 
+              />
+              <button 
+                type="button" 
+                className="toggle-password"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
           <button type="submit" className="login-btn" disabled={loading}>
             {loading ? 'Authenticating...' : 'Sign In'}

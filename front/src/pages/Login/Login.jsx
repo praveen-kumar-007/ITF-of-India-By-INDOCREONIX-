@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, Lock, Mail, ShieldCheck, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
+import { User, Lock, Mail, ShieldCheck, ArrowRight, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import './Login.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -22,6 +22,10 @@ const AthleteLogin = () => {
     newPassword: '',
     confirmPassword: ''
   });
+  
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Timer Effect
   useEffect(() => {
@@ -203,14 +207,25 @@ const AthleteLogin = () => {
             </div>
             <div className="input-group">
               <label><Lock size={16} /> Password</label>
-              <input 
-                type="password" 
-                name="password"
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={handleInputChange}
-                required 
-              />
+              <div className="password-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  name="password"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  required 
+                  style={{ width: '100%' }}
+                />
+                <button 
+                  type="button" 
+                  className="toggle-password"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{ position: 'absolute', right: '15px', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
             <button type="submit" className="auth-btn" disabled={loading}>
               {loading ? 'Authenticating...' : 'Sign In'} <ArrowRight size={18} />
@@ -282,25 +297,47 @@ const AthleteLogin = () => {
 
             <div className="input-group">
               <label><Lock size={16} /> New Password</label>
-              <input 
-                type="password" 
-                name="newPassword"
-                placeholder="Min. 8 characters"
-                value={formData.newPassword}
-                onChange={handleInputChange}
-                required 
-              />
+              <div className="password-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <input 
+                  type={showNewPassword ? "text" : "password"} 
+                  name="newPassword"
+                  placeholder="Min. 8 characters"
+                  value={formData.newPassword}
+                  onChange={handleInputChange}
+                  required 
+                  style={{ width: '100%' }}
+                />
+                <button 
+                  type="button" 
+                  className="toggle-password"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  style={{ position: 'absolute', right: '15px', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}
+                >
+                  {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
             <div className="input-group">
               <label><Lock size={16} /> Confirm Password</label>
-              <input 
-                type="password" 
-                name="confirmPassword"
-                placeholder="Confirm your password"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                required 
-              />
+              <div className="password-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <input 
+                  type={showConfirmPassword ? "text" : "password"} 
+                  name="confirmPassword"
+                  placeholder="Confirm your password"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  required 
+                  style={{ width: '100%' }}
+                />
+                <button 
+                  type="button" 
+                  className="toggle-password"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  style={{ position: 'absolute', right: '15px', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}
+                >
+                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
             <button type="submit" className="auth-btn" disabled={loading}>
               {loading ? 'Processing...' : 'Set Password & Verify'}
