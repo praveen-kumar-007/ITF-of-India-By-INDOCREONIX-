@@ -562,7 +562,7 @@ const Registration = () => {
       )}
 
 
-      <section className="registration-hero">
+      <section className="registration-hero page-hero">
 
         {/* Continuous Background Banner */}
         <div className="hero-bg-banner no-print">
