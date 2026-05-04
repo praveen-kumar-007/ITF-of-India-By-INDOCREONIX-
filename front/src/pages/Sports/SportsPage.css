@@ -12,14 +12,7 @@
 }
 
 .page-hero {
-  position: relative;
-  padding: 100px 0 80px;
-  background: #000;
-  overflow: hidden;
-  color: white;
-  min-height: 40vh;
-  display: flex;
-  align-items: center;
+  /* Inherits from global index.css */
 }
 
 .page-hero-bg {

@@ -5,16 +5,7 @@
 }
 
 .registration-hero {
-  position: relative;
-  padding: 60px 0 50px; /* Highly compact padding */
-  text-align: center;
-  background: #000;
-  overflow: hidden;
-  color: white;
-  min-height: 25vh; /* Slim and efficient height */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Inherits from .page-hero in index.css */
 }
 
 /* Background Scrolling Images */

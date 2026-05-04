@@ -144,8 +144,8 @@ ul {
 /* Page Hero System */
 .page-hero {
   position: relative;
-  padding: 100px 0;
-  min-height: 45vh;
+  padding: 60px 0 50px;
+  min-height: 25vh;
   display: flex;
   align-items: center;
   background: #000;
