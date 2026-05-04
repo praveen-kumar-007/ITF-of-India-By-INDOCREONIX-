@@ -279,9 +279,21 @@
     background: white;
 }
 
-.player-avatar.placeholder {
+.player-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
     background: #f1f5f9;
     color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .player-info h3 {
@@ -312,11 +324,18 @@
 .card-actions {
     display: flex;
     gap: 12px;
+    justify-content: center; /* Center for 1 button */
+    flex-wrap: wrap;
+}
+
+/* 2 or more buttons: Spread to corners/distribute */
+.card-actions:has(button:nth-child(2)) {
+    justify-content: space-between;
 }
 
 .card-actions button {
-    flex: 1;
-    display: flex;
+    flex: 0 1 auto; /* Allow buttons to have their own width */
+    min-width: 120px; /* Ensure buttons have a substantial presence */
     align-items: center;
     justify-content: center;
     gap: 8px;

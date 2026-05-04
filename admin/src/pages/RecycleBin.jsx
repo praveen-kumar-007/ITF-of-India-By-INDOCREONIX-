@@ -233,7 +233,7 @@ const RecycleBin = () => {
                     {player.photo ? (
                       <img src={player.photo} alt={player.fullName} />
                     ) : (
-                      <div className="player-avatar placeholder">
+                      <div className="avatar-placeholder">
                         <User size={32} />
                       </div>
                     )}

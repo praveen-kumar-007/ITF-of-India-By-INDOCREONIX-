@@ -429,6 +429,12 @@ td {
 .action-row {
     display: flex;
     gap: 8px;
+    justify-content: center; /* Center for 1 button */
+}
+
+/* 2 or more buttons: Corners/Distribution */
+.action-row:has(button:nth-child(2)) {
+    justify-content: space-between;
 }
 
 .mini-btn {

@@ -346,8 +346,13 @@
 .final-actions {
     display: flex;
     gap: 1.25rem;
-    justify-content: center;
+    justify-content: center; /* Center for 1 button */
     flex-wrap: wrap;
+}
+
+/* 2 or more buttons: Corners/Distribution */
+.final-actions:has(.action-btn:nth-child(2)) {
+    justify-content: space-between;
 }
 
 .action-btn {
@@ -462,12 +467,13 @@
     }
 
     .final-actions {
-        flex-direction: column;
+        flex-direction: row; /* Keep as row for smart alignment */
         gap: 1rem;
     }
 
     .action-btn {
-        width: 100%;
+        width: auto; /* Don't force full width to allow corner distribution */
+        min-width: 140px;
         justify-content: center;
     }
 }
