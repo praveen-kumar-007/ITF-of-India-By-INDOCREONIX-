@@ -7,17 +7,7 @@ const GalleryPage = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [galleryItems, setGalleryItems] = useState([]);
 
-  const images = [
-    "WhatsApp Image 2026-04-30 at 11.14.33 PM (1).jpeg",
-    "WhatsApp Image 2026-04-30 at 11.14.33 PM.jpeg",
-    "WhatsApp Image 2026-04-30 at 11.14.34 PM.jpeg",
-    "WhatsApp Image 2026-04-30 at 11.14.35 PM.jpeg",
-    "WhatsApp Image 2026-04-30 at 11.14.36 PM.jpeg",
-    "WhatsApp Image 2026-04-30 at 11.16.42 PM.jpeg",
-    "WhatsApp Image 2026-04-30 at 11.16.43 PM.jpeg",
-    "WhatsApp Image 2026-04-30 at 11.16.44 PM.jpeg",
-    "WhatsApp Image 2026-04-30 at 11.16.45 PM.jpeg",
-  ];
+  const images = [...Array(20).keys()].map(i => `img${i + 1}.jpeg`);
 
   useEffect(() => {
     const loadImages = async () => {
