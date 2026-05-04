@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 
 const Navbar = () => {
   const { language, toggleLanguage, t } = useLanguage();
+  const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [athlete, setAthlete] = useState(null);
+
+  const isActive = (path) => location.pathname === path;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -41,13 +44,13 @@ const Navbar = () => {
 
           {/* Desktop Links */}
           <ul className="links desktop-links">
-            <li><Link to="/">{t('nav.home')}</Link></li>
-            <li><Link to="/about">About US</Link></li>
-            <li><Link to="/sports">Sports</Link></li>
-            <li><Link to="/news">{t('nav.news')}</Link></li>
-            <li><Link to="/gallery">{t('nav.gallery')}</Link></li>
-            <li><Link to="/contact">{t('nav.contact')}</Link></li>
-            <li><Link to="/registration" className="nav-cta-btn">{t('nav.registration')}</Link></li>
+            <li><Link to="/" className={isActive('/') ? 'active' : ''}>{t('nav.home')}</Link></li>
+            <li><Link to="/about" className={isActive('/about') ? 'active' : ''}>About US</Link></li>
+            <li><Link to="/sports" className={isActive('/sports') ? 'active' : ''}>Sports</Link></li>
+            <li><Link to="/news" className={isActive('/news') ? 'active' : ''}>{t('nav.news')}</Link></li>
+            <li><Link to="/gallery" className={isActive('/gallery') ? 'active' : ''}>{t('nav.gallery')}</Link></li>
+            <li><Link to="/contact" className={isActive('/contact') ? 'active' : ''}>{t('nav.contact')}</Link></li>
+            <li><Link to="/registration" className={`nav-cta-btn ${isActive('/registration') ? 'active' : ''}`}>{t('nav.registration')}</Link></li>
             
             {athlete ? (
               <li>
@@ -97,31 +100,31 @@ const Navbar = () => {
           </div>
 
           <nav className="mobile-nav-list">
-            <Link to="/" className="mobile-link active" onClick={() => setIsMenuOpen(false)}>
+            <Link to="/" className={`mobile-link ${isActive('/') ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
               {t('nav.home')}
             </Link>
             
-            <Link to="/about" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
+            <Link to="/about" className={`mobile-link ${isActive('/about') ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
               About US
             </Link>
 
-            <Link to="/sports" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
+            <Link to="/sports" className={`mobile-link ${isActive('/sports') ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
               Sports
             </Link>
 
-            <Link to="/news" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
+            <Link to="/news" className={`mobile-link ${isActive('/news') ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
               {t('nav.news')}
             </Link>
 
-            <Link to="/gallery" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
+            <Link to="/gallery" className={`mobile-link ${isActive('/gallery') ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
               {t('nav.gallery')}
             </Link>
 
-            <Link to="/registration" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
+            <Link to="/registration" className={`mobile-link ${isActive('/registration') ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
               {t('nav.registration')}
             </Link>
 
-            <Link to="/contact" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
+            <Link to="/contact" className={`mobile-link ${isActive('/contact') ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
               {t('nav.contact')}
             </Link>
 

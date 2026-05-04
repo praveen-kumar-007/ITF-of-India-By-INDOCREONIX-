@@ -1758,3 +1758,32 @@ body {
     width: 100% !important;
     height: 100% !important;
 }
+
+/* Active Navigation Highlighting */
+.links a.active {
+  color: var(--secondary) !important;
+  position: relative;
+}
+.links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--secondary);
+  border-radius: 2px;
+}
+.sport-nav.scrolled .links a.active {
+  color: var(--secondary) !important;
+}
+
+/* Fix for Registration Button (CTA) when active */
+.links a.nav-cta-btn.active {
+  color: white !important;
+  background: var(--primary) !important;
+  border: 1px solid var(--secondary);
+}
+.links a.nav-cta-btn.active::after {
+  display: none !important;
+}
