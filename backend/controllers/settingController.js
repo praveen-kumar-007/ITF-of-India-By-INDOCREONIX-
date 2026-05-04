@@ -11,14 +11,14 @@ exports.getPaymentSettings = async (req, res) => {
     
     if (!settings) {
       // Default fallback
-      return sendSuccess(res, {
+      return sendSuccess(res, 200, 'Payment settings fetched', {
         upiId: '8340302054@ibl',
         merchantName: 'Indra Kumar Rishi',
         amount: '100'
       });
     }
     
-    sendSuccess(res, settings);
+    sendSuccess(res, 200, 'Payment settings fetched', settings);
   } catch (error) {
     sendError(res, 500, error.message);
   }
@@ -43,7 +43,7 @@ exports.updatePaymentSettings = async (req, res) => {
       updatedBy: req.user.email
     });
     
-    sendSuccess(res, { upiId, merchantName, amount }, 'Payment settings updated successfully');
+    sendSuccess(res, 200, 'Payment settings updated successfully', { upiId, merchantName, amount });
   } catch (error) {
     sendError(res, 500, error.message);
   }
