@@ -239,9 +239,15 @@
 
 .health-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 2rem;
   margin-bottom: 3rem;
+}
+
+@media (min-width: 1600px) {
+  .health-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 .health-card {
@@ -508,10 +514,16 @@
 
 @media (max-width: 1024px) {
   .system-health-page { padding: 1.5rem; }
-  .page-header h1 { font-size: 2rem; }
+  .page-header h1 { font-size: 2rem !important; }
+  .health-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
 }
 
 @media (max-width: 768px) {
+  .system-health-page { padding: 1rem; }
+  
   .page-header { 
     margin-bottom: 2rem; 
     flex-direction: row; 
@@ -526,15 +538,24 @@
     min-width: 0;
   }
 
+  .title-row {
+    gap: 0.5rem;
+  }
+
   .title-row h1 {
-    font-size: 1.5rem !important;
+    font-size: 1.25rem !important;
+  }
+
+  .live-indicator {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.6rem;
   }
 
   .master-clock-display {
     padding: 0.4rem 0.6rem;
     gap: 0.15rem;
     border-radius: 10px;
-    transform: scale(0.85);
+    transform: scale(0.8);
     transform-origin: left center;
   }
 
@@ -549,29 +570,29 @@
   }
 
   .timezone-text {
-    font-size: 0.5rem;
+    font-size: 0.45rem;
   }
 
   .time-unit {
-    min-width: 30px;
+    min-width: 25px;
   }
 
   .time-unit span {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .time-unit label {
-    font-size: 0.45rem;
-    margin-top: 2px;
+    font-size: 0.4rem;
+    margin-top: 1px;
   }
 
   .time-sep {
-    font-size: 0.8rem;
-    padding-bottom: 6px;
+    font-size: 0.75rem;
+    padding-bottom: 4px;
   }
 
   .time-unit.ms {
-    min-width: 40px;
+    min-width: 35px;
   }
 
   .header-action-group {
@@ -581,8 +602,8 @@
   .refresh-btn {
     padding: 0.6rem;
     border-radius: 10px;
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     justify-content: center;
   }
 
@@ -590,15 +611,56 @@
     display: none;
   }
 
-  .health-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-  .stats-strip { gap: 1rem; }
-  .stat-pill { width: 100%; justify-content: center; }
+  .health-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+  
+  .stats-strip { 
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem; 
+  }
+  
+  .stat-pill { 
+    width: 100%; 
+    justify-content: center; 
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .stat-pill:last-child {
+    grid-column: span 2;
+  }
+
+  .env-checklist {
+    grid-template-columns: 1fr;
+  }
+
   .security-status {
     flex-direction: column;
     text-align: center;
     gap: 1.5rem;
-    padding: 2rem;
+    padding: 2rem 1.5rem;
+    border-radius: 24px;
   }
-  .last-sync { margin: 0; width: 100%; }
-  .status-info h3 { font-size: 1.5rem; }
+
+  .last-sync { margin: 1rem auto 0; width: 100%; max-width: 200px; }
+  .status-info h3 { font-size: 1.4rem; }
+  .status-info p { font-size: 0.95rem; }
+}
+
+@media (max-width: 480px) {
+  .master-clock-display {
+    transform: scale(0.7);
+  }
+
+  .stats-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-pill:last-child {
+    grid-column: span 1;
+  }
+
+  .title-row h1 {
+    font-size: 1.1rem !important;
+  }
 }
