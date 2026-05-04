@@ -10,28 +10,28 @@ const NewsPage = () => {
       tag: t('news.tag_tournament'),
       title: t('news.item1_title'),
       excerpt: t('news.item1_excerpt'),
-      img: "WhatsApp Image 2026-04-30 at 11.14.33 PM.jpeg"
+      img: "img6.jpeg"
     },
     {
       date: "02 Jun 2024",
       tag: t('news.tag_workshop'),
       title: t('news.item2_title'),
       excerpt: t('news.item2_excerpt'),
-      img: "WhatsApp Image 2026-04-30 at 11.14.35 PM.jpeg"
+      img: "img7.jpeg"
     },
     {
       date: "20 Jun 2024",
       tag: t('news.tag_announcement'),
       title: t('news.item3_title'),
       excerpt: t('news.item3_excerpt'),
-      img: "WhatsApp Image 2026-04-30 at 11.16.42 PM.jpeg"
+      img: "img8.jpeg"
     },
     {
       date: "10 Jul 2024",
       tag: t('news.tag_infrastructure'),
       title: t('news.item4_title'),
       excerpt: t('news.item4_excerpt'),
-      img: "WhatsApp Image 2026-04-30 at 11.16.45 PM.jpeg"
+      img: "img9.jpeg"
     }
   ];
 

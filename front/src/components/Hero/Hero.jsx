@@ -7,11 +7,11 @@ const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const heroImages = [
-    "/club_image/WhatsApp Image 2026-04-30 at 11.16.45 PM.jpeg",
-    "/club_image/WhatsApp Image 2026-04-30 at 11.16.43 PM.jpeg",
-    "/club_image/WhatsApp Image 2026-04-30 at 11.14.33 PM.jpeg",
-    "/club_image/WhatsApp Image 2026-04-30 at 11.14.35 PM.jpeg",
-    "/club_image/WhatsApp Image 2026-04-30 at 11.16.42 PM.jpeg"
+    "/club_image/img1.jpeg",
+    "/club_image/img2.jpeg",
+    "/club_image/img3.jpeg",
+    "/club_image/img4.jpeg",
+    "/club_image/img5.jpeg"
   ];
 
   const animations = ['zoom', 'fade', 'slide-left', 'slide-right', 'blur-in'];

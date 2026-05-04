@@ -33,7 +33,7 @@ const About = () => {
           </div>
           <div className="about-visual">
             <div className="visual-stack">
-              <img src="/club_image/WhatsApp Image 2026-04-30 at 11.16.42 PM.jpeg" alt="Training" className="sport-img main-img" />
+              <img src="/club_image/img10.jpeg" alt="Training" className="sport-img main-img" />
               <div className="visual-accent"></div>
             </div>
           </div>
