@@ -731,10 +731,13 @@ const Registration = () => {
                         <label>Official Kit Size</label>
                         <select name="kitSize" value={formData.kitSize} onChange={handleInputChange}>
                           <option value="">Choose Uniform Size</option>
+                          <option value="XS">XS (Extra Small)</option>
                           <option value="S">S (Small)</option>
                           <option value="M">M (Medium)</option>
                           <option value="L">L (Large)</option>
                           <option value="XL">XL (Extra Large)</option>
+                          <option value="XXL">XXL (Double Extra Large)</option>
+                          <option value="3XL">3XL (Triple Extra Large)</option>
                         </select>
                         {errors.kitSize && <span className="error-msg">Kit Size is required</span>}
                       </div>
