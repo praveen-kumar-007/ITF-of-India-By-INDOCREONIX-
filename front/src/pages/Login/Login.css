@@ -166,6 +166,11 @@
     outline: none !important;
 }
 
+.otp-digit-box:hover {
+    border-color: #cbd5e1 !important;
+    background: #ffffff !important;
+}
+
 .otp-digit-box:focus {
     border-color: #3b82f6 !important;
     background: #ffffff !important;

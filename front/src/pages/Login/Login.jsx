@@ -90,7 +90,8 @@ const AthleteLogin = () => {
       if (result.success) {
         localStorage.setItem('athleteToken', result.data.token);
         localStorage.setItem('athlete', JSON.stringify(result.data.athlete));
-        navigate('/athlete/profile');
+        // Force refresh to update Navbar instantly
+        window.location.href = '/athlete/profile';
       } else {
         setError(result.message || 'Login failed');
       }
@@ -277,6 +278,8 @@ const AthleteLogin = () => {
                     key={idx}
                     id={`otp-${idx}`}
                     type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     maxLength="1"
                     value={digit}
                     onChange={(e) => handleOtpChange(idx, e.target.value)}
