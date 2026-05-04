@@ -4,53 +4,813 @@ import ImageCropper from "../../components/ImageCropper/ImageCropper";
 import { QRCodeSVG } from "qrcode.react";
 import "./Registration.css";
 
-
 const stateDistrictMap = {
-  "Andhra Pradesh": ["Anantapur", "Annamayya", "Anakapalli", "Bapatla", "Chittoor", "East Godavari", "Eluru", "Guntur", "Krishna", "Kakinada", "Konaseema", "Kurnool", "Nandyal", "NTR", "Palnadu", "Parvathipuram Manyam", "Prakasam", "Sri Potti Sriramulu Nellore", "Srikakulam", "Visakhapatnam", "Vizianagaram", "West Godavari", "YSR Kadapa", "Alluri Sitarama Raju"],
-  "Arunachal Pradesh": ["Tawang", "West Kameng", "East Kameng", "Papum Pare", "Kurung Kumey", "Upper Subansiri", "Lower Subansiri", "West Siang", "East Siang", "Upper Siang", "Siang", "Lower Siang", "Dibang Valley", "Lower Dibang Valley", "Lohit", "Namsai", "Changlang", "Tirap", "Longding"],
-  "Assam": ["Baksa", "Barpeta", "Biswanath", "Bongaigaon", "Cachar", "Charaideo", "Chirang", "Darrang", "Dhemaji", "Dhubri", "Dibrugarh", "Dima Hasao", "Goalpara", "Golaghat", "Hojai", "Jorhat", "Kamrup", "Kamrup Metropolitan", "Karbi Anglong", "Karimganj", "Kokrajhar", "Lakhimpur", "Majuli", "Morigaon", "Nagaon", "Nalbari", "Sivasagar", "Sonitpur", "South Salmara-Mankachar", "Tinsukia", "Udalguri"],
-  "Bihar": ["Araria", "Arwal", "Aurangabad", "Banka", "Begusarai", "Bhagalpur", "Bhojpur", "Buxar", "Darbhanga", "East Champaran", "Gaya", "Gopalganj", "Jamui", "Jehanabad", "Kaimur", "Katihar", "Khagaria", "Kishanganj", "Lakhisarai", "Madhepura", "Madhubani", "Munger", "Muzaffarpur", "Nalanda", "Nawada", "Patna", "Purnia", "Rohtas", "Saharsa", "Samastipur", "Saran", "Sheikhpura", "Sheohar", "Sitamarhi", "Siwan", "Supaul", "Vaishali", "West Champaran"],
-  "Chhattisgarh": ["Balod", "Baloda Bazar", "Balrampur", "Bastar", "Bemetara", "Bijapur", "Bilaspur", "Dantewada", "Dhamtari", "Durg", "Gariaband", "Janjgir-Champa", "Jashpur", "Kabirdham", "Kanker", "Kondagaon", "Korba", "Koriya", "Mahasamund", "Mungeli", "Narayanpur", "Raigarh", "Raipur", "Rajnandgaon", "Sukma", "Surajpur", "Surguja"],
-  "Goa": ["North Goa", "South Goa"],
-  "Gujarat": ["Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskantha", "Bharuch", "Bhavnagar", "Botad", "Chhota Udaipur", "Dahod", "Dang", "Devbhoomi Dwarka", "Gandhinagar", "Gir Somnath", "Jamnagar", "Junagadh", "Kheda", "Kutch", "Mahisagar", "Mehsana", "Morbi", "Narmada", "Navsari", "Panchmahal", "Patan", "Porbandar", "Rajkot", "Sabarkantha", "Surat", "Surendranagar", "Tapi", "Vadodara", "Valsad"],
-  "Haryana": ["Ambala", "Bhiwani", "Charkhi Dadri", "Faridabad", "Fatehabad", "Gurugram", "Hisar", "Jhajjar", "Jind", "Kaithal", "Karnal", "Kurukshetra", "Mahendragarh", "Nuh", "Palwal", "Panchkula", "Panipat", "Rewari", "Rohtak", "Sirsa", "Sonipat", "Yamunanagar"],
-  "Himachal Pradesh": ["Bilaspur", "Chamba", "Hamirpur", "Kangra", "Kinnaur", "Kullu", "Lahaul and Spiti", "Mandi", "Shimla", "Sirmaur", "Solan", "Una"],
-  "Jharkhand": ["Bokaro", "Chatra", "Deoghar", "Dhanbad", "Dumka", "East Singhbhum", "Garhwa", "Giridih", "Godda", "Gumla", "Hazaribagh", "Jamtara", "Khunti", "Koderma", "Latehar", "Lohardaga", "Pakur", "Palamu", "Ramgarh", "Ranchi", "Sahibganj", "Seraikela Kharsawan", "Simdega", "West Singhbhum"],
-  "Karnataka": ["Bagalkot", "Ballari", "Belagavi", "Bengaluru Rural", "Bengaluru Urban", "Bidar", "Chamarajanagar", "Chikkaballapur", "Chikkamagaluru", "Chitradurga", "Dakshina Kannada", "Davanagere", "Dharwad", "Gadag", "Hassan", "Haveri", "Kalaburagi", "Kodagu", "Kolar", "Koppal", "Mandya", "Mysuru", "Raichur", "Ramanagara", "Shivamogga", "Tumakuru", "Udupi", "Uttara Kannada", "Vijayapura", "Yadgir"],
-  "Kerala": ["Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasaragod", "Kottayam", "Kozhikode", "Malappuram", "Palakkad", "Pathanamthitta", "Thiruvananthapuram", "Thrissur", "Wayanad"],
-  "Madhya Pradesh": ["Agar Malwa", "Alirajpur", "Anuppur", "Ashoknagar", "Balaghat", "Barwani", "Betul", "Bhind", "Bhopal", "Burhanpur", "Chhatarpur", "Chhindwara", "Damoh", "Datia", "Dewas", "Dhar", "Dindori", "Guna", "Gwalior", "Harda", "Hoshangabad", "Indore", "Jabalpur", "Jhabua", "Katni", "Khandwa", "Khargone", "Mandla", "Mandsaur", "Morena", "Narsinghpur", "Neemuch", "Panna", "Raisen", "Rajgarh", "Ratlam", "Rewa", "Sagar", "Satna", "Sehore", "Seoni", "Shahdol", "Shajapur", "Sheopur", "Shivpuri", "Sidhi", "Singrauli", "Tikamgarh", "Ujjain", "Umaria", "Vidisha"],
-  "Maharashtra": ["Ahmednagar", "Akola", "Amravati", "Aurangabad", "Beed", "Bhandara", "Buldhana", "Chandrapur", "Dhule", "Gadchiroli", "Gondia", "Hingoli", "Jalgaon", "Jalna", "Kolhapur", "Latur", "Mumbai City", "Mumbai Suburban", "Nagpur", "Nanded", "Nandurbar", "Nashik", "Osmanabad", "Palghar", "Parbhani", "Pune", "Raigad", "Ratnagiri", "Sangli", "Satara", "Sindhudurg", "Solapur", "Thane", "Wardha", "Washim", "Yavatmal"],
-  "Manipur": ["Bishnupur", "Chandel", "Churachandpur", "Imphal East", "Imphal West", "Jiribam", "Kakching", "Kamjong", "Kangpokpi", "Noney", "Pherzawl", "Senapati", "Tamenglong", "Tengnoupal", "Thoubal", "Ukhrul"],
-  "Meghalaya": ["East Garo Hills", "West Garo Hills", "South Garo Hills", "North Garo Hills", "East Jaintia Hills", "West Jaintia Hills", "Ri Bhoi", "South West Garo Hills"],
-  "Mizoram": ["Aizawl", "Champhai", "Hnahthial", "Khawzawl", "Kolasib", "Lawngtlai", "Lunglei", "Mamit", "Saiha", "Serchhip", "Saitual"],
-  "Nagaland": ["Dimapur", "Kiphire", "Kohima", "Longleng", "Mokokchung", "Mon", "Niuland", "Peren", "Phek", "Shamator", "Tuensang", "Wokha", "Zunheboto"],
-  "Odisha": ["Angul", "Balangir", "Balasore", "Bargarh", "Bhadrak", "Boudh", "Cuttack", "Deogarh", "Dhenkanal", "Gajapati", "Ganjam", "Jagatsinghpur", "Jajpur", "Jharsuguda", "Kalahandi", "Kandhamal", "Kendrapara", "Keonjhar", "Khordha", "Koraput", "Malkangiri", "Mayurbhanj", "Nabarangpur", "Nayagarh", "Nuapada", "Puri", "Rayagada", "Sambalpur", "Sonepur", "Sundargarh"],
-  "Punjab": ["Amritsar", "Barnala", "Bathinda", "Faridkot", "Fatehgarh Sahib", "Fazilka", "Ferozepur", "Gurdaspur", "Hoshiarpur", "Jalandhar", "Kapurthala", "Ludhiana", "Mansa", "Moga", "Muktsar", "Nawanshahr", "Pathankot", "Patiala", "Rupnagar", "Sahibzada Ajit Singh Nagar", "Sangrur", "Tarn Taran"],
-  "Rajasthan": ["Ajmer", "Alwar", "Banswara", "Baran", "Barmer", "Bharatpur", "Bhilwara", "Bikaner", "Bundi", "Chittorgarh", "Churu", "Dausa", "Dholpur", "Dungarpur", "Ganganagar", "Hanumangarh", "Jaipur", "Jaisalmer", "Jalor", "Jhalawar", "Jhunjhunu", "Jodhpur", "Karauli", "Kota", "Nagaur", "Pali", "Pratapgarh", "Rajsamand", "Sawai Madhopur", "Sikar", "Sirohi", "Sri Ganganagar", "Tonk", "Udaipur"],
-  "Sikkim": ["East Sikkim", "North Sikkim", "South Sikkim", "West Sikkim"],
-  "Tamil Nadu": ["Ariyalur", "Chengalpattu", "Chennai", "Coimbatore", "Cuddalore", "Dharmapuri", "Dindigul", "Erode", "Kallakurichi", "Kanniyakumari", "Karur", "Krishnagiri", "Madurai", "Mayiladuthurai", "Nagapattinam", "Namakkal", "Nilgiris", "Perambalur", "Pudukkottai", "Ramanathapuram", "Ranipet", "Salem", "Sivaganga", "Tenkasi", "Thanjavur", "Theni", "Thoothukudi", "Tiruppur", "Tirunelveli", "Tiruvallur", "Tiruvannamalai", "Tiruvarur", "Vellore", "Viluppuram", "Virudhunagar"],
-  "Telangana": ["Adilabad", "Bhadradri Kothagudem", "Hyderabad", "Jagtial", "Jangaon", "Jayashankar Bhupalapally", "Jogulamba Gadwal", "Kamareddy", "Karimnagar", "Khammam", "Komaram Bheem", "Mahabubabad", "Mahabubnagar", "Mancherial", "Medak", "Medchal Malkajgiri", "Mulugu", "Nagarkurnool", "Nalgonda", "Narayanpet", "Nirmal", "Nizamabad", "Peddapalli", "Rajanna Siricilla", "Rangareddy", "Sangareddy", "Siddipet", "Suryapet", "Vikarabad", "Wanaparthy", "Warangal Rural", "Warangal Urban", "Yadadri Bhuvanagiri"],
-  "Tripura": ["Dhalai", "Gomati", "Khowai", "North Tripura", "Sepahijala", "South Tripura", "Unakoti", "West Tripura"],
-  "Uttar Pradesh": ["Agra", "Aligarh", "Ambedkar Nagar", "Amethi", "Amroha", "Auraiya", "Ayodhya", "Azamgarh", "Baghpat", "Bahraich", "Ballia", "Balrampur", "Banda", "Barabanki", "Bareilly", "Basti", "Bhadohi", "Bijnor", "Budaun", "Bulandshahr", "Chandauli", "Chitrakoot", "Deoria", "Etah", "Etawah", "Firozabad", "Gautam Buddh Nagar", "Ghaziabad", "Ghazipur", "Gonda", "Gorakhpur", "Hamirpur", "Hapur", "Hardoi", "Hathras", "Jalaun", "Jaunpur", "Jhansi", "Kannauj", "Kanpur Dehat", "Kanpur Nagar", "Kasganj", "Kaushambi", "Kheri", "Kushinagar", "Maharajganj", "Mahoba", "Mainpuri", "Mathura", "Mau", "Meerut", "Mirzapur", "Moradabad", "Muzaffarnagar", "Pilibhit", "Pratapgarh", "Raebareli", "Rampur", "Saharanpur", "Sambhal", "Sant Kabir Nagar", "Shahjahanpur", "Shamli", "Shravasti", "Siddharthnagar", "Sitapur", "Sonbhadra", "Sultanpur", "Unnao", "Varanasi"],
-  "Uttarakhand": ["Almora", "Bageshwar", "Chamoli", "Champawat", "Dehradun", "Haridwar", "Nainital", "Pauri Garhwal", "Pithoragarh", "Rudraprayag", "Tehri Garhwal", "Udham Singh Nagar", "Uttarkashi"],
-  "West Bengal": ["Alipurduar", "Bankura", "Birbhum", "Cooch Behar", "Dakshin Dinajpur", "Darjeeling", "Hooghly", "Howrah", "Jalpaiguri", "Jhargram", "Kalimpong", "Kolkata", "Malda", "Murshidabad", "Nadia", "North 24 Parganas", "Paschim Bardhaman", "Paschim Medinipur", "Purba Bardhaman", "Purba Medinipur", "Purulia", "South 24 Parganas", "Uttar Dinajpur"],
-  "Andaman and Nicobar Islands": ["North and Middle Andaman", "Nicobar", "South Andaman"],
-  "Chandigarh": ["Chandigarh"],
-  "Dadra & Nagar Haveli and Daman & Diu": ["Dadra & Nagar Haveli", "Daman", "Diu"],
-  "Delhi": ["Central Delhi", "East Delhi", "New Delhi", "North Delhi", "North East Delhi", "North West Delhi", "Shahdara", "South Delhi", "South East Delhi", "South West Delhi", "West Delhi"],
-  "Jammu & Kashmir": ["Anantnag", "Bandipora", "Baramulla", "Budgam", "Doda", "Ganderbal", "Jammu", "Kulgam", "Kathua", "Kupwara", "Poonch", "Pulwama", "Rajouri", "Ramban", "Reasi", "Samba", "Shopian", "Srinagar", "Udhampur"],
-  "Ladakh": ["Kargil", "Leh"],
-  "Lakshadweep": ["Lakshadweep"],
-  "Puducherry": ["Karaikal", "Mahe", "Puducherry", "Yanam"],
+  "Andhra Pradesh": [
+    "Anantapur",
+    "Annamayya",
+    "Anakapalli",
+    "Bapatla",
+    "Chittoor",
+    "East Godavari",
+    "Eluru",
+    "Guntur",
+    "Krishna",
+    "Kakinada",
+    "Konaseema",
+    "Kurnool",
+    "Nandyal",
+    "NTR",
+    "Palnadu",
+    "Parvathipuram Manyam",
+    "Prakasam",
+    "Sri Potti Sriramulu Nellore",
+    "Srikakulam",
+    "Visakhapatnam",
+    "Vizianagaram",
+    "West Godavari",
+    "YSR Kadapa",
+    "Alluri Sitarama Raju",
+  ],
+  "Arunachal Pradesh": [
+    "Tawang",
+    "West Kameng",
+    "East Kameng",
+    "Papum Pare",
+    "Kurung Kumey",
+    "Upper Subansiri",
+    "Lower Subansiri",
+    "West Siang",
+    "East Siang",
+    "Upper Siang",
+    "Siang",
+    "Lower Siang",
+    "Dibang Valley",
+    "Lower Dibang Valley",
+    "Lohit",
+    "Namsai",
+    "Changlang",
+    "Tirap",
+    "Longding",
+  ],
+  Assam: [
+    "Baksa",
+    "Barpeta",
+    "Biswanath",
+    "Bongaigaon",
+    "Cachar",
+    "Charaideo",
+    "Chirang",
+    "Darrang",
+    "Dhemaji",
+    "Dhubri",
+    "Dibrugarh",
+    "Dima Hasao",
+    "Goalpara",
+    "Golaghat",
+    "Hojai",
+    "Jorhat",
+    "Kamrup",
+    "Kamrup Metropolitan",
+    "Karbi Anglong",
+    "Karimganj",
+    "Kokrajhar",
+    "Lakhimpur",
+    "Majuli",
+    "Morigaon",
+    "Nagaon",
+    "Nalbari",
+    "Sivasagar",
+    "Sonitpur",
+    "South Salmara-Mankachar",
+    "Tinsukia",
+    "Udalguri",
+  ],
+  Bihar: [
+    "Araria",
+    "Arwal",
+    "Aurangabad",
+    "Banka",
+    "Begusarai",
+    "Bhagalpur",
+    "Bhojpur",
+    "Buxar",
+    "Darbhanga",
+    "East Champaran",
+    "Gaya",
+    "Gopalganj",
+    "Jamui",
+    "Jehanabad",
+    "Kaimur",
+    "Katihar",
+    "Khagaria",
+    "Kishanganj",
+    "Lakhisarai",
+    "Madhepura",
+    "Madhubani",
+    "Munger",
+    "Muzaffarpur",
+    "Nalanda",
+    "Nawada",
+    "Patna",
+    "Purnia",
+    "Rohtas",
+    "Saharsa",
+    "Samastipur",
+    "Saran",
+    "Sheikhpura",
+    "Sheohar",
+    "Sitamarhi",
+    "Siwan",
+    "Supaul",
+    "Vaishali",
+    "West Champaran",
+  ],
+  Chhattisgarh: [
+    "Balod",
+    "Baloda Bazar",
+    "Balrampur",
+    "Bastar",
+    "Bemetara",
+    "Bijapur",
+    "Bilaspur",
+    "Dantewada",
+    "Dhamtari",
+    "Durg",
+    "Gariaband",
+    "Janjgir-Champa",
+    "Jashpur",
+    "Kabirdham",
+    "Kanker",
+    "Kondagaon",
+    "Korba",
+    "Koriya",
+    "Mahasamund",
+    "Mungeli",
+    "Narayanpur",
+    "Raigarh",
+    "Raipur",
+    "Rajnandgaon",
+    "Sukma",
+    "Surajpur",
+    "Surguja",
+  ],
+  Goa: ["North Goa", "South Goa"],
+  Gujarat: [
+    "Ahmedabad",
+    "Amreli",
+    "Anand",
+    "Aravalli",
+    "Banaskantha",
+    "Bharuch",
+    "Bhavnagar",
+    "Botad",
+    "Chhota Udaipur",
+    "Dahod",
+    "Dang",
+    "Devbhoomi Dwarka",
+    "Gandhinagar",
+    "Gir Somnath",
+    "Jamnagar",
+    "Junagadh",
+    "Kheda",
+    "Kutch",
+    "Mahisagar",
+    "Mehsana",
+    "Morbi",
+    "Narmada",
+    "Navsari",
+    "Panchmahal",
+    "Patan",
+    "Porbandar",
+    "Rajkot",
+    "Sabarkantha",
+    "Surat",
+    "Surendranagar",
+    "Tapi",
+    "Vadodara",
+    "Valsad",
+  ],
+  Haryana: [
+    "Ambala",
+    "Bhiwani",
+    "Charkhi Dadri",
+    "Faridabad",
+    "Fatehabad",
+    "Gurugram",
+    "Hisar",
+    "Jhajjar",
+    "Jind",
+    "Kaithal",
+    "Karnal",
+    "Kurukshetra",
+    "Mahendragarh",
+    "Nuh",
+    "Palwal",
+    "Panchkula",
+    "Panipat",
+    "Rewari",
+    "Rohtak",
+    "Sirsa",
+    "Sonipat",
+    "Yamunanagar",
+  ],
+  "Himachal Pradesh": [
+    "Bilaspur",
+    "Chamba",
+    "Hamirpur",
+    "Kangra",
+    "Kinnaur",
+    "Kullu",
+    "Lahaul and Spiti",
+    "Mandi",
+    "Shimla",
+    "Sirmaur",
+    "Solan",
+    "Una",
+  ],
+  Jharkhand: [
+    "Bokaro",
+    "Chatra",
+    "Deoghar",
+    "Dhanbad",
+    "Dumka",
+    "East Singhbhum",
+    "Garhwa",
+    "Giridih",
+    "Godda",
+    "Gumla",
+    "Hazaribagh",
+    "Jamtara",
+    "Khunti",
+    "Koderma",
+    "Latehar",
+    "Lohardaga",
+    "Pakur",
+    "Palamu",
+    "Ramgarh",
+    "Ranchi",
+    "Sahibganj",
+    "Seraikela Kharsawan",
+    "Simdega",
+    "West Singhbhum",
+  ],
+  Karnataka: [
+    "Bagalkot",
+    "Ballari",
+    "Belagavi",
+    "Bengaluru Rural",
+    "Bengaluru Urban",
+    "Bidar",
+    "Chamarajanagar",
+    "Chikkaballapur",
+    "Chikkamagaluru",
+    "Chitradurga",
+    "Dakshina Kannada",
+    "Davanagere",
+    "Dharwad",
+    "Gadag",
+    "Hassan",
+    "Haveri",
+    "Kalaburagi",
+    "Kodagu",
+    "Kolar",
+    "Koppal",
+    "Mandya",
+    "Mysuru",
+    "Raichur",
+    "Ramanagara",
+    "Shivamogga",
+    "Tumakuru",
+    "Udupi",
+    "Uttara Kannada",
+    "Vijayapura",
+    "Yadgir",
+  ],
+  Kerala: [
+    "Alappuzha",
+    "Ernakulam",
+    "Idukki",
+    "Kannur",
+    "Kasaragod",
+    "Kottayam",
+    "Kozhikode",
+    "Malappuram",
+    "Palakkad",
+    "Pathanamthitta",
+    "Thiruvananthapuram",
+    "Thrissur",
+    "Wayanad",
+  ],
+  "Madhya Pradesh": [
+    "Agar Malwa",
+    "Alirajpur",
+    "Anuppur",
+    "Ashoknagar",
+    "Balaghat",
+    "Barwani",
+    "Betul",
+    "Bhind",
+    "Bhopal",
+    "Burhanpur",
+    "Chhatarpur",
+    "Chhindwara",
+    "Damoh",
+    "Datia",
+    "Dewas",
+    "Dhar",
+    "Dindori",
+    "Guna",
+    "Gwalior",
+    "Harda",
+    "Hoshangabad",
+    "Indore",
+    "Jabalpur",
+    "Jhabua",
+    "Katni",
+    "Khandwa",
+    "Khargone",
+    "Mandla",
+    "Mandsaur",
+    "Morena",
+    "Narsinghpur",
+    "Neemuch",
+    "Panna",
+    "Raisen",
+    "Rajgarh",
+    "Ratlam",
+    "Rewa",
+    "Sagar",
+    "Satna",
+    "Sehore",
+    "Seoni",
+    "Shahdol",
+    "Shajapur",
+    "Sheopur",
+    "Shivpuri",
+    "Sidhi",
+    "Singrauli",
+    "Tikamgarh",
+    "Ujjain",
+    "Umaria",
+    "Vidisha",
+  ],
+  Maharashtra: [
+    "Ahmednagar",
+    "Akola",
+    "Amravati",
+    "Aurangabad",
+    "Beed",
+    "Bhandara",
+    "Buldhana",
+    "Chandrapur",
+    "Dhule",
+    "Gadchiroli",
+    "Gondia",
+    "Hingoli",
+    "Jalgaon",
+    "Jalna",
+    "Kolhapur",
+    "Latur",
+    "Mumbai City",
+    "Mumbai Suburban",
+    "Nagpur",
+    "Nanded",
+    "Nandurbar",
+    "Nashik",
+    "Osmanabad",
+    "Palghar",
+    "Parbhani",
+    "Pune",
+    "Raigad",
+    "Ratnagiri",
+    "Sangli",
+    "Satara",
+    "Sindhudurg",
+    "Solapur",
+    "Thane",
+    "Wardha",
+    "Washim",
+    "Yavatmal",
+  ],
+  Manipur: [
+    "Bishnupur",
+    "Chandel",
+    "Churachandpur",
+    "Imphal East",
+    "Imphal West",
+    "Jiribam",
+    "Kakching",
+    "Kamjong",
+    "Kangpokpi",
+    "Noney",
+    "Pherzawl",
+    "Senapati",
+    "Tamenglong",
+    "Tengnoupal",
+    "Thoubal",
+    "Ukhrul",
+  ],
+  Meghalaya: [
+    "East Garo Hills",
+    "West Garo Hills",
+    "South Garo Hills",
+    "North Garo Hills",
+    "East Jaintia Hills",
+    "West Jaintia Hills",
+    "Ri Bhoi",
+    "South West Garo Hills",
+  ],
+  Mizoram: [
+    "Aizawl",
+    "Champhai",
+    "Hnahthial",
+    "Khawzawl",
+    "Kolasib",
+    "Lawngtlai",
+    "Lunglei",
+    "Mamit",
+    "Saiha",
+    "Serchhip",
+    "Saitual",
+  ],
+  Nagaland: [
+    "Dimapur",
+    "Kiphire",
+    "Kohima",
+    "Longleng",
+    "Mokokchung",
+    "Mon",
+    "Niuland",
+    "Peren",
+    "Phek",
+    "Shamator",
+    "Tuensang",
+    "Wokha",
+    "Zunheboto",
+  ],
+  Odisha: [
+    "Angul",
+    "Balangir",
+    "Balasore",
+    "Bargarh",
+    "Bhadrak",
+    "Boudh",
+    "Cuttack",
+    "Deogarh",
+    "Dhenkanal",
+    "Gajapati",
+    "Ganjam",
+    "Jagatsinghpur",
+    "Jajpur",
+    "Jharsuguda",
+    "Kalahandi",
+    "Kandhamal",
+    "Kendrapara",
+    "Keonjhar",
+    "Khordha",
+    "Koraput",
+    "Malkangiri",
+    "Mayurbhanj",
+    "Nabarangpur",
+    "Nayagarh",
+    "Nuapada",
+    "Puri",
+    "Rayagada",
+    "Sambalpur",
+    "Sonepur",
+    "Sundargarh",
+  ],
+  Punjab: [
+    "Amritsar",
+    "Barnala",
+    "Bathinda",
+    "Faridkot",
+    "Fatehgarh Sahib",
+    "Fazilka",
+    "Ferozepur",
+    "Gurdaspur",
+    "Hoshiarpur",
+    "Jalandhar",
+    "Kapurthala",
+    "Ludhiana",
+    "Mansa",
+    "Moga",
+    "Muktsar",
+    "Nawanshahr",
+    "Pathankot",
+    "Patiala",
+    "Rupnagar",
+    "Sahibzada Ajit Singh Nagar",
+    "Sangrur",
+    "Tarn Taran",
+  ],
+  Rajasthan: [
+    "Ajmer",
+    "Alwar",
+    "Banswara",
+    "Baran",
+    "Barmer",
+    "Bharatpur",
+    "Bhilwara",
+    "Bikaner",
+    "Bundi",
+    "Chittorgarh",
+    "Churu",
+    "Dausa",
+    "Dholpur",
+    "Dungarpur",
+    "Ganganagar",
+    "Hanumangarh",
+    "Jaipur",
+    "Jaisalmer",
+    "Jalor",
+    "Jhalawar",
+    "Jhunjhunu",
+    "Jodhpur",
+    "Karauli",
+    "Kota",
+    "Nagaur",
+    "Pali",
+    "Pratapgarh",
+    "Rajsamand",
+    "Sawai Madhopur",
+    "Sikar",
+    "Sirohi",
+    "Sri Ganganagar",
+    "Tonk",
+    "Udaipur",
+  ],
+  Sikkim: ["East Sikkim", "North Sikkim", "South Sikkim", "West Sikkim"],
+  "Tamil Nadu": [
+    "Ariyalur",
+    "Chengalpattu",
+    "Chennai",
+    "Coimbatore",
+    "Cuddalore",
+    "Dharmapuri",
+    "Dindigul",
+    "Erode",
+    "Kallakurichi",
+    "Kanniyakumari",
+    "Karur",
+    "Krishnagiri",
+    "Madurai",
+    "Mayiladuthurai",
+    "Nagapattinam",
+    "Namakkal",
+    "Nilgiris",
+    "Perambalur",
+    "Pudukkottai",
+    "Ramanathapuram",
+    "Ranipet",
+    "Salem",
+    "Sivaganga",
+    "Tenkasi",
+    "Thanjavur",
+    "Theni",
+    "Thoothukudi",
+    "Tiruppur",
+    "Tirunelveli",
+    "Tiruvallur",
+    "Tiruvannamalai",
+    "Tiruvarur",
+    "Vellore",
+    "Viluppuram",
+    "Virudhunagar",
+  ],
+  Telangana: [
+    "Adilabad",
+    "Bhadradri Kothagudem",
+    "Hyderabad",
+    "Jagtial",
+    "Jangaon",
+    "Jayashankar Bhupalapally",
+    "Jogulamba Gadwal",
+    "Kamareddy",
+    "Karimnagar",
+    "Khammam",
+    "Komaram Bheem",
+    "Mahabubabad",
+    "Mahabubnagar",
+    "Mancherial",
+    "Medak",
+    "Medchal Malkajgiri",
+    "Mulugu",
+    "Nagarkurnool",
+    "Nalgonda",
+    "Narayanpet",
+    "Nirmal",
+    "Nizamabad",
+    "Peddapalli",
+    "Rajanna Siricilla",
+    "Rangareddy",
+    "Sangareddy",
+    "Siddipet",
+    "Suryapet",
+    "Vikarabad",
+    "Wanaparthy",
+    "Warangal Rural",
+    "Warangal Urban",
+    "Yadadri Bhuvanagiri",
+  ],
+  Tripura: [
+    "Dhalai",
+    "Gomati",
+    "Khowai",
+    "North Tripura",
+    "Sepahijala",
+    "South Tripura",
+    "Unakoti",
+    "West Tripura",
+  ],
+  "Uttar Pradesh": [
+    "Agra",
+    "Aligarh",
+    "Ambedkar Nagar",
+    "Amethi",
+    "Amroha",
+    "Auraiya",
+    "Ayodhya",
+    "Azamgarh",
+    "Baghpat",
+    "Bahraich",
+    "Ballia",
+    "Balrampur",
+    "Banda",
+    "Barabanki",
+    "Bareilly",
+    "Basti",
+    "Bhadohi",
+    "Bijnor",
+    "Budaun",
+    "Bulandshahr",
+    "Chandauli",
+    "Chitrakoot",
+    "Deoria",
+    "Etah",
+    "Etawah",
+    "Firozabad",
+    "Gautam Buddh Nagar",
+    "Ghaziabad",
+    "Ghazipur",
+    "Gonda",
+    "Gorakhpur",
+    "Hamirpur",
+    "Hapur",
+    "Hardoi",
+    "Hathras",
+    "Jalaun",
+    "Jaunpur",
+    "Jhansi",
+    "Kannauj",
+    "Kanpur Dehat",
+    "Kanpur Nagar",
+    "Kasganj",
+    "Kaushambi",
+    "Kheri",
+    "Kushinagar",
+    "Maharajganj",
+    "Mahoba",
+    "Mainpuri",
+    "Mathura",
+    "Mau",
+    "Meerut",
+    "Mirzapur",
+    "Moradabad",
+    "Muzaffarnagar",
+    "Pilibhit",
+    "Pratapgarh",
+    "Raebareli",
+    "Rampur",
+    "Saharanpur",
+    "Sambhal",
+    "Sant Kabir Nagar",
+    "Shahjahanpur",
+    "Shamli",
+    "Shravasti",
+    "Siddharthnagar",
+    "Sitapur",
+    "Sonbhadra",
+    "Sultanpur",
+    "Unnao",
+    "Varanasi",
+  ],
+  Uttarakhand: [
+    "Almora",
+    "Bageshwar",
+    "Chamoli",
+    "Champawat",
+    "Dehradun",
+    "Haridwar",
+    "Nainital",
+    "Pauri Garhwal",
+    "Pithoragarh",
+    "Rudraprayag",
+    "Tehri Garhwal",
+    "Udham Singh Nagar",
+    "Uttarkashi",
+  ],
+  "West Bengal": [
+    "Alipurduar",
+    "Bankura",
+    "Birbhum",
+    "Cooch Behar",
+    "Dakshin Dinajpur",
+    "Darjeeling",
+    "Hooghly",
+    "Howrah",
+    "Jalpaiguri",
+    "Jhargram",
+    "Kalimpong",
+    "Kolkata",
+    "Malda",
+    "Murshidabad",
+    "Nadia",
+    "North 24 Parganas",
+    "Paschim Bardhaman",
+    "Paschim Medinipur",
+    "Purba Bardhaman",
+    "Purba Medinipur",
+    "Purulia",
+    "South 24 Parganas",
+    "Uttar Dinajpur",
+  ],
+  "Andaman and Nicobar Islands": [
+    "North and Middle Andaman",
+    "Nicobar",
+    "South Andaman",
+  ],
+  Chandigarh: ["Chandigarh"],
+  "Dadra & Nagar Haveli and Daman & Diu": [
+    "Dadra & Nagar Haveli",
+    "Daman",
+    "Diu",
+  ],
+  Delhi: [
+    "Central Delhi",
+    "East Delhi",
+    "New Delhi",
+    "North Delhi",
+    "North East Delhi",
+    "North West Delhi",
+    "Shahdara",
+    "South Delhi",
+    "South East Delhi",
+    "South West Delhi",
+    "West Delhi",
+  ],
+  "Jammu & Kashmir": [
+    "Anantnag",
+    "Bandipora",
+    "Baramulla",
+    "Budgam",
+    "Doda",
+    "Ganderbal",
+    "Jammu",
+    "Kulgam",
+    "Kathua",
+    "Kupwara",
+    "Poonch",
+    "Pulwama",
+    "Rajouri",
+    "Ramban",
+    "Reasi",
+    "Samba",
+    "Shopian",
+    "Srinagar",
+    "Udhampur",
+  ],
+  Ladakh: ["Kargil", "Leh"],
+  Lakshadweep: ["Lakshadweep"],
+  Puducherry: ["Karaikal", "Mahe", "Puducherry", "Yanam"],
 };
 
 const sportsDisciplines = [
-  "Karate", "Taekwondo", "Judo", "Wrestling", "Boxing", "Kickboxing", "Mixed Martial Arts",
-  "Kabaddi", "Football", "Volleyball", "Basketball", "Cricket", "Handball", "Kho-Kho",
-  "Athletics", "Archery", "Shooting", "Fencing", "Badminton", "Table Tennis", "Yoga Sports"
+  "Karate",
+  "Taekwondo",
+  "Judo",
+  "Wrestling",
+  "Boxing",
+  "Kickboxing",
+  "Mixed Martial Arts",
+  "Kabaddi",
+  "Football",
+  "Volleyball",
+  "Basketball",
+  "Cricket",
+  "Handball",
+  "Kho-Kho",
+  "Athletics",
+  "Archery",
+  "Shooting",
+  "Fencing",
+  "Badminton",
+  "Table Tennis",
+  "Yoga Sports",
 ];
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const Registration = () => {
   const { t } = useLanguage();
@@ -86,13 +846,13 @@ const Registration = () => {
     transactionId: "",
     paymentProof: null,
     loading: false,
-    kitSize: "", 
+    kitSize: "",
     parentContactNumber: "", // New Field
     paymentSettings: {
-      upiId: '',
-      merchantName: '',
-      amount: '500'
-    }
+      upiId: "",
+      merchantName: "",
+      amount: "500",
+    },
   });
 
   const [files, setFiles] = useState({
@@ -100,7 +860,7 @@ const Registration = () => {
     signature: null,
     aadharFront: null,
     aadharBack: null,
-    paymentProof: null
+    paymentProof: null,
   });
 
   const [previews, setPreviews] = useState({
@@ -108,7 +868,7 @@ const Registration = () => {
     signature: null,
     aadharFront: null,
     aadharBack: null,
-    paymentProof: null
+    paymentProof: null,
   });
 
   const [registrationResult, setRegistrationResult] = useState(null);
@@ -127,9 +887,9 @@ const Registration = () => {
       const response = await fetch(`${API_BASE_URL}/settings/payment`);
       const result = await response.json();
       if (result.success) {
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
-          paymentSettings: result.data
+          paymentSettings: result.data,
         }));
       }
     } catch (error) {
@@ -143,13 +903,13 @@ const Registration = () => {
     if (savedDraft) {
       try {
         const parsedDraft = JSON.parse(savedDraft);
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
           ...parsedDraft,
           loading: false, // Reset non-persistent states
-          toast: { message: "", type: "" }
+          toast: { message: "", type: "" },
         }));
-        
+
         const savedStep = localStorage.getItem("itf_reg_step");
         if (savedStep) setStep(parseInt(savedStep));
       } catch (err) {
@@ -160,11 +920,19 @@ const Registration = () => {
 
   useEffect(() => {
     // Only save persistent fields (exclude files and ephemeral states)
-    const { 
-      photo, signature, aadharFront, aadharBack, paymentProof, 
-      loading, toast, otpValue, otpSent, ...persistentData 
+    const {
+      photo,
+      signature,
+      aadharFront,
+      aadharBack,
+      paymentProof,
+      loading,
+      toast,
+      otpValue,
+      otpSent,
+      ...persistentData
     } = formData;
-    
+
     localStorage.setItem("itf_reg_draft", JSON.stringify(persistentData));
     localStorage.setItem("itf_reg_step", step.toString());
   }, [formData, step]);
@@ -174,7 +942,6 @@ const Registration = () => {
     localStorage.removeItem("itf_reg_step");
   };
   // --- END PERSISTENCE ---
-
 
   useEffect(() => {
     let interval = null;
@@ -191,7 +958,7 @@ const Registration = () => {
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   // Age calculation logic
@@ -199,18 +966,22 @@ const Registration = () => {
     if (!dobString) return "";
     const today = new Date();
     const birthDate = new Date(dobString);
-    
+
     let years = today.getFullYear() - birthDate.getFullYear();
     let months = today.getMonth() - birthDate.getMonth();
     let days = today.getDate() - birthDate.getDate();
 
     if (months < 0 || (months === 0 && days < 0)) {
       years--;
-      months += (months < 0 ? 12 : 0);
+      months += months < 0 ? 12 : 0;
     }
-    
+
     if (days < 0) {
-      const prevMonthLastDay = new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+      const prevMonthLastDay = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        0,
+      ).getDate();
       days += prevMonthLastDay;
       months--;
       if (months < 0) {
@@ -227,13 +998,15 @@ const Registration = () => {
     if (cleanAadhar.length === 12) {
       const checkAadhar = async () => {
         try {
-          const res = await fetch(`${API_BASE_URL}/registrations/check-availability?aadharNumber=${cleanAadhar}`);
+          const res = await fetch(
+            `${API_BASE_URL}/registrations/check-availability?aadharNumber=${cleanAadhar}`,
+          );
           const data = await res.json();
           if (!data.success) {
             showToast(data.message, "error");
-            setErrors(prev => ({ ...prev, aadharNumber: true }));
+            setErrors((prev) => ({ ...prev, aadharNumber: true }));
           } else {
-            setErrors(prev => {
+            setErrors((prev) => {
               const { aadharNumber, ...rest } = prev;
               return rest;
             });
@@ -248,14 +1021,14 @@ const Registration = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => {
+    setFormData((prev) => {
       let newValue = value;
 
       // Auto-format Aadhar: 0000 0000 0000
       if (name === "aadharNumber") {
-        const digits = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        const digits = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
         const parts = digits.match(/.{1,4}/g);
-        newValue = parts ? parts.join(' ').substring(0, 14) : digits;
+        newValue = parts ? parts.join(" ").substring(0, 14) : digits;
       }
 
       const newData = { ...prev, [name]: newValue };
@@ -270,14 +1043,14 @@ const Registration = () => {
     const { name, files: selectedFiles } = e.target;
     if (selectedFiles && selectedFiles[0]) {
       const file = selectedFiles[0];
-      
-      if (!file.type.startsWith('image/')) {
+
+      if (!file.type.startsWith("image/")) {
         showToast("Only image files are allowed", "error");
         return;
       }
 
-      const fieldsToCrop = ['photo', 'signature', 'aadharFront', 'aadharBack'];
-      
+      const fieldsToCrop = ["photo", "signature", "aadharFront", "aadharBack"];
+
       if (fieldsToCrop.includes(name)) {
         const reader = new FileReader();
         reader.onload = () => {
@@ -286,11 +1059,10 @@ const Registration = () => {
         };
         reader.readAsDataURL(file);
       } else {
-
-        setFiles(prev => ({ ...prev, [name]: file }));
+        setFiles((prev) => ({ ...prev, [name]: file }));
         const reader = new FileReader();
         reader.onload = (event) => {
-          setPreviews(prev => ({ ...prev, [name]: event.target.result }));
+          setPreviews((prev) => ({ ...prev, [name]: event.target.result }));
         };
         reader.readAsDataURL(file);
       }
@@ -299,67 +1071,67 @@ const Registration = () => {
 
   const handleCropComplete = (croppedFile) => {
     const fieldName = cropField;
-    setFiles(prev => ({ ...prev, [fieldName]: croppedFile }));
-    
+    setFiles((prev) => ({ ...prev, [fieldName]: croppedFile }));
+
     const reader = new FileReader();
     reader.onload = (e) => {
-      setPreviews(prev => ({ ...prev, [fieldName]: e.target.result }));
+      setPreviews((prev) => ({ ...prev, [fieldName]: e.target.result }));
     };
     reader.readAsDataURL(croppedFile);
-    
+
     setCropImage(null);
     setCropField(null);
   };
 
-
   const handleStateChange = (e) => {
     const state = e.target.value;
-    setFormData(prev => ({ ...prev, state: state, district: "" }));
+    setFormData((prev) => ({ ...prev, state: state, district: "" }));
   };
 
   const showToast = (message, type = "info") => {
-    setFormData(prev => ({ ...prev, toast: { message, type } }));
+    setFormData((prev) => ({ ...prev, toast: { message, type } }));
     setTimeout(() => {
-      setFormData(prev => ({ ...prev, toast: { message: "", type: "" } }));
+      setFormData((prev) => ({ ...prev, toast: { message: "", type: "" } }));
     }, 3000);
   };
 
   const handleSendOTP = async () => {
-    if (!formData.email || !formData.email.includes('@')) {
-      setErrors(prev => ({ ...prev, email: true }));
+    if (!formData.email || !formData.email.includes("@")) {
+      setErrors((prev) => ({ ...prev, email: true }));
       return;
     }
-    
-    setFormData(prev => ({ ...prev, loading: true }));
+
+    setFormData((prev) => ({ ...prev, loading: true }));
     try {
       // First Check if email is already registered
-      const checkRes = await fetch(`${API_BASE_URL}/registrations/check-availability?email=${formData.email}`);
+      const checkRes = await fetch(
+        `${API_BASE_URL}/registrations/check-availability?email=${formData.email}`,
+      );
       const checkData = await checkRes.json();
-      
+
       if (!checkData.success) {
         throw new Error(checkData.message);
       }
 
       const response = await fetch(`${API_BASE_URL}/otp/send`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: formData.email })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email }),
       });
       const data = await response.json();
-      
+
       if (data.success) {
-        setFormData(prev => ({ ...prev, otpSent: true, loading: false }));
+        setFormData((prev) => ({ ...prev, otpSent: true, loading: false }));
         setResendTimer(180); // 3 minutes
         showToast("OTP code sent successfully to " + formData.email, "success");
       } else {
         throw new Error(data.message || "Failed to send OTP");
       }
     } catch (err) {
-      setFormData(prev => ({ ...prev, loading: false }));
+      setFormData((prev) => ({ ...prev, loading: false }));
       showToast(err.message, "error");
     }
   };
-
 
   const handleVerifyOTP = async () => {
     const code = formData.otpValue.join("");
@@ -368,24 +1140,29 @@ const Registration = () => {
       return;
     }
 
-    setFormData(prev => ({ ...prev, loading: true }));
+    setFormData((prev) => ({ ...prev, loading: true }));
     try {
       const response = await fetch(`${API_BASE_URL}/otp/verify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: formData.email, otp: code })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email, otp: code }),
       });
       const data = await response.json();
 
       if (data.success) {
-        setFormData(prev => ({ ...prev, isEmailVerified: true, otpSent: false, loading: false }));
+        setFormData((prev) => ({
+          ...prev,
+          isEmailVerified: true,
+          otpSent: false,
+          loading: false,
+        }));
         showToast("Email Verified Successfully!", "success");
       } else {
         throw new Error(data.message || "Invalid OTP");
       }
     } catch (err) {
-      setFormData(prev => ({ ...prev, loading: false }));
-      setErrors(prev => ({ ...prev, otpValue: true }));
+      setFormData((prev) => ({ ...prev, loading: false }));
+      setErrors((prev) => ({ ...prev, otpValue: true }));
       showToast(err.message, "error");
     }
   };
@@ -394,7 +1171,7 @@ const Registration = () => {
     if (isNaN(value)) return;
     const newOtp = [...formData.otpValue];
     newOtp[index] = value.substring(value.length - 1);
-    setFormData(prev => ({ ...prev, otpValue: newOtp }));
+    setFormData((prev) => ({ ...prev, otpValue: newOtp }));
 
     // Auto-focus next
     if (value && index < 5) {
@@ -411,10 +1188,23 @@ const Registration = () => {
   const validateStep = (currentStep) => {
     const newErrors = {};
     const stepFields = {
-      1: ["fullName", "fatherName", "dob", "gender", "bloodGroup", "kitSize", "email", "sportsDiscipline", "qualification", "fatherOccupation", "contactNumber", "parentContactNumber"],
+      1: [
+        "fullName",
+        "fatherName",
+        "dob",
+        "gender",
+        "bloodGroup",
+        "kitSize",
+        "email",
+        "sportsDiscipline",
+        "qualification",
+        "fatherOccupation",
+        "contactNumber",
+        "parentContactNumber",
+      ],
       2: ["villageCity", "po", "ps", "block", "state", "district", "pinCode"],
       3: ["aadharNumber", "photo", "signature", "aadharFront", "aadharBack"],
-      4: ["transactionId", "paymentProof"]
+      4: ["transactionId", "paymentProof"],
     };
 
     if (currentStep === 1 && !formData.isEmailVerified) {
@@ -422,24 +1212,41 @@ const Registration = () => {
       showToast("Verification Required", "warning");
     }
 
-    const fileFields = ["photo", "signature", "aadharFront", "aadharBack", "paymentProof"];
+    const fileFields = [
+      "photo",
+      "signature",
+      "aadharFront",
+      "aadharBack",
+      "paymentProof",
+    ];
 
-    stepFields[currentStep].forEach(field => {
+    stepFields[currentStep].forEach((field) => {
       if (fileFields.includes(field)) {
         if (!files[field]) newErrors[field] = true;
-      } else {
-        if (!formData[field]) newErrors[field] = true;
+        return;
       }
+
+      if (field === "aadharNumber") {
+        const cleanAadhar = (formData.aadharNumber || "").replace(/\s/g, "");
+        if (!/^[0-9]{12}$/.test(cleanAadhar)) {
+          newErrors.aadharNumber = true;
+        }
+        return;
+      }
+
+      if (!formData[field]) newErrors[field] = true;
     });
 
     setErrors(newErrors);
-    
+
     if (Object.keys(newErrors).length > 0) {
       // Scroll to first error
       const firstErrorField = Object.keys(newErrors)[0];
-      const element = document.getElementsByName(firstErrorField)[0] || document.getElementById(firstErrorField);
+      const element =
+        document.getElementsByName(firstErrorField)[0] ||
+        document.getElementById(firstErrorField);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
       }
       return false;
     }
@@ -451,17 +1258,20 @@ const Registration = () => {
     if (!validateStep(step)) return;
 
     // Real-time Uniqueness Check
-    setFormData(prev => ({ ...prev, loading: true }));
+    setFormData((prev) => ({ ...prev, loading: true }));
     try {
       let query = "";
       if (step === 1) {
         query = `fullName=${formData.fullName}&fatherName=${formData.fatherName}&dob=${formData.dob}`;
       } else if (step === 3) {
-        query = `aadharNumber=${formData.aadharNumber}`;
+        const cleanAadhar = (formData.aadharNumber || "").replace(/\s/g, "");
+        query = `aadharNumber=${encodeURIComponent(cleanAadhar)}`;
       }
 
       if (query) {
-        const res = await fetch(`${API_BASE_URL}/registrations/check-availability?${query}`);
+        const res = await fetch(
+          `${API_BASE_URL}/registrations/check-availability?${query}`,
+        );
         const data = await res.json();
         if (!data.success) {
           throw new Error(data.message);
@@ -473,38 +1283,48 @@ const Registration = () => {
     } catch (err) {
       showToast(err.message, "error");
     } finally {
-      setFormData(prev => ({ ...prev, loading: false }));
+      setFormData((prev) => ({ ...prev, loading: false }));
     }
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateStep(4)) return;
-    
-    setFormData(prev => ({ ...prev, loading: true }));
+
+    setFormData((prev) => ({ ...prev, loading: true }));
     showToast("Processing registration...", "info");
 
     try {
       const data = new FormData();
-      
+
       // Append form fields
-      Object.keys(formData).forEach(key => {
-        if (!['photo', 'signature', 'aadharFront', 'aadharBack', 'paymentProof', 'otpValue', 'toast', 'loading'].includes(key)) {
+      Object.keys(formData).forEach((key) => {
+        if (
+          ![
+            "photo",
+            "signature",
+            "aadharFront",
+            "aadharBack",
+            "paymentProof",
+            "otpValue",
+            "toast",
+            "loading",
+          ].includes(key)
+        ) {
           data.append(key, formData[key]);
         }
       });
 
       // Append files
-      Object.keys(files).forEach(key => {
+      Object.keys(files).forEach((key) => {
         if (files[key]) {
           data.append(key, files[key]);
         }
       });
 
       const response = await fetch(`${API_BASE_URL}/registrations/register`, {
-        method: 'POST',
-        body: data
+        method: "POST",
+        body: data,
       });
 
       let result;
@@ -513,14 +1333,16 @@ const Registration = () => {
         result = await response.json();
       } else {
         const text = await response.text();
-        throw new Error(`Server Error: ${response.status}. ${text.substring(0, 50)}...`);
+        throw new Error(
+          `Server Error: ${response.status}. ${text.substring(0, 50)}...`,
+        );
       }
 
       if (response.ok && result.success) {
         setRegistrationResult({
           regNo: result.data.registrationNumber,
           date: new Date().toLocaleDateString(),
-          ...formData
+          ...formData,
         });
         clearDraft(); // Cleanup on success
         setStep(5);
@@ -530,8 +1352,11 @@ const Registration = () => {
       }
     } catch (err) {
       console.error("Registration Submission Error:", err);
-      setFormData(prev => ({ ...prev, loading: false }));
-      showToast(err.message || "An unexpected error occurred. Please try again.", "error");
+      setFormData((prev) => ({ ...prev, loading: false }));
+      showToast(
+        err.message || "An unexpected error occurred. Please try again.",
+        "error",
+      );
     }
   };
 
@@ -547,12 +1372,18 @@ const Registration = () => {
             <div className="banner-track">
               {[1, 2, 3, 4, 5].map((num) => (
                 <div className="bg-image-box" key={num}>
-                  <img src={`/club_image/athlete_banner_${num}.jpeg`} alt="ITF India Athlete" />
+                  <img
+                    src={`/club_image/athlete_banner_${num}.jpeg`}
+                    alt="ITF India Athlete"
+                  />
                 </div>
               ))}
               {[1, 2, 3, 4, 5].map((num) => (
                 <div className="bg-image-box" key={`dup-${num}`}>
-                  <img src={`/club_image/athlete_banner_${num}.jpeg`} alt="ITF India Athlete" />
+                  <img
+                    src={`/club_image/athlete_banner_${num}.jpeg`}
+                    alt="ITF India Athlete"
+                  />
                 </div>
               ))}
             </div>
@@ -560,7 +1391,9 @@ const Registration = () => {
           </div>
           <div className="container hero-content">
             <h1>Registration Successful</h1>
-            <p className="hero-desc">Your official ITF OF INDIA athlete profile has been created.</p>
+            <p className="hero-desc">
+              Your official ITF OF INDIA athlete profile has been created.
+            </p>
           </div>
         </section>
 
@@ -568,22 +1401,44 @@ const Registration = () => {
           <div className="success-modal fade-in">
             <div className="success-icon">✓</div>
             <h2>Registration Successful!</h2>
-            <p className="success-message">Thank you, <strong>{registrationResult.fullName}</strong>. Your athlete registration has been successfully recorded.</p>
-            
+            <p className="success-message">
+              Thank you, <strong>{registrationResult.fullName}</strong>. Your
+              athlete registration has been successfully recorded.
+            </p>
+
             <div className="ref-box">
               <span>Your Reference ID</span>
               <div className="ref-id">{registrationResult.regNo}</div>
-              <div className="utr-badge">UTR: {registrationResult.transactionId}</div>
+              <div className="utr-badge">
+                UTR: {registrationResult.transactionId}
+              </div>
             </div>
 
             <div className="next-steps">
-              <p>Your application is currently <strong>pending for verification</strong>. After successful approval, you will receive a confirmation email at your registered Mail ID.</p>
-              <p style={{marginTop: '10px', fontSize: '0.8rem', opacity: 0.8}}>Please save this Reference ID for future trials and documentation.</p>
+              <p>
+                Your application is currently{" "}
+                <strong>pending for verification</strong>. After successful
+                approval, you will receive a confirmation email at your
+                registered Mail ID.
+              </p>
+              <p
+                style={{ marginTop: "10px", fontSize: "0.8rem", opacity: 0.8 }}
+              >
+                Please save this Reference ID for future trials and
+                documentation.
+              </p>
             </div>
 
             <div className="modal-actions">
-              <button className="btn-premium" onClick={() => setStep(1)}>Register Another</button>
-              <button className="btn-outline" onClick={() => window.location.href = "/"}>Back to Home</button>
+              <button className="btn-premium" onClick={() => setStep(1)}>
+                Register Another
+              </button>
+              <button
+                className="btn-outline"
+                onClick={() => (window.location.href = "/")}
+              >
+                Back to Home
+              </button>
             </div>
           </div>
         </div>
@@ -595,13 +1450,11 @@ const Registration = () => {
     <div className="registration-page">
       {/* Image Cropper Modal */}
       {cropImage && (
-        <ImageCropper 
-          image={cropImage} 
-          cropShape={cropField === 'photo' ? 'round' : 'rect'}
+        <ImageCropper
+          image={cropImage}
+          cropShape={cropField === "photo" ? "round" : "rect"}
           aspect={
-            cropField === 'photo' ? 1 : 
-            cropField === 'signature' ? 3 : 
-            1.58 // Standard ID card aspect ratio for Aadhar
+            cropField === "photo" ? 1 : cropField === "signature" ? 3 : 1.58 // Standard ID card aspect ratio for Aadhar
           }
           onCropComplete={handleCropComplete}
           onCancel={() => {
@@ -611,22 +1464,26 @@ const Registration = () => {
         />
       )}
 
-
       <section className="registration-hero page-hero">
-
         {/* Continuous Background Banner */}
         <div className="hero-bg-banner no-print">
           <div className="banner-track">
             {/* Horizontal oriented images from the collection */}
             {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
               <div className="bg-image-box" key={num}>
-                <img src={`/club_image/img${num}.jpeg`} alt="ITF India Athlete" />
+                <img
+                  src={`/club_image/img${num}.jpeg`}
+                  alt="ITF India Athlete"
+                />
               </div>
             ))}
             {/* Repeat for seamless loop */}
             {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
               <div className="bg-image-box" key={`dup-${num}`}>
-                <img src={`/club_image/img${num}.jpeg`} alt="ITF India Athlete" />
+                <img
+                  src={`/club_image/img${num}.jpeg`}
+                  alt="ITF India Athlete"
+                />
               </div>
             ))}
           </div>
@@ -636,10 +1493,15 @@ const Registration = () => {
         <div className="container hero-content">
           <span className="section-tag">National Sports Portal</span>
           <h1>Athlete Registration</h1>
-          <p className="hero-desc">Secure your professional athletic identity. Join the ITF OF INDIA to access national championships, training camps, and global opportunities.</p>
+          <p className="hero-desc">
+            Secure your professional athletic identity. Join the ITF OF INDIA to
+            access national championships, training camps, and global
+            opportunities.
+          </p>
           <div className="fee-callout">
             <span className="fee-icon">🎟️</span>
-            Registration Fee: ₹{formData.paymentSettings?.amount || '500'}/- Only
+            Registration Fee: ₹{formData.paymentSettings?.amount || "500"}/-
+            Only
           </div>
         </div>
       </section>
@@ -649,7 +1511,9 @@ const Registration = () => {
           <div className="registration-layout">
             <div className="registration-main">
               {formData.toast.message && (
-                <div className={`premium-toast-bar ${formData.toast.type} fade-in`}>
+                <div
+                  className={`premium-toast-bar ${formData.toast.type} fade-in`}
+                >
                   <div className="toast-logo">
                     <img src="/logo.jpeg" alt="ITF Logo" />
                   </div>
@@ -679,49 +1543,108 @@ const Registration = () => {
                 </div>
               </div>
 
-              <form className="advanced-form registration-form-container fade-in" onSubmit={handleSubmit}>
+              <form
+                className="advanced-form registration-form-container fade-in"
+                onSubmit={handleSubmit}
+              >
                 {step === 1 && (
                   <div className="form-section">
                     <h3>Personal Identity</h3>
                     <div className="input-group">
-                      <div className={`input-field ${errors.fullName ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.fullName ? "field-error" : ""}`}
+                      >
                         <label>Full Name</label>
-                        <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="Full Name as per Aadhar" />
-                        {errors.fullName && <span className="error-msg">Full Name is required</span>}
+                        <input
+                          type="text"
+                          name="fullName"
+                          value={formData.fullName}
+                          onChange={handleInputChange}
+                          placeholder="Full Name as per Aadhar"
+                        />
+                        {errors.fullName && (
+                          <span className="error-msg">
+                            Full Name is required
+                          </span>
+                        )}
                       </div>
-                      <div className={`input-field ${errors.fatherName ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.fatherName ? "field-error" : ""}`}
+                      >
                         <label>Father's Name</label>
-                        <input type="text" name="fatherName" value={formData.fatherName} onChange={handleInputChange} placeholder="Father's Name" />
-                        {errors.fatherName && <span className="error-msg">Father's Name is required</span>}
+                        <input
+                          type="text"
+                          name="fatherName"
+                          value={formData.fatherName}
+                          onChange={handleInputChange}
+                          placeholder="Father's Name"
+                        />
+                        {errors.fatherName && (
+                          <span className="error-msg">
+                            Father's Name is required
+                          </span>
+                        )}
                       </div>
                     </div>
 
                     <div className="input-group">
-                      <div className={`input-field ${errors.dob ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.dob ? "field-error" : ""}`}
+                      >
                         <label>Date of Birth</label>
-                        <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} />
-                        {errors.dob && <span className="error-msg">Date of Birth is required</span>}
+                        <input
+                          type="date"
+                          name="dob"
+                          value={formData.dob}
+                          onChange={handleInputChange}
+                        />
+                        {errors.dob && (
+                          <span className="error-msg">
+                            Date of Birth is required
+                          </span>
+                        )}
                       </div>
                       <div className="input-field">
                         <label>Calculated Age</label>
-                        <input type="text" name="age" value={formData.age} readOnly placeholder="Years, Months, Days" className="readonly-input" />
+                        <input
+                          type="text"
+                          name="age"
+                          value={formData.age}
+                          readOnly
+                          placeholder="Years, Months, Days"
+                          className="readonly-input"
+                        />
                       </div>
                     </div>
 
                     <div className="input-group">
-                      <div className={`input-field ${errors.gender ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.gender ? "field-error" : ""}`}
+                      >
                         <label>Gender</label>
-                        <select name="gender" value={formData.gender} onChange={handleInputChange}>
+                        <select
+                          name="gender"
+                          value={formData.gender}
+                          onChange={handleInputChange}
+                        >
                           <option value="">Select Gender</option>
                           <option value="Male">Male</option>
                           <option value="Female">Female</option>
                           <option value="Other">Other</option>
                         </select>
-                        {errors.gender && <span className="error-msg">Gender is required</span>}
+                        {errors.gender && (
+                          <span className="error-msg">Gender is required</span>
+                        )}
                       </div>
-                      <div className={`input-field ${errors.bloodGroup ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.bloodGroup ? "field-error" : ""}`}
+                      >
                         <label>Blood Group</label>
-                        <select name="bloodGroup" value={formData.bloodGroup} onChange={handleInputChange}>
+                        <select
+                          name="bloodGroup"
+                          value={formData.bloodGroup}
+                          onChange={handleInputChange}
+                        >
                           <option value="">Select Blood Group</option>
                           <option value="A+">A+</option>
                           <option value="A-">A-</option>
@@ -732,14 +1655,24 @@ const Registration = () => {
                           <option value="AB+">AB+</option>
                           <option value="AB-">AB-</option>
                         </select>
-                        {errors.bloodGroup && <span className="error-msg">Blood Group is required</span>}
+                        {errors.bloodGroup && (
+                          <span className="error-msg">
+                            Blood Group is required
+                          </span>
+                        )}
                       </div>
                     </div>
 
                     <div className="input-group">
-                      <div className={`input-field ${errors.kitSize ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.kitSize ? "field-error" : ""}`}
+                      >
                         <label>Official Kit Size</label>
-                        <select name="kitSize" value={formData.kitSize} onChange={handleInputChange}>
+                        <select
+                          name="kitSize"
+                          value={formData.kitSize}
+                          onChange={handleInputChange}
+                        >
                           <option value="">Choose Uniform Size</option>
                           <option value="XS">XS (Extra Small)</option>
                           <option value="S">S (Small)</option>
@@ -749,29 +1682,35 @@ const Registration = () => {
                           <option value="XXL">XXL (Double Extra Large)</option>
                           <option value="3XL">3XL (Triple Extra Large)</option>
                         </select>
-                        {errors.kitSize && <span className="error-msg">Kit Size is required</span>}
+                        {errors.kitSize && (
+                          <span className="error-msg">
+                            Kit Size is required
+                          </span>
+                        )}
                       </div>
                       <div className="input-field">
-                         {/* Empty field for spacing or another field */}
+                        {/* Empty field for spacing or another field */}
                       </div>
                     </div>
 
-                    <div className={`input-field full ${errors.email ? 'field-error' : ''}`}>
+                    <div
+                      className={`input-field full ${errors.email ? "field-error" : ""}`}
+                    >
                       <label>Email Address</label>
                       <div className="verify-input-wrapper">
-                        <input 
-                          type="email" 
-                          name="email" 
-                          value={formData.email} 
-                          onChange={handleInputChange} 
-                          placeholder="example@email.com" 
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          placeholder="example@email.com"
                           disabled={formData.isEmailVerified}
                         />
                         {!formData.isEmailVerified && !formData.otpSent && (
-                          <button 
-                            type="button" 
-                            className="verify-btn" 
-                            onClick={handleSendOTP} 
+                          <button
+                            type="button"
+                            className="verify-btn"
+                            onClick={handleSendOTP}
                             disabled={formData.loading}
                           >
                             {formData.loading ? "Sending..." : "Send OTP"}
@@ -781,7 +1720,11 @@ const Registration = () => {
                           <span className="verified-badge">✓ Verified</span>
                         )}
                       </div>
-                      {errors.email && !formData.isEmailVerified && <span className="error-msg">Email verification required</span>}
+                      {errors.email && !formData.isEmailVerified && (
+                        <span className="error-msg">
+                          Email verification required
+                        </span>
+                      )}
                     </div>
 
                     {formData.otpSent && !formData.isEmailVerified && (
@@ -791,14 +1734,22 @@ const Registration = () => {
                             <h4>Email Verification</h4>
                             <p>Enter the 6-digit code to proceed</p>
                           </div>
-                          <span 
-                            className={`resend-link ${formData.loading || resendTimer > 0 ? 'disabled' : ''}`} 
-                            onClick={(!formData.loading && resendTimer === 0) ? handleSendOTP : null}
+                          <span
+                            className={`resend-link ${formData.loading || resendTimer > 0 ? "disabled" : ""}`}
+                            onClick={
+                              !formData.loading && resendTimer === 0
+                                ? handleSendOTP
+                                : null
+                            }
                           >
-                            {formData.loading ? "Processing..." : (resendTimer > 0 ? `Resend in ${formatTime(resendTimer)}` : "Resend OTP")}
+                            {formData.loading
+                              ? "Processing..."
+                              : resendTimer > 0
+                                ? `Resend in ${formatTime(resendTimer)}`
+                                : "Resend OTP"}
                           </span>
                         </div>
-                        
+
                         <div className="otp-digit-container">
                           {formData.otpValue.map((digit, idx) => (
                             <input
@@ -809,7 +1760,9 @@ const Registration = () => {
                               pattern="[0-9]*"
                               maxLength="1"
                               value={digit}
-                              onChange={(e) => handleOtpChange(idx, e.target.value)}
+                              onChange={(e) =>
+                                handleOtpChange(idx, e.target.value)
+                              }
                               onKeyDown={(e) => handleOtpKeyDown(idx, e)}
                               className="otp-digit-box"
                               placeholder="•"
@@ -818,84 +1771,140 @@ const Registration = () => {
                         </div>
 
                         <div className="otp-actions">
-                          <button 
-                            type="button" 
-                            className="btn-premium w-full" 
+                          <button
+                            type="button"
+                            className="btn-premium w-full"
                             onClick={handleVerifyOTP}
                             disabled={formData.loading}
                           >
-                            {formData.loading ? "Verifying..." : "Verify & Authenticate Code"}
+                            {formData.loading
+                              ? "Verifying..."
+                              : "Verify & Authenticate Code"}
                           </button>
                         </div>
                       </div>
                     )}
 
                     <div className="input-group">
-                      <div className={`input-field ${errors.sportsDiscipline ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.sportsDiscipline ? "field-error" : ""}`}
+                      >
                         <label>Sports Discipline</label>
-                        <select name="sportsDiscipline" value={formData.sportsDiscipline} onChange={handleInputChange}>
+                        <select
+                          name="sportsDiscipline"
+                          value={formData.sportsDiscipline}
+                          onChange={handleInputChange}
+                        >
                           <option value="">Select Discipline</option>
-                          {sportsDisciplines.map(s => <option key={s} value={s}>{s}</option>)}
+                          {sportsDisciplines.map((s) => (
+                            <option key={s} value={s}>
+                              {s}
+                            </option>
+                          ))}
                         </select>
-                        {errors.sportsDiscipline && <span className="error-msg">Discipline is required</span>}
+                        {errors.sportsDiscipline && (
+                          <span className="error-msg">
+                            Discipline is required
+                          </span>
+                        )}
                       </div>
-                      <div className={`input-field ${errors.qualification ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.qualification ? "field-error" : ""}`}
+                      >
                         <label>Educational Qualification</label>
-                        <input type="text" name="qualification" value={formData.qualification} onChange={handleInputChange} placeholder="e.g. 10th, Graduate" />
-                        {errors.qualification && <span className="error-msg">Qualification is required</span>}
+                        <input
+                          type="text"
+                          name="qualification"
+                          value={formData.qualification}
+                          onChange={handleInputChange}
+                          placeholder="e.g. 10th, Graduate"
+                        />
+                        {errors.qualification && (
+                          <span className="error-msg">
+                            Qualification is required
+                          </span>
+                        )}
                       </div>
                     </div>
 
                     <div className="input-group">
-                      <div className={`input-field ${errors.fatherOccupation ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.fatherOccupation ? "field-error" : ""}`}
+                      >
                         <label>Father's Occupation</label>
-                        <input type="text" name="fatherOccupation" value={formData.fatherOccupation} onChange={handleInputChange} placeholder="Father's Occupation" />
-                        {errors.fatherOccupation && <span className="error-msg">Occupation is required</span>}
+                        <input
+                          type="text"
+                          name="fatherOccupation"
+                          value={formData.fatherOccupation}
+                          onChange={handleInputChange}
+                          placeholder="Father's Occupation"
+                        />
+                        {errors.fatherOccupation && (
+                          <span className="error-msg">
+                            Occupation is required
+                          </span>
+                        )}
                       </div>
-                      <div className={`input-field ${errors.contactNumber ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.contactNumber ? "field-error" : ""}`}
+                      >
                         <label>Athlete Contact Number</label>
                         <div className="phone-input-group">
                           <span className="phone-prefix">+91</span>
-                          <input 
-                            type="tel" 
-                            name="contactNumber" 
-                            value={formData.contactNumber} 
-                            onChange={handleInputChange} 
-                            placeholder="10 Digit Number" 
-                            maxLength="10" 
-                            inputMode="tel" 
-                            pattern="[0-9]*" 
+                          <input
+                            type="tel"
+                            name="contactNumber"
+                            value={formData.contactNumber}
+                            onChange={handleInputChange}
+                            placeholder="10 Digit Number"
+                            maxLength="10"
+                            inputMode="tel"
+                            pattern="[0-9]*"
                           />
                         </div>
-                        {errors.contactNumber && <span className="error-msg">Contact number is required</span>}
+                        {errors.contactNumber && (
+                          <span className="error-msg">
+                            Contact number is required
+                          </span>
+                        )}
                       </div>
                     </div>
 
                     <div className="input-group">
-                      <div className={`input-field ${errors.parentContactNumber ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.parentContactNumber ? "field-error" : ""}`}
+                      >
                         <label>Parent / Guardian Contact</label>
                         <div className="phone-input-group">
                           <span className="phone-prefix">+91</span>
-                          <input 
-                            type="tel" 
-                            name="parentContactNumber" 
-                            value={formData.parentContactNumber} 
-                            onChange={handleInputChange} 
-                            placeholder="Emergency Contact Number" 
-                            maxLength="10" 
-                            inputMode="tel" 
-                            pattern="[0-9]*" 
+                          <input
+                            type="tel"
+                            name="parentContactNumber"
+                            value={formData.parentContactNumber}
+                            onChange={handleInputChange}
+                            placeholder="Emergency Contact Number"
+                            maxLength="10"
+                            inputMode="tel"
+                            pattern="[0-9]*"
                           />
                         </div>
-                        {errors.parentContactNumber && <span className="error-msg">Parent's contact is required</span>}
+                        {errors.parentContactNumber && (
+                          <span className="error-msg">
+                            Parent's contact is required
+                          </span>
+                        )}
                       </div>
-                      <div className="input-field">
-                        {/* Spacing */}
-                      </div>
+                      <div className="input-field">{/* Spacing */}</div>
                     </div>
 
                     <div className="form-footer-actions">
-                      <button type="button" className="btn-premium" onClick={handleNext}>Next Step: Address Details →</button>
+                      <button
+                        type="button"
+                        className="btn-premium"
+                        onClick={handleNext}
+                      >
+                        Next Step: Address Details →
+                      </button>
                     </div>
                   </div>
                 )}
@@ -904,68 +1913,158 @@ const Registration = () => {
                   <div className="form-section">
                     <h3>Residency Details</h3>
                     <div className="input-group">
-                      <div className={`input-field ${errors.villageCity ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.villageCity ? "field-error" : ""}`}
+                      >
                         <label>Village / City</label>
-                        <input type="text" name="villageCity" value={formData.villageCity} onChange={handleInputChange} placeholder="Village or City" />
-                        {errors.villageCity && <span className="error-msg">Village/City is required</span>}
+                        <input
+                          type="text"
+                          name="villageCity"
+                          value={formData.villageCity}
+                          onChange={handleInputChange}
+                          placeholder="Village or City"
+                        />
+                        {errors.villageCity && (
+                          <span className="error-msg">
+                            Village/City is required
+                          </span>
+                        )}
                       </div>
-                      <div className={`input-field ${errors.po ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.po ? "field-error" : ""}`}
+                      >
                         <label>Post Office (P.O.)</label>
-                        <input type="text" name="po" value={formData.po} onChange={handleInputChange} placeholder="P.O." />
-                        {errors.po && <span className="error-msg">Post Office is required</span>}
+                        <input
+                          type="text"
+                          name="po"
+                          value={formData.po}
+                          onChange={handleInputChange}
+                          placeholder="P.O."
+                        />
+                        {errors.po && (
+                          <span className="error-msg">
+                            Post Office is required
+                          </span>
+                        )}
                       </div>
                     </div>
 
                     <div className="input-group">
-                      <div className={`input-field ${errors.ps ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.ps ? "field-error" : ""}`}
+                      >
                         <label>Police Station (P.S.)</label>
-                        <input type="text" name="ps" value={formData.ps} onChange={handleInputChange} placeholder="P.S." />
-                        {errors.ps && <span className="error-msg">Police Station is required</span>}
+                        <input
+                          type="text"
+                          name="ps"
+                          value={formData.ps}
+                          onChange={handleInputChange}
+                          placeholder="P.S."
+                        />
+                        {errors.ps && (
+                          <span className="error-msg">
+                            Police Station is required
+                          </span>
+                        )}
                       </div>
-                      <div className={`input-field ${errors.block ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.block ? "field-error" : ""}`}
+                      >
                         <label>Block</label>
-                        <input type="text" name="block" value={formData.block} onChange={handleInputChange} placeholder="Block Name" />
-                        {errors.block && <span className="error-msg">Block is required</span>}
+                        <input
+                          type="text"
+                          name="block"
+                          value={formData.block}
+                          onChange={handleInputChange}
+                          placeholder="Block Name"
+                        />
+                        {errors.block && (
+                          <span className="error-msg">Block is required</span>
+                        )}
                       </div>
                     </div>
 
                     <div className="input-group">
-                      <div className={`input-field ${errors.state ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.state ? "field-error" : ""}`}
+                      >
                         <label>State</label>
-                        <select name="state" value={formData.state} onChange={handleStateChange}>
+                        <select
+                          name="state"
+                          value={formData.state}
+                          onChange={handleStateChange}
+                        >
                           <option value="">Select State</option>
-                          {Object.keys(stateDistrictMap).map(s => <option key={s} value={s}>{s}</option>)}
+                          {Object.keys(stateDistrictMap).map((s) => (
+                            <option key={s} value={s}>
+                              {s}
+                            </option>
+                          ))}
                         </select>
-                        {errors.state && <span className="error-msg">State is required</span>}
+                        {errors.state && (
+                          <span className="error-msg">State is required</span>
+                        )}
                       </div>
-                      <div className={`input-field ${errors.district ? 'field-error' : ''}`}>
+                      <div
+                        className={`input-field ${errors.district ? "field-error" : ""}`}
+                      >
                         <label>District</label>
-                        <select name="district" value={formData.district} onChange={handleInputChange} disabled={!formData.state}>
+                        <select
+                          name="district"
+                          value={formData.district}
+                          onChange={handleInputChange}
+                          disabled={!formData.state}
+                        >
                           <option value="">Select District</option>
-                          {formData.state && stateDistrictMap[formData.state].map(d => <option key={d} value={d}>{d}</option>)}
+                          {formData.state &&
+                            stateDistrictMap[formData.state].map((d) => (
+                              <option key={d} value={d}>
+                                {d}
+                              </option>
+                            ))}
                         </select>
-                        {errors.district && <span className="error-msg">District is required</span>}
+                        {errors.district && (
+                          <span className="error-msg">
+                            District is required
+                          </span>
+                        )}
                       </div>
                     </div>
 
-                    <div className={`input-field full ${errors.pinCode ? 'field-error' : ''}`}>
+                    <div
+                      className={`input-field full ${errors.pinCode ? "field-error" : ""}`}
+                    >
                       <label>Pin Code</label>
-                      <input 
-                        type="text" 
-                        name="pinCode" 
-                        value={formData.pinCode} 
-                        onChange={handleInputChange} 
-                        placeholder="6 Digit Pin Code" 
-                        maxLength="6" 
-                        inputMode="numeric" 
-                        pattern="[0-9]*" 
+                      <input
+                        type="text"
+                        name="pinCode"
+                        value={formData.pinCode}
+                        onChange={handleInputChange}
+                        placeholder="6 Digit Pin Code"
+                        maxLength="6"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
                       />
-                      {errors.pinCode && <span className="error-msg">Pin Code is required</span>}
+                      {errors.pinCode && (
+                        <span className="error-msg">Pin Code is required</span>
+                      )}
                     </div>
 
                     <div className="form-buttons">
-                      <button type="button" className="btn-outline" onClick={() => setStep(1)}>← Previous</button>
-                      <button type="button" className="btn-premium" onClick={handleNext}>Next Step: Identity Documents →</button>
+                      <button
+                        type="button"
+                        className="btn-outline"
+                        onClick={() => setStep(1)}
+                      >
+                        ← Previous
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-premium"
+                        onClick={handleNext}
+                      >
+                        Next Step: Identity Documents →
+                      </button>
                     </div>
                   </div>
                 )}
@@ -973,121 +2072,235 @@ const Registration = () => {
                 {step === 3 && (
                   <div className="form-section">
                     <h3>Identity & Documents</h3>
-                    <div className={`input-field full ${errors.aadharNumber ? 'field-error' : ''}`} style={{ marginBottom: '2.5rem' }}>
-                      <label>Aadhar Card Number (12 Digits)</label>
-                      <input 
-                        type="text" 
-                        name="aadharNumber" 
-                        value={formData.aadharNumber} 
-                        onChange={handleInputChange} 
-                        placeholder="0000 0000 0000" 
-                        maxLength="12" 
-                        inputMode="numeric" 
-                        pattern="[0-9]*" 
+                    <div
+                      className={`input-field full ${errors.aadharNumber ? "field-error" : ""}`}
+                      style={{ marginBottom: "2.5rem" }}
+                    >
+                      <label>Aadhaar Card Number (12 Digits)</label>
+                      <input
+                        type="text"
+                        name="aadharNumber"
+                        value={formData.aadharNumber}
+                        onChange={handleInputChange}
+                        placeholder="1234 5678 9123"
+                        maxLength="14"
+                        inputMode="numeric"
+                        pattern="[0-9 ]*"
+                        autoComplete="off"
                       />
-                      {errors.aadharNumber && <span className="error-msg">Aadhar Number is required</span>}
+                      <div className="input-note">
+                        Enter exactly 12 digits. Spaces are added automatically
+                        for readability.
+                      </div>
+                      {errors.aadharNumber && (
+                        <span className="error-msg">
+                          Aadhaar number must contain 12 digits
+                        </span>
+                      )}
                     </div>
 
                     <div className="upload-grid">
-                      <div id="photo" className={`upload-card ${previews.photo ? 'has-file' : ''} ${errors.photo ? 'card-error' : ''}`}>
+                      <div
+                        id="photo"
+                        className={`upload-card ${previews.photo ? "has-file" : ""} ${errors.photo ? "card-error" : ""}`}
+                      >
                         <div className="card-icon">📷</div>
                         <div className="card-info">
                           <h4>Passport Photo</h4>
                           <p>Formal background, Max 2MB</p>
-                          {errors.photo && <span className="error-msg">Photo is required</span>}
+                          {errors.photo && (
+                            <span className="error-msg">Photo is required</span>
+                          )}
                         </div>
                         <div className="upload-action-area">
                           {previews.photo ? (
                             <div className="preview-container">
                               <img src={previews.photo} alt="Passport" />
-                              <button type="button" className="change-file-btn" onClick={() => document.getElementById('photo-upload').click()}>
+                              <button
+                                type="button"
+                                className="change-file-btn"
+                                onClick={() =>
+                                  document
+                                    .getElementById("photo-upload")
+                                    .click()
+                                }
+                              >
                                 <span>Change Photo</span>
                               </button>
                             </div>
                           ) : (
                             <div className="upload-btn-wrapper">
-                              <label htmlFor="photo-upload" className="btn-premium btn-small">
+                              <label
+                                htmlFor="photo-upload"
+                                className="btn-premium btn-small"
+                              >
                                 <span>Upload Photo</span>
                               </label>
-                              <input type="file" id="photo-upload" name="photo" accept="image/*" onChange={handleFileChange} style={{display: 'none'}} />
+                              <input
+                                type="file"
+                                id="photo-upload"
+                                name="photo"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                style={{ display: "none" }}
+                              />
                             </div>
                           )}
                         </div>
                       </div>
 
-                      <div id="signature" className={`upload-card ${previews.signature ? 'has-file' : ''} ${errors.signature ? 'card-error' : ''}`}>
+                      <div
+                        id="signature"
+                        className={`upload-card ${previews.signature ? "has-file" : ""} ${errors.signature ? "card-error" : ""}`}
+                      >
                         <div className="card-icon">✍️</div>
                         <div className="card-info">
                           <h4>Athlete Signature</h4>
                           <p>Scanned copy on white paper</p>
-                          {errors.signature && <span className="error-msg">Signature is required</span>}
+                          {errors.signature && (
+                            <span className="error-msg">
+                              Signature is required
+                            </span>
+                          )}
                         </div>
                         <div className="upload-action-area">
                           {previews.signature ? (
                             <div className="preview-container">
                               <img src={previews.signature} alt="Signature" />
-                              <button type="button" className="change-file-btn" onClick={() => document.getElementById('sig-upload').click()}>
+                              <button
+                                type="button"
+                                className="change-file-btn"
+                                onClick={() =>
+                                  document.getElementById("sig-upload").click()
+                                }
+                              >
                                 <span>Change Signature</span>
                               </button>
                             </div>
                           ) : (
                             <div className="upload-btn-wrapper">
-                              <label htmlFor="sig-upload" className="btn-premium btn-small">
+                              <label
+                                htmlFor="sig-upload"
+                                className="btn-premium btn-small"
+                              >
                                 <span>Upload Signature</span>
                               </label>
-                              <input type="file" id="sig-upload" name="signature" accept="image/*" onChange={handleFileChange} style={{display: 'none'}} />
+                              <input
+                                type="file"
+                                id="sig-upload"
+                                name="signature"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                style={{ display: "none" }}
+                              />
                             </div>
                           )}
                         </div>
                       </div>
 
-                      <div id="aadharFront" className={`upload-card ${previews.aadharFront ? 'has-file' : ''} ${errors.aadharFront ? 'card-error' : ''}`}>
+                      <div
+                        id="aadharFront"
+                        className={`upload-card ${previews.aadharFront ? "has-file" : ""} ${errors.aadharFront ? "card-error" : ""}`}
+                      >
                         <div className="card-icon">🆔</div>
                         <div className="card-info">
                           <h4>Aadhar Front</h4>
                           <p>Front side of Aadhar Card</p>
-                          {errors.aadharFront && <span className="error-msg">Front side is required</span>}
+                          {errors.aadharFront && (
+                            <span className="error-msg">
+                              Front side is required
+                            </span>
+                          )}
                         </div>
                         <div className="upload-action-area">
                           {previews.aadharFront ? (
                             <div className="preview-container">
-                              <img src={previews.aadharFront} alt="Aadhar Front" />
-                              <button type="button" className="change-file-btn" onClick={() => document.getElementById('aadhar-front-upload').click()}>
+                              <img
+                                src={previews.aadharFront}
+                                alt="Aadhar Front"
+                              />
+                              <button
+                                type="button"
+                                className="change-file-btn"
+                                onClick={() =>
+                                  document
+                                    .getElementById("aadhar-front-upload")
+                                    .click()
+                                }
+                              >
                                 <span>Change Front</span>
                               </button>
                             </div>
                           ) : (
                             <div className="upload-btn-wrapper">
-                              <label htmlFor="aadhar-front-upload" className="btn-premium btn-small">
+                              <label
+                                htmlFor="aadhar-front-upload"
+                                className="btn-premium btn-small"
+                              >
                                 <span>Upload Front</span>
                               </label>
-                              <input type="file" id="aadhar-front-upload" name="aadharFront" accept="image/*" onChange={handleFileChange} style={{display: 'none'}} />
+                              <input
+                                type="file"
+                                id="aadhar-front-upload"
+                                name="aadharFront"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                style={{ display: "none" }}
+                              />
                             </div>
                           )}
                         </div>
                       </div>
 
-                      <div id="aadharBack" className={`upload-card ${previews.aadharBack ? 'has-file' : ''} ${errors.aadharBack ? 'card-error' : ''}`}>
+                      <div
+                        id="aadharBack"
+                        className={`upload-card ${previews.aadharBack ? "has-file" : ""} ${errors.aadharBack ? "card-error" : ""}`}
+                      >
                         <div className="card-icon">🆔</div>
                         <div className="card-info">
                           <h4>Aadhar Back</h4>
                           <p>Back side of Aadhar Card</p>
-                          {errors.aadharBack && <span className="error-msg">Back side is required</span>}
+                          {errors.aadharBack && (
+                            <span className="error-msg">
+                              Back side is required
+                            </span>
+                          )}
                         </div>
                         <div className="upload-action-area">
                           {previews.aadharBack ? (
                             <div className="preview-container">
-                              <img src={previews.aadharBack} alt="Aadhar Back" />
-                              <button type="button" className="change-file-btn" onClick={() => document.getElementById('aadhar-back-upload').click()}>
+                              <img
+                                src={previews.aadharBack}
+                                alt="Aadhar Back"
+                              />
+                              <button
+                                type="button"
+                                className="change-file-btn"
+                                onClick={() =>
+                                  document
+                                    .getElementById("aadhar-back-upload")
+                                    .click()
+                                }
+                              >
                                 <span>Change Back</span>
                               </button>
                             </div>
                           ) : (
                             <div className="upload-btn-wrapper">
-                              <label htmlFor="aadhar-back-upload" className="btn-premium btn-small">
+                              <label
+                                htmlFor="aadhar-back-upload"
+                                className="btn-premium btn-small"
+                              >
                                 <span>Upload Back</span>
                               </label>
-                              <input type="file" id="aadhar-back-upload" name="aadharBack" accept="image/*" onChange={handleFileChange} style={{display: 'none'}} />
+                              <input
+                                type="file"
+                                id="aadhar-back-upload"
+                                name="aadharBack"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                style={{ display: "none" }}
+                              />
                             </div>
                           )}
                         </div>
@@ -1095,8 +2308,20 @@ const Registration = () => {
                     </div>
 
                     <div className="form-buttons">
-                      <button type="button" className="btn-outline" onClick={() => setStep(2)}>← Previous</button>
-                      <button type="button" className="btn-premium" onClick={handleNext}>Proceed to Payment →</button>
+                      <button
+                        type="button"
+                        className="btn-outline"
+                        onClick={() => setStep(2)}
+                      >
+                        ← Previous
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-premium"
+                        onClick={handleNext}
+                      >
+                        Proceed to Payment →
+                      </button>
                     </div>
                   </div>
                 )}
@@ -1119,7 +2344,9 @@ const Registration = () => {
                       </div>
                       <div className="summary-amount">
                         <label>Registration Fee</label>
-                        <div className="price">₹{formData.paymentSettings?.amount || '500'}.00</div>
+                        <div className="price">
+                          ₹{formData.paymentSettings?.amount || "500"}.00
+                        </div>
                       </div>
                     </div>
 
@@ -1131,15 +2358,15 @@ const Registration = () => {
                         </div>
                         <div className="qr-image-wrapper">
                           {formData.paymentSettings?.upiId ? (
-                            <QRCodeSVG 
-                              value={`upi://pay?pa=${formData.paymentSettings.upiId}&pn=${encodeURIComponent(formData.paymentSettings.merchantName)}&am=${formData.paymentSettings.amount}&cu=INR`} 
+                            <QRCodeSVG
+                              value={`upi://pay?pa=${formData.paymentSettings.upiId}&pn=${encodeURIComponent(formData.paymentSettings.merchantName)}&am=${formData.paymentSettings.amount}&cu=INR`}
                               size={180}
                               level="H"
                               includeMargin={true}
                             />
                           ) : (
                             <div className="qr-placeholder">
-                               <p>Loading Gateway...</p>
+                              <p>Loading Gateway...</p>
                             </div>
                           )}
                         </div>
@@ -1148,39 +2375,73 @@ const Registration = () => {
                         </div>
                       </div>
 
-                      <div className={`payment-form-side ${errors.transactionId ? 'field-error' : ''}`}>
+                      <div
+                        className={`payment-form-side ${errors.transactionId ? "field-error" : ""}`}
+                      >
                         <div className="input-field full">
                           <label>Transaction ID / UTR Number</label>
-                          <input 
-                            type="text" 
-                            name="transactionId" 
-                            value={formData.transactionId} 
-                            onChange={handleInputChange} 
-                            placeholder="12 Digit UTR or Transaction ID" 
-                            inputMode="numeric" 
-                            pattern="[0-9]*" 
+                          <input
+                            type="text"
+                            name="transactionId"
+                            value={formData.transactionId}
+                            onChange={handleInputChange}
+                            placeholder="12 Digit UTR or Transaction ID"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                           />
-                          {errors.transactionId && <span className="error-msg">Transaction ID is required</span>}
+                          {errors.transactionId && (
+                            <span className="error-msg">
+                              Transaction ID is required
+                            </span>
+                          )}
                         </div>
 
-                        <div id="paymentProof" className={`upload-card small-card ${previews.paymentProof ? 'has-file' : ''} ${errors.paymentProof ? 'card-error' : ''}`}>
+                        <div
+                          id="paymentProof"
+                          className={`upload-card small-card ${previews.paymentProof ? "has-file" : ""} ${errors.paymentProof ? "card-error" : ""}`}
+                        >
                           <div className="card-info">
                             <h4>Payment Proof</h4>
                             <p>Screenshot of success screen</p>
-                            {errors.paymentProof && <span className="error-msg">Payment proof is required</span>}
+                            {errors.paymentProof && (
+                              <span className="error-msg">
+                                Payment proof is required
+                              </span>
+                            )}
                           </div>
                           <div className="upload-action-area">
                             {previews.paymentProof ? (
                               <div className="preview-container mini">
                                 <img src={previews.paymentProof} alt="Proof" />
-                                <button type="button" className="change-file-btn" onClick={() => document.getElementById('proof-upload').click()}>Change</button>
+                                <button
+                                  type="button"
+                                  className="change-file-btn"
+                                  onClick={() =>
+                                    document
+                                      .getElementById("proof-upload")
+                                      .click()
+                                  }
+                                >
+                                  Change
+                                </button>
                               </div>
                             ) : (
                               <div className="upload-btn-wrapper">
-                                <label htmlFor="proof-upload" className="btn-premium btn-small">
+                                <label
+                                  htmlFor="proof-upload"
+                                  className="btn-premium btn-small"
+                                >
                                   <span>Upload Proof</span>
                                 </label>
-                                <input type="file" id="proof-upload" name="paymentProof" accept="image/*" onChange={handleFileChange} required style={{display: 'none'}} />
+                                <input
+                                  type="file"
+                                  id="proof-upload"
+                                  name="paymentProof"
+                                  accept="image/*"
+                                  onChange={handleFileChange}
+                                  required
+                                  style={{ display: "none" }}
+                                />
                               </div>
                             )}
                           </div>
@@ -1189,9 +2450,22 @@ const Registration = () => {
                     </div>
 
                     <div className="form-buttons">
-                      <button type="button" className="btn-outline" onClick={() => setStep(3)} disabled={formData.loading}>← Previous</button>
-                      <button type="submit" className="btn-premium" disabled={formData.loading}>
-                        {formData.loading ? "Verifying & Saving..." : "Complete Registration & Verify →"}
+                      <button
+                        type="button"
+                        className="btn-outline"
+                        onClick={() => setStep(3)}
+                        disabled={formData.loading}
+                      >
+                        ← Previous
+                      </button>
+                      <button
+                        type="submit"
+                        className="btn-premium"
+                        disabled={formData.loading}
+                      >
+                        {formData.loading
+                          ? "Verifying & Saving..."
+                          : "Complete Registration & Verify →"}
                       </button>
                     </div>
                   </div>
@@ -1203,23 +2477,23 @@ const Registration = () => {
               <div className="info-card glass">
                 <h4>Steps to Register</h4>
                 <div className="steps-list">
-                  <div className={`step-guide ${step >= 1 ? 'done' : ''}`}>
+                  <div className={`step-guide ${step >= 1 ? "done" : ""}`}>
                     <span className="dot"></span>
                     <p>01. Personal Identity</p>
                   </div>
-                  <div className={`step-guide ${step >= 2 ? 'done' : ''}`}>
+                  <div className={`step-guide ${step >= 2 ? "done" : ""}`}>
                     <span className="dot"></span>
                     <p>02. Residency Details</p>
                   </div>
-                  <div className={`step-guide ${step >= 3 ? 'done' : ''}`}>
+                  <div className={`step-guide ${step >= 3 ? "done" : ""}`}>
                     <span className="dot"></span>
                     <p>03. Identity Documents</p>
                   </div>
-                  <div className={`step-guide ${step >= 4 ? 'done' : ''}`}>
+                  <div className={`step-guide ${step >= 4 ? "done" : ""}`}>
                     <span className="dot"></span>
                     <p>04. Payment Verification</p>
                   </div>
-                  <div className={`step-guide ${step >= 5 ? 'done' : ''}`}>
+                  <div className={`step-guide ${step >= 5 ? "done" : ""}`}>
                     <span className="dot"></span>
                     <p>05. Official Receipt</p>
                   </div>
@@ -1228,7 +2502,10 @@ const Registration = () => {
 
               <div className="info-card glass danger-card">
                 <h4>Payment Notice</h4>
-                <p className="warning-text">Registration fees are <strong>Non-Refundable</strong> under any circumstances. Please verify all details before payment.</p>
+                <p className="warning-text">
+                  Registration fees are <strong>Non-Refundable</strong> under
+                  any circumstances. Please verify all details before payment.
+                </p>
               </div>
 
               <div className="info-card glass">
