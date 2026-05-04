@@ -135,6 +135,44 @@ const Registration = () => {
     }
   };
 
+  // --- PERSISTENCE LOGIC (Draft Caching) ---
+  useEffect(() => {
+    const savedDraft = localStorage.getItem("itf_reg_draft");
+    if (savedDraft) {
+      try {
+        const parsedDraft = JSON.parse(savedDraft);
+        setFormData(prev => ({
+          ...prev,
+          ...parsedDraft,
+          loading: false, // Reset non-persistent states
+          toast: { message: "", type: "" }
+        }));
+        
+        const savedStep = localStorage.getItem("itf_reg_step");
+        if (savedStep) setStep(parseInt(savedStep));
+      } catch (err) {
+        console.error("Failed to restore draft:", err);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    // Only save persistent fields (exclude files and ephemeral states)
+    const { 
+      photo, signature, aadharFront, aadharBack, paymentProof, 
+      loading, toast, otpValue, otpSent, ...persistentData 
+    } = formData;
+    
+    localStorage.setItem("itf_reg_draft", JSON.stringify(persistentData));
+    localStorage.setItem("itf_reg_step", step.toString());
+  }, [formData, step]);
+
+  const clearDraft = () => {
+    localStorage.removeItem("itf_reg_draft");
+    localStorage.removeItem("itf_reg_step");
+  };
+  // --- END PERSISTENCE ---
+
 
   useEffect(() => {
     let interval = null;
@@ -473,6 +511,7 @@ const Registration = () => {
           date: new Date().toLocaleDateString(),
           ...formData
         });
+        clearDraft(); // Cleanup on success
         setStep(5);
         window.scrollTo(0, 0);
       } else {
