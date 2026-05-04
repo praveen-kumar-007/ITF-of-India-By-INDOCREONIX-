@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileCheck, UserPlus, ArrowRight } from 'lucide-react';
+import { FileCheck, UserPlus, ArrowRight, RefreshCcw } from 'lucide-react';
 import './ReceiptGenerator.css';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const ReceiptGenerator = () => {
   const navigate = useNavigate();
@@ -19,14 +21,34 @@ const ReceiptGenerator = () => {
     status: 'APPROVED' // Default to Approved for admin generation
   });
 
-  // Generate a mock Receipt ID if empty
+  const [loadingId, setLoadingId] = useState(false);
+
+  // Fetch a unique Receipt ID from server
   useEffect(() => {
-    if (!formData.regNo) {
-      const year = new Date().getFullYear();
-      const random = Math.floor(1000 + Math.random() * 9000);
-      setFormData(prev => ({ ...prev, regNo: `ITF/OFFLINE/${year}/${random}` }));
-    }
+    fetchUniqueId();
   }, []);
+
+  const fetchUniqueId = async () => {
+    setLoadingId(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/registrations/generate-id?type=offline`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const result = await response.json();
+      if (result.success) {
+        setFormData(prev => ({ ...prev, regNo: result.data.regNo }));
+      }
+    } catch (error) {
+      console.error('Error generating ID:', error);
+      // Fallback to local random if API fails (though not ideal)
+      const year = new Date().getFullYear();
+      const random = Math.floor(10000 + Math.random() * 90000);
+      setFormData(prev => ({ ...prev, regNo: `ITF/OFFLINE/${year}/${random}` }));
+    } finally {
+      setLoadingId(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -87,14 +109,25 @@ const ReceiptGenerator = () => {
             <div className="form-row">
               <div className="form-group">
                 <label>Receipt Number</label>
-                <input 
-                  type="text" 
-                  name="regNo" 
-                  value={formData.regNo} 
-                  onChange={handleInputChange} 
-                  placeholder="e.g. ITF/REG/2026/001"
-                  required
-                />
+                <div className="input-with-action">
+                  <input 
+                    type="text" 
+                    name="regNo" 
+                    value={formData.regNo} 
+                    onChange={handleInputChange} 
+                    placeholder={loadingId ? 'Generating...' : 'e.g. ITF/REG/2026/001'}
+                    required
+                  />
+                  <button 
+                    type="button" 
+                    className="action-btn" 
+                    onClick={fetchUniqueId} 
+                    title="Generate New ID"
+                    disabled={loadingId}
+                  >
+                    <RefreshCcw size={16} className={loadingId ? 'spin' : ''} />
+                  </button>
+                </div>
               </div>
               <div className="form-group">
                 <label>Registration Date</label>

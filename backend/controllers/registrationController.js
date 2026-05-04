@@ -16,6 +16,30 @@ const getPublicId = (url) => {
 };
 
 /**
+ * Helper to generate a unique Registration Number
+ */
+const generateUniqueRegId = async (prefix = 'ITF/REG') => {
+  const { queryData } = require('../services/firebaseService');
+  let regNo;
+  let isUnique = false;
+  let attempts = 0;
+
+  while (!isUnique && attempts < 10) {
+    const year = new Date().getFullYear();
+    const random = Math.floor(10000 + Math.random() * 90000); // 5 digit random
+    regNo = `${prefix}/${year}/${random}`;
+    
+    // Check in DB
+    const existing = await queryData('registrations', 'registrationNumber', regNo);
+    if (existing.length === 0) {
+      isUnique = true;
+    }
+    attempts++;
+  }
+  return regNo;
+};
+
+/**
  * Handle athlete registration
  */
 const registerAthlete = async (req, res, next) => {
@@ -61,7 +85,7 @@ const registerAthlete = async (req, res, next) => {
       }
     }
 
-    const regNo = `ITF/REG/${new Date().getFullYear()}/${Math.floor(1000 + Math.random() * 9000)}`;
+    const regNo = await generateUniqueRegId();
     const registrationData = { ...formData, ...uploadedUrls, registrationNumber: regNo, status: 'pending' };
     const docId = await saveData('registrations', registrationData);
 
@@ -221,12 +245,9 @@ const updateRegistration = async (req, res, next) => {
   }
 };
 
-/**
- * Check availability
- */
 const checkAvailability = async (req, res, next) => {
   try {
-    const { email, contactNumber, aadharNumber, fullName, fatherName, dob } = req.query;
+    const { email, contactNumber, aadharNumber, fullName, fatherName, dob, registrationNumber } = req.query;
     const { queryData } = require('../services/firebaseService');
 
     if (email) {
@@ -248,8 +269,26 @@ const checkAvailability = async (req, res, next) => {
       );
       if (identityMatch) return sendError(res, 400, 'Identity already registered.');
     }
+    if (registrationNumber) {
+      const existing = await queryData('registrations', 'registrationNumber', registrationNumber);
+      if (existing.length > 0) return sendError(res, 400, 'Registration Number already in use.');
+    }
 
     sendSuccess(res, 200, 'Available');
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Generate Unique ID API
+ */
+const getUniqueId = async (req, res, next) => {
+  try {
+    const { type } = req.query;
+    const prefix = type === 'offline' ? 'ITF/OFFLINE' : 'ITF/REG';
+    const regNo = await generateUniqueRegId(prefix);
+    sendSuccess(res, 200, 'ID generated', { regNo });
   } catch (error) {
     next(error);
   }
@@ -265,5 +304,6 @@ module.exports = {
   checkAvailability,
   restoreRegistration,
   permanentDeleteRegistration,
-  emptyTrash
+  emptyTrash,
+  getUniqueId
 };

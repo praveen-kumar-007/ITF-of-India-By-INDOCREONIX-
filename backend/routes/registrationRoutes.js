@@ -7,7 +7,8 @@ const {
   getRegistrationById,
   updateRegistrationStatus,
   updateRegistration,
-  deleteRegistration
+  deleteRegistration,
+  getUniqueId
 } = require('../controllers/registrationController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 const { authLimiter } = require('../middleware/rateLimiter');
@@ -28,6 +29,7 @@ router.get('/check-availability', (req, res, next) => {
   const { checkAvailability } = require('../controllers/registrationController');
   checkAvailability(req, res, next);
 });
+router.get('/generate-id', protect, getUniqueId);
 router.post('/register', authLimiter, cpUpload, validate(athleteRegistrationSchema), registerAthlete); // Public
 
 router.get('/', protect, getRegistrations);
