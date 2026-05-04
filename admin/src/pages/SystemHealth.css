@@ -7,8 +7,8 @@
   --glass-border: rgba(255, 255, 255, 0.3);
 }
 
-.desktop-only { display: block; }
-.mobile-only { display: none; }
+.desktop-only { display: flex !important; }
+.mobile-only { display: none !important; }
 
 .system-health-page {
   padding: 2rem;
@@ -552,11 +552,11 @@
   }
 
   .desktop-only {
-    display: none;
+    display: none !important;
   }
 
   .mobile-only {
-    display: flex;
+    display: flex !important;
   }
 
   .mobile-action-row {

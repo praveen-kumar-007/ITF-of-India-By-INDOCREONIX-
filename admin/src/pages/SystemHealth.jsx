@@ -88,7 +88,7 @@ const SystemHealth = () => {
     const days = Math.floor(seconds / (3600 * 24));
     const hours = Math.floor((seconds % (3600 * 24)) / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
+    const secs = Math.floor(seconds % 60);
     return `${days}d ${hours}h ${mins}m ${secs}s`;
   };
 
@@ -117,7 +117,7 @@ const SystemHealth = () => {
               <span>LIVE</span>
             </div>
           </div>
-          <div className="mobile-action-row">
+          <div className="mobile-action-row mobile-only">
             <div className="master-clock-display">
               <div className="clock-label">
                 <span className="flag-icon">🇮🇳</span>
