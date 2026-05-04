@@ -1660,13 +1660,13 @@ const Registration = () => {
                   </div>
                   <div className="payment-detail">
                     <label>Status</label>
-                    <span className="status-pending-pill">Under Verification</span>
+                    <span className="status-pill status-pending">PENDING FOR VERIFICATION</span>
                   </div>
                 </div>
               </div>
 
               <div className="verification-notice-box">
-                <p>This is a computer-generated official receipt for your registration with ITF OF INDIA. Application is currently under official review. Our verification team will contact you on your registered mobile/email within <strong>2-3 working days</strong> for the final approval.</p>
+                <p>This is a computer-generated official receipt for your registration with ITF OF INDIA. This document serves as proof of registration for national records and participation in sanctioned events.</p>
               </div>
             </div>
 

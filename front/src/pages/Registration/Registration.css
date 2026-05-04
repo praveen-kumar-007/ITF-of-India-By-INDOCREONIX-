@@ -1732,13 +1732,32 @@
   margin-bottom: 5px;
 }
 
-.status-pending-pill {
-  background: #fef3c7;
-  color: #92400e;
-  padding: 5px 12px;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 0.85rem;
+.status-pending-pill,
+.status-pill {
+  padding: 6px 15px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.status-pending {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.status-approved {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.status-rejected {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .document-footer {
@@ -1843,26 +1862,47 @@
   to { transform: scale(1); opacity: 1; }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .receipt-professional-document {
-    padding: 2.5rem;
+    padding: 2rem !important;
+    min-height: auto !important;
+    transform: scale(0.95);
+    transform-origin: top center;
+    margin-bottom: -50px;
   }
   .info-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1rem !important;
   }
-  .info-cell.full-width {
-    grid-column: span 2;
+  .document-header {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+  .org-names h1 {
+    font-size: 1.2rem !important;
+  }
+  .doc-logo {
+    width: 50px !important;
+    height: 50px !important;
   }
 }
 
-@media (max-width: 600px) {
-  .document-header { flex-direction: column; gap: 2rem; }
-  .doc-meta { text-align: left; width: 100%; }
-  .info-grid { grid-template-columns: 1fr; }
-  .info-cell.full-width { grid-column: span 1; }
-  .payment-status-box { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-  .signature-area { flex-direction: column; align-items: center; gap: 4rem; }
-  .sig-box { width: 100%; }
+@media (max-width: 480px) {
+  .receipt-professional-document {
+    padding: 1.5rem !important;
+    transform: scale(0.85);
+  }
+  .info-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .org-names h1 {
+    font-size: 1rem !important;
+  }
+  .reg-badge {
+    font-size: 0.6rem !important;
+    padding: 4px 10px !important;
+  }
 }
 
 @media print {
@@ -1910,23 +1950,32 @@
     border: 1px solid #000 !important; 
     width: 100% !important; 
     max-width: 100% !important; 
-    padding: 20mm !important; 
+    padding: 15mm !important; 
     min-height: auto !important; 
+    height: 260mm !important; /* Force fit to A4 height */
     margin: 0 !important;
     border-radius: 0 !important;
     position: relative !important;
-    overflow: visible !important;
+    overflow: hidden !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   .document-header { 
     border-bottom: 2pt solid #000 !important; 
-    margin-bottom: 30pt !important; 
-    padding-bottom: 15pt !important;
+    margin-bottom: 20pt !important; 
+    padding-bottom: 10pt !important;
+  }
+
+  .doc-section {
+    margin-bottom: 15pt !important;
   }
 
   .section-divider {
     border-bottom: 1pt solid #000 !important;
-    margin-bottom: 15pt !important;
+    margin-bottom: 10pt !important;
+    font-size: 11pt !important;
   }
 
   .section-divider::after { 
@@ -1936,13 +1985,14 @@
   .payment-status-box { 
     border: 1pt solid #000 !important; 
     background: #f8fafc !important; 
-    padding: 15pt !important;
+    padding: 10pt !important;
   }
 
   .verification-notice-box { 
     border: 1pt dashed #ef4444 !important; 
     background: #fdf2f2 !important; 
-    padding: 15pt !important;
+    padding: 10pt !important;
+    font-size: 9pt !important;
   }
 
   .reg-badge { 
@@ -1951,12 +2001,33 @@
     border: 1pt solid #fbbf24 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+    padding: 5pt 15pt !important;
+  }
+
+  .doc-logo {
+    width: 60pt !important;
+    height: 60pt !important;
+    object-fit: contain !important;
   }
 
 
+  .info-grid {
+    gap: 8pt !important;
+  }
+
+  .info-cell label {
+    font-size: 7pt !important;
+    margin-bottom: 2pt !important;
+  }
+
+  .info-cell span {
+    font-size: 10pt !important;
+  }
+
   .official-seal {
-    width: 120pt !important;
-    height: 120pt !important;
+    width: 100pt !important;
+    height: 100pt !important;
+    top: -80pt !important;
   }
 
   .sig-line {
