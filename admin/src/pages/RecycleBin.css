@@ -323,29 +323,22 @@
 
 .card-actions {
     display: flex;
-    gap: 12px;
+    gap: 15px;
     justify-content: center; /* Center for 1 button */
-    flex-wrap: wrap;
+    padding-top: 1.2rem;
+    border-top: 1px solid #f1f5f9;
 }
 
-/* 2 or more buttons: Spread to corners/distribute */
+/* 2 or more buttons: Corners/Distribution */
 .card-actions:has(button:nth-child(2)) {
     justify-content: space-between;
 }
 
 .card-actions button {
-    flex: 0 1 auto; /* Allow buttons to have their own width */
-    min-width: 120px; /* Ensure buttons have a substantial presence */
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 0.9rem;
-    border-radius: 14px;
-    border: none;
-    font-weight: 800;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.3s;
+    flex: 0 1 auto;
+    min-width: 90px;
+    padding: 0.65rem 1.2rem;
+    font-size: 0.75rem;
 }
 
 .btn-restore {

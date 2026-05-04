@@ -9,6 +9,7 @@ import Profile from './pages/Profile';
 import PlayerDetails from './pages/PlayerDetails';
 import RecycleBin from './pages/RecycleBin';
 import SystemHealth from './pages/SystemHealth';
+import PaymentSettings from './pages/PaymentSettings';
 import { ToastProvider } from './context/ToastContext';
 
 import './styles/Global.css';
@@ -98,6 +99,7 @@ function App() {
                         <Route path="/system-health" element={<SystemHealth />} />
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/recycle-bin" element={<RecycleBin />} />
+                        <Route path="/payment-settings" element={<PaymentSettings />} />
                       </Routes>
 
                     </div>

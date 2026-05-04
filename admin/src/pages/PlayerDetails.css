@@ -467,13 +467,23 @@
     }
 
     .final-actions {
-        flex-direction: row; /* Keep as row for smart alignment */
+        display: flex;
+        flex-direction: row;
+        justify-content: center; /* Center for 1 button */
         gap: 1rem;
+        width: 100%;
+    }
+
+    /* 2 or more buttons: Corners/Distribution */
+    .final-actions:has(button:nth-child(2)) {
+        justify-content: space-between;
     }
 
     .action-btn {
-        width: auto; /* Don't force full width to allow corner distribution */
-        min-width: 140px;
+        flex: 0 1 auto;
+        min-width: 100px;
+        padding: 0.7rem 1.2rem;
+        font-size: 0.8rem;
         justify-content: center;
     }
 }

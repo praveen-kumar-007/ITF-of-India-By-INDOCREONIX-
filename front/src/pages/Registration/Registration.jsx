@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLanguage } from "../../context/LanguageContext";
 import ImageCropper from "../../components/ImageCropper/ImageCropper";
+import { QRCodeSVG } from "qrcode.react";
 import "./Registration.css";
 
 
@@ -84,7 +85,11 @@ const Registration = () => {
     toast: { message: "", type: "" },
     transactionId: "",
     paymentProof: null,
-    loading: false
+    loading: false,
+    paymentSettings: {
+      upiUrl: '',
+      amount: '500'
+    }
   });
 
   const [files, setFiles] = useState({
@@ -109,6 +114,25 @@ const Registration = () => {
   const [cropImage, setCropImage] = useState(null);
   const [cropField, setCropField] = useState(null);
   const receiptRef = useRef();
+
+  useEffect(() => {
+    fetchPaymentSettings();
+  }, []);
+
+  const fetchPaymentSettings = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/settings/payment`);
+      const result = await response.json();
+      if (result.success) {
+        setFormData(prev => ({
+          ...prev,
+          paymentSettings: result.data
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to fetch payment settings");
+    }
+  };
 
 
   useEffect(() => {
@@ -562,7 +586,7 @@ const Registration = () => {
           <span className="section-tag">National Sports Portal</span>
           <h1>Athlete Registration</h1>
           <p className="hero-desc">Secure your professional athletic identity. Join the ITF OF INDIA to access national championships, training camps, and global opportunities.</p>
-          <div className="fee-callout">Registration Fee: ₹500/- Only</div>
+          <div className="fee-callout">Registration Fee: ₹{formData.paymentSettings?.amount || '500'}/- Only</div>
         </div>
       </section>
 
@@ -966,7 +990,7 @@ const Registration = () => {
                       </div>
                       <div className="summary-amount">
                         <label>Registration Fee</label>
-                        <div className="price">₹500.00</div>
+                        <div className="price">₹{formData.paymentSettings?.amount || '500'}.00</div>
                       </div>
                     </div>
 
@@ -977,7 +1001,18 @@ const Registration = () => {
                           <p>Use any UPI App (GPay, PhonePe, Paytm)</p>
                         </div>
                         <div className="qr-image-wrapper">
-                          <img src="/qr_code.png" alt="Payment QR Code" />
+                          {formData.paymentSettings?.upiUrl ? (
+                            <QRCodeSVG 
+                              value={`${formData.paymentSettings.upiUrl}&am=${formData.paymentSettings.amount}`} 
+                              size={180}
+                              level="H"
+                              includeMargin={true}
+                            />
+                          ) : (
+                            <div className="qr-placeholder">
+                               <p>Loading Gateway...</p>
+                            </div>
+                          )}
                         </div>
                         <div className="qr-footer">
                           <span>ITF OF INDIA NATIONAL TRUST</span>

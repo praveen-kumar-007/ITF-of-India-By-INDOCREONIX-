@@ -1041,9 +1041,74 @@
   to { opacity: 1; transform: translate(-50%, 0); }
 }
 
-@media (max-width: 768px) {
-  .toast-notification {
-    width: 90%;
-    top: 20px;
+/* --- Professional Buttons --- */
+.btn-premium {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 10px; /* Sharper, professional edging */
+  font-weight: 800;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
+}
+
+.btn-outline {
+  background: white;
+  color: #64748b;
+  border: 1.5px solid #e2e8f0;
+  padding: 0.8rem 2rem;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-outline:hover {
+  border-color: #f97316;
+  color: #f97316;
+  background: #fff7ed;
+}
+
+.btn-small {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.8rem;
+}
+
+.form-footer-actions {
+  display: flex;
+  justify-content: center; /* Center single button */
+  width: 100%;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between; /* Spread two buttons */
+  gap: 1rem;
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  .form-buttons {
+    flex-direction: column-reverse;
+  }
+  .form-buttons button {
+    width: 100%;
   }
 }

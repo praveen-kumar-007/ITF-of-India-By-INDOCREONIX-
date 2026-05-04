@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, FileText, LogOut, Shield, User, Trash2, Activity } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, LogOut, Shield, User, Trash2, Activity, CreditCard } from 'lucide-react';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -55,6 +55,10 @@ const Sidebar = ({ isOpen, onClose }) => {
             <Link to="/system-health" className={`nav-item ${location.pathname === '/system-health' ? 'active' : ''}`} onClick={handleLinkClick}>
               <Activity size={20} />
               System Health
+            </Link>
+            <Link to="/payment-settings" className={`nav-item ${location.pathname === '/payment-settings' ? 'active' : ''}`} onClick={handleLinkClick}>
+              <CreditCard size={20} />
+              Payment Gateway
             </Link>
           </>
         )}
