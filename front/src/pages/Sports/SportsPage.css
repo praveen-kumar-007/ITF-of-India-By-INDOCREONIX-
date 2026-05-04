@@ -1,20 +1,3 @@
-.sports-hero-image {
-  height: 60vh;
-  min-height: 400px;
-  position: relative;
-  background: url("/club_image/img20.jpeg");
-  background-size: cover;
-  background-position: center 25%;
-  display: flex;
-  align-items: center;
-  color: white;
-  text-align: center;
-}
-
-.page-hero {
-  /* Inherits from global index.css */
-}
-
 .page-hero-bg {
   position: absolute;
   inset: 0;

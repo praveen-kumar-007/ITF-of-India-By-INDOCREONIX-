@@ -4,10 +4,6 @@
   padding-bottom: 80px;
 }
 
-.registration-hero {
-  /* Inherits from .page-hero in index.css */
-}
-
 /* Background Scrolling Images */
 .hero-bg-banner {
   position: absolute;
