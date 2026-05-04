@@ -13,7 +13,7 @@
 .admin-header h1 {
     font-size: 1.5rem;
     font-weight: 800;
-    color: var(--text-primary);
+    color: var(--primary);
 }
 
 .add-admin-btn {
