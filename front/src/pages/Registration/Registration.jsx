@@ -1594,7 +1594,7 @@ const Registration = () => {
         </section>
 
         <div className="receipt-document-wrapper">
-          <div className="receipt-professional-document short-receipt" id="printable-receipt">
+          <div className="receipt-professional-document" id="printable-receipt">
             <div className="document-header">
               <div className="org-branding">
                 <img src="/logo.jpeg" alt="ITF Logo" className="doc-logo" />
@@ -1625,18 +1625,38 @@ const Registration = () => {
                     <span>{registrationResult.fullName}</span>
                   </div>
                   <div className="info-cell">
+                    <label>Father's Name</label>
+                    <span>{registrationResult.fatherName}</span>
+                  </div>
+                  <div className="info-cell">
                     <label>Sport Discipline</label>
                     <span>{registrationResult.sportsDiscipline}</span>
+                  </div>
+                  <div className="info-cell">
+                    <label>State</label>
+                    <span>{registrationResult.state}</span>
+                  </div>
+                  <div className="info-cell">
+                    <label>District</label>
+                    <span>{registrationResult.district}</span>
+                  </div>
+                  <div className="info-cell">
+                    <label>Contact Number</label>
+                    <span>{registrationResult.contactNumber}</span>
                   </div>
                 </div>
               </div>
 
               <div className="doc-section">
-                <h3 className="section-divider">Verification Status</h3>
+                <h3 className="section-divider">Payment & Verification</h3>
                 <div className="payment-status-box">
                   <div className="payment-detail">
                     <label>Transaction ID / UTR</label>
                     <strong>{registrationResult.transactionId}</strong>
+                  </div>
+                  <div className="payment-detail">
+                    <label>Amount Paid</label>
+                    <strong>₹{registrationResult.paymentSettings?.amount || "500"}/-</strong>
                   </div>
                   <div className="payment-detail">
                     <label>Status</label>
@@ -1646,7 +1666,7 @@ const Registration = () => {
               </div>
 
               <div className="verification-notice-box">
-                <p>Application is currently under official review. Our verification team will contact you on your registered mobile/email within <strong>2-3 working days</strong> for the final approval.</p>
+                <p>This is a computer-generated official receipt for your registration with ITF OF INDIA. Application is currently under official review. Our verification team will contact you on your registered mobile/email within <strong>2-3 working days</strong> for the final approval.</p>
               </div>
             </div>
 
@@ -1660,6 +1680,7 @@ const Registration = () => {
                   />
                   <div className="sig-line"></div>
                   <p>Registrar, ITF OF INDIA</p>
+                  <p style={{ fontSize: '0.7rem', opacity: 0.6, marginTop: '5px' }}>National Headquarters, India</p>
                 </div>
               </div>
             </div>

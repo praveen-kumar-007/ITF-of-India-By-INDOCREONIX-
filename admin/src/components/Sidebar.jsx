@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, FileText, LogOut, Shield, User, Trash2, Activity, CreditCard } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, LogOut, Shield, User, Trash2, Activity, CreditCard, Printer } from 'lucide-react';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -45,6 +45,10 @@ const Sidebar = ({ isOpen, onClose }) => {
         <Link to="/applications" className={`nav-item ${location.pathname === '/applications' ? 'active' : ''}`} onClick={handleLinkClick}>
           <FileText size={20} />
           Applications
+        </Link>
+        <Link to="/receipt-generator" className={`nav-item ${location.pathname === '/receipt-generator' ? 'active' : ''}`} onClick={handleLinkClick}>
+          <Printer size={20} />
+          Receipt Generator
         </Link>
         {user.role === 'superadmin' && (
           <>

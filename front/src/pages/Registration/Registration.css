@@ -174,8 +174,8 @@
 
 .registration-form-container {
   background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
+  backdrop-filter: blur(25px);
   padding: 3.5rem;
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.5);
@@ -446,8 +446,8 @@
   padding: 2rem;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
 }
@@ -625,8 +625,8 @@
 
 .success-modal {
   background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   padding: 3.5rem;
   border-radius: 24px;
   text-align: center;
@@ -1320,16 +1320,6 @@
   background: #f59e0b;
 }
 
-@keyframes slideDownFade {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -20px);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
-}
 
 /* --- Professional Buttons --- */
 .btn-premium {
@@ -1562,35 +1552,17 @@
 .receipt-professional-document {
   background: white;
   width: 100%;
-  max-width: 900px;
-  min-height: 1100px;
-  padding: 5rem;
-  border-radius: 4px;
-  box-shadow: 0 50px 100px rgba(0, 0, 0, 0.1);
+  max-width: 850px;
+  min-height: 1000px;
+  padding: 4rem;
+  border-radius: 8px;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
-  color: #050a1f;
-  border: 15px solid #fff;
-  outline: 1px solid #e2e8f0;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
   transition: all 0.3s ease;
-}
-
-.receipt-professional-document::after {
-  content: "";
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  bottom: 10px;
-  border: 2px solid #050a1f;
-  pointer-events: none;
-  opacity: 0.1;
-}
-
-.receipt-professional-document.short-receipt {
-  min-height: auto;
-  max-width: 750px;
-  padding: 3rem;
+  margin: 0 auto;
 }
 
 .receipt-professional-document::before {
@@ -1598,14 +1570,14 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: 500px;
-  height: 500px;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  width: 600px;
+  height: 600px;
   background-image: url("/logo.jpeg");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  opacity: 0.03;
+  opacity: 0.04;
   pointer-events: none;
   z-index: 0;
 }
@@ -1894,47 +1866,112 @@
 }
 
 @media print {
-  @page { size: A4; margin: 0; }
-  body { background: white !important; margin: 0; padding: 0; }
-  .registration-page, .receipt-view-page { background: white !important; padding: 0 !important; min-height: auto !important; }
-  .receipt-hero-banner, .success-status, .receipt-footer-actions, .no-print { display: none !important; }
-  .receipt-document-wrapper { margin: 0 !important; padding: 20mm !important; display: block !important; width: 210mm; }
-  .receipt-professional-document { box-shadow: none !important; border: none !important; width: 100% !important; max-width: none !important; padding: 0 !important; min-height: auto !important; margin: 0 auto !important; }
-  .document-header { border-bottom: 2px solid #050a1f !important; margin-bottom: 2rem !important; }
-  .section-divider::after { background: #e2e8f0 !important; }
+  @page { 
+    size: A4; 
+    margin: 10mm; 
+  }
+  
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .registration-page, .receipt-view-page { 
+    background: #fff !important; 
+    padding: 0 !important; 
+    min-height: auto !important; 
+    box-shadow: none !important;
+  }
+
+  .receipt-hero-banner, 
+  .success-status, 
+  .receipt-footer-actions, 
+  .no-print,
+  .registration-hero,
+  .registration-content,
+  header,
+  footer { 
+    display: none !important; 
+  }
+
+  .receipt-document-wrapper { 
+    margin: 0 !important; 
+    padding: 0 !important; 
+    display: block !important; 
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .receipt-professional-document { 
+    box-shadow: none !important; 
+    border: 1px solid #000 !important; 
+    width: 100% !important; 
+    max-width: 100% !important; 
+    padding: 20mm !important; 
+    min-height: auto !important; 
+    margin: 0 !important;
+    border-radius: 0 !important;
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  .document-header { 
+    border-bottom: 2pt solid #000 !important; 
+    margin-bottom: 30pt !important; 
+    padding-bottom: 15pt !important;
+  }
+
+  .section-divider {
+    border-bottom: 1pt solid #000 !important;
+    margin-bottom: 15pt !important;
+  }
+
+  .section-divider::after { 
+    display: none !important;
+  }
+
   .payment-status-box { 
-    print-color-adjust: exact; 
-    -webkit-print-color-adjust: exact; 
-    border: 1px solid #e2e8f0 !important; 
+    border: 1pt solid #000 !important; 
     background: #f8fafc !important; 
+    padding: 15pt !important;
   }
+
   .verification-notice-box { 
-    print-color-adjust: exact; 
-    -webkit-print-color-adjust: exact; 
-    border: 1px dashed #ef4444 !important; 
+    border: 1pt dashed #ef4444 !important; 
     background: #fdf2f2 !important; 
+    padding: 15pt !important;
   }
+
   .reg-badge { 
-    print-color-adjust: exact; 
-    -webkit-print-color-adjust: exact; 
-    background: #050a1f !important; 
+    background: #000 !important; 
     color: #fbbf24 !important; 
-    border: 1px solid #fbbf24 !important; 
+    border: 1pt solid #fbbf24 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .doc-logo {
+    -webkit-filter: none !important;
+    filter: none !important;
+  }
+
+  .official-seal {
+    width: 120pt !important;
+    height: 120pt !important;
+    opacity: 1 !important;
+  }
+
+  .sig-line {
+    border-top: 1pt solid #000 !important;
   }
 }
 
 /* Animations */
-@keyframes scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes scaleIn {
-  from { transform: scale(0.5); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
 }
