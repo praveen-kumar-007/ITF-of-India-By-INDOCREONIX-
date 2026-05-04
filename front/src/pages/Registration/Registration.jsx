@@ -1580,78 +1580,173 @@ const Registration = () => {
         : registrationResult.aadharNumber || "N/A";
 
     return (
-      <div className="registration-page registration-receipt-page">
-        <section className="receipt-hero no-print">
-          <div className="container hero-content">
-            <p className="eyebrow">Official Receipt</p>
-            <h1>Registration Completed</h1>
-            <p className="hero-desc">
-              Your athlete registration has been successfully submitted. Please
-              keep this receipt for verification and future reference.
-            </p>
+      <div className="registration-page receipt-view-page">
+        <section className="receipt-hero-banner no-print">
+          <div className="container">
+            <div className="success-status">
+              <div className="status-icon">✓</div>
+              <div className="status-text">
+                <h1>Registration Successful</h1>
+                <p>Your application has been received and is under review.</p>
+              </div>
+            </div>
           </div>
         </section>
 
-        <div className="receipt-wrapper">
-          <div className="receipt-card">
-            <div className="receipt-card-header">
-              <div>
-                <span className="receipt-tag">ITF OF INDIA</span>
-                <h2>{registrationResult.fullName}</h2>
-                <p>{registrationResult.email}</p>
+        <div className="receipt-document-wrapper">
+          <div className="receipt-professional-document" id="printable-receipt">
+            <div className="document-header">
+              <div className="org-branding">
+                <img src="/logo.jpeg" alt="ITF Logo" className="doc-logo" />
+                <div className="org-names">
+                  <h1>ITF OF INDIA</h1>
+                  <p>National Sports Federation & Athlete Portal</p>
+                </div>
               </div>
-              <div className="receipt-meta">
-                <span>Receipt No.</span>
-                <strong>{registrationResult.regNo}</strong>
-                <span>{registrationResult.date}</span>
-              </div>
-            </div>
-
-            <div className="receipt-details-grid">
-              <div className="detail-item">
-                <span>Registration Number</span>
-                <strong>{registrationResult.regNo}</strong>
-              </div>
-              <div className="detail-item">
-                <span>Payment UTR</span>
-                <strong>{registrationResult.transactionId || "N/A"}</strong>
-              </div>
-              <div className="detail-item">
-                <span>Contact Number</span>
-                <strong>{registrationResult.contactNumber || "N/A"}</strong>
-              </div>
-              <div className="detail-item">
-                <span>Aadhaar</span>
-                <strong>{maskedAadhar}</strong>
-              </div>
-              <div className="detail-item">
-                <span>Sport Discipline</span>
-                <strong>{registrationResult.sportsDiscipline || "N/A"}</strong>
-              </div>
-              <div className="detail-item">
-                <span>Verification Status</span>
-                <strong>Pending</strong>
+              <div className="doc-meta">
+                <div className="reg-badge">OFFICIAL RECEIPT</div>
+                <div className="meta-item">
+                  <label>Receipt ID</label>
+                  <strong>{registrationResult.regNo}</strong>
+                </div>
+                <div className="meta-item">
+                  <label>Date Issued</label>
+                  <strong>{registrationResult.date}</strong>
+                </div>
               </div>
             </div>
 
-            <div className="receipt-note">
-              <p>
-                This receipt confirms the details you submitted. Retain it until
-                your profile verification is completed successfully.
-              </p>
+            <div className="document-body">
+              <div className="doc-section">
+                <h3 className="section-divider">Athlete Information</h3>
+                <div className="info-grid">
+                  <div className="info-cell">
+                    <label>Full Name</label>
+                    <span>{registrationResult.fullName}</span>
+                  </div>
+                  <div className="info-cell">
+                    <label>Father's Name</label>
+                    <span>{registrationResult.fatherName}</span>
+                  </div>
+                  <div className="info-cell">
+                    <label>Date of Birth</label>
+                    <span>{registrationResult.dob}</span>
+                  </div>
+                  <div className="info-cell">
+                    <label>Gender</label>
+                    <span>{registrationResult.gender}</span>
+                  </div>
+                  <div className="info-cell">
+                    <label>Blood Group</label>
+                    <span>{registrationResult.bloodGroup}</span>
+                  </div>
+                  <div className="info-cell">
+                    <label>Sport Discipline</label>
+                    <span>{registrationResult.sportsDiscipline}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="doc-section">
+                <h3 className="section-divider">Contact & Identity</h3>
+                <div className="info-grid">
+                  <div className="info-cell">
+                    <label>Email Address</label>
+                    <span>{registrationResult.email}</span>
+                  </div>
+                  <div className="info-cell">
+                    <label>Mobile Number</label>
+                    <span>{registrationResult.contactNumber}</span>
+                  </div>
+                  <div className="info-cell">
+                    <label>Aadhaar Number</label>
+                    <span>{maskedAadhar}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="doc-section">
+                <h3 className="section-divider">Address Details</h3>
+                <div className="info-grid">
+                  <div className="info-cell full-width">
+                    <label>Permanent Address</label>
+                    <span>
+                      {registrationResult.villageCity}, {registrationResult.po},{" "}
+                      {registrationResult.ps}, {registrationResult.block}
+                    </span>
+                  </div>
+                  <div className="info-cell">
+                    <label>District</label>
+                    <span>{registrationResult.district}</span>
+                  </div>
+                  <div className="info-cell">
+                    <label>State</label>
+                    <span>{registrationResult.state}</span>
+                  </div>
+                  <div className="info-cell">
+                    <label>PIN Code</label>
+                    <span>{registrationResult.pinCode}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="doc-section">
+                <h3 className="section-divider">Payment Verification</h3>
+                <div className="payment-status-box">
+                  <div className="payment-detail">
+                    <label>Transaction ID / UTR</label>
+                    <strong>{registrationResult.transactionId}</strong>
+                  </div>
+                  <div className="payment-detail">
+                    <label>Verification Status</label>
+                    <span className="status-pending-pill">Pending Approval</span>
+                  </div>
+                  <div className="payment-detail">
+                    <label>Uniform Kit Size</label>
+                    <span>{registrationResult.kitSize}</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="receipt-actions">
-              <button className="btn-premium" onClick={handlePrint}>
-                Print Receipt
-              </button>
-              <button
-                className="btn-outline"
-                onClick={() => (window.location.href = "/")}
-              >
-                Back to Home
-              </button>
+            <div className="document-footer">
+              <div className="footer-notes">
+                <p>
+                  <strong>Important Notice:</strong> This receipt is
+                  system-generated and confirms the submission of your
+                  application. Your athlete profile will be activated after
+                  verification of documents and payment. Please keep this for
+                  future reference.
+                </p>
+              </div>
+              <div className="signature-area">
+                <div className="sig-box">
+                  <div className="sig-line"></div>
+                  <p>Athlete's Signature</p>
+                </div>
+                <div className="sig-box">
+                  <img
+                    src="/logo.jpeg"
+                    alt="Stamp"
+                    className="watermark-stamp"
+                  />
+                  <div className="sig-line"></div>
+                  <p>Registrar, ITF OF INDIA</p>
+                </div>
+              </div>
             </div>
+          </div>
+
+          <div className="receipt-actions-floating no-print">
+            <button className="btn-print-large" onClick={handlePrint}>
+              <span className="icon">🖨️</span> Print Official Receipt
+            </button>
+            <button
+              className="btn-home-link"
+              onClick={() => (window.location.href = "/")}
+            >
+              Return to Portal Home
+            </button>
           </div>
         </div>
       </div>
