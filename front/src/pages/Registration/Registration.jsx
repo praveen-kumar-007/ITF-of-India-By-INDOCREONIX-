@@ -587,7 +587,10 @@ const Registration = () => {
           <span className="section-tag">National Sports Portal</span>
           <h1>Athlete Registration</h1>
           <p className="hero-desc">Secure your professional athletic identity. Join the ITF OF INDIA to access national championships, training camps, and global opportunities.</p>
-          <div className="fee-callout">Registration Fee: ₹{formData.paymentSettings?.amount || '500'}/- Only</div>
+          <div className="fee-callout">
+            <span className="fee-icon">🎟️</span>
+            Registration Fee: ₹{formData.paymentSettings?.amount || '500'}/- Only
+          </div>
         </div>
       </section>
 
