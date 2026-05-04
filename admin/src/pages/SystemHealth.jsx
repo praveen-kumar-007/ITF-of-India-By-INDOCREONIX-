@@ -117,21 +117,32 @@ const SystemHealth = () => {
               <span>LIVE</span>
             </div>
           </div>
-          <div className="master-clock-display">
-            <div className="clock-label">
-              <span className="flag-icon">🇮🇳</span>
-              <span className="timezone-text">IST</span>
+          <div className="mobile-action-row">
+            <div className="master-clock-display">
+              <div className="clock-label">
+                <span className="flag-icon">🇮🇳</span>
+                <span className="timezone-text">IST</span>
+              </div>
+              <div className="time-unit"><span>{timeParts.h}</span><label>HRS</label></div>
+              <div className="time-sep">:</div>
+              <div className="time-unit"><span>{timeParts.m}</span><label>MIN</label></div>
+              <div className="time-sep">:</div>
+              <div className="time-unit"><span>{timeParts.s}</span><label>SEC</label></div>
+              <div className="time-sep">:</div>
+              <div className="time-unit ms"><span>{timeParts.ms}</span><label>MS</label></div>
             </div>
-            <div className="time-unit"><span>{timeParts.h}</span><label>HRS</label></div>
-            <div className="time-sep">:</div>
-            <div className="time-unit"><span>{timeParts.m}</span><label>MIN</label></div>
-            <div className="time-sep">:</div>
-            <div className="time-unit"><span>{timeParts.s}</span><label>SEC</label></div>
-            <div className="time-sep">:</div>
-            <div className="time-unit ms"><span>{timeParts.ms}</span><label>MS</label></div>
+            
+            <button 
+              className={`refresh-btn mobile-only ${refreshing ? 'spinning' : ''}`} 
+              onClick={handleRefresh}
+              disabled={refreshing}
+            >
+              <RefreshCw size={22} />
+            </button>
           </div>
         </div>
-        <div className="header-action-group">
+        
+        <div className="header-action-group desktop-only">
           <button 
             className={`refresh-btn ${refreshing ? 'spinning' : ''}`} 
             onClick={handleRefresh}
