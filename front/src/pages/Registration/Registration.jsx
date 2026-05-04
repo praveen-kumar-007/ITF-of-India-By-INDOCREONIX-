@@ -223,10 +223,11 @@ const Registration = () => {
   };
 
   useEffect(() => {
-    if (formData.aadharNumber && formData.aadharNumber.length === 12) {
+    const cleanAadhar = (formData.aadharNumber || "").replace(/\s/g, "");
+    if (cleanAadhar.length === 12) {
       const checkAadhar = async () => {
         try {
-          const res = await fetch(`${API_BASE_URL}/registrations/check-availability?aadharNumber=${formData.aadharNumber}`);
+          const res = await fetch(`${API_BASE_URL}/registrations/check-availability?aadharNumber=${cleanAadhar}`);
           const data = await res.json();
           if (!data.success) {
             showToast(data.message, "error");
@@ -246,10 +247,18 @@ const Registration = () => {
   }, [formData.aadharNumber]);
 
   const handleInputChange = (e) => {
-
     const { name, value } = e.target;
     setFormData(prev => {
-      const newData = { ...prev, [name]: value };
+      let newValue = value;
+
+      // Auto-format Aadhar: 0000 0000 0000
+      if (name === "aadharNumber") {
+        const digits = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        const parts = digits.match(/.{1,4}/g);
+        newValue = parts ? parts.join(' ').substring(0, 14) : digits;
+      }
+
+      const newData = { ...prev, [name]: newValue };
       if (name === "dob") {
         newData.age = calculateAge(value);
       }
@@ -845,7 +854,19 @@ const Registration = () => {
                       </div>
                       <div className={`input-field ${errors.contactNumber ? 'field-error' : ''}`}>
                         <label>Athlete Contact Number</label>
-                        <input type="tel" name="contactNumber" value={formData.contactNumber} onChange={handleInputChange} placeholder="10 Digit Number" maxLength="10" inputMode="tel" pattern="[0-9]*" />
+                        <div className="phone-input-group">
+                          <span className="phone-prefix">+91</span>
+                          <input 
+                            type="tel" 
+                            name="contactNumber" 
+                            value={formData.contactNumber} 
+                            onChange={handleInputChange} 
+                            placeholder="10 Digit Number" 
+                            maxLength="10" 
+                            inputMode="tel" 
+                            pattern="[0-9]*" 
+                          />
+                        </div>
                         {errors.contactNumber && <span className="error-msg">Contact number is required</span>}
                       </div>
                     </div>
@@ -853,7 +874,19 @@ const Registration = () => {
                     <div className="input-group">
                       <div className={`input-field ${errors.parentContactNumber ? 'field-error' : ''}`}>
                         <label>Parent / Guardian Contact</label>
-                        <input type="tel" name="parentContactNumber" value={formData.parentContactNumber} onChange={handleInputChange} placeholder="Emergency Contact Number" maxLength="10" inputMode="tel" pattern="[0-9]*" />
+                        <div className="phone-input-group">
+                          <span className="phone-prefix">+91</span>
+                          <input 
+                            type="tel" 
+                            name="parentContactNumber" 
+                            value={formData.parentContactNumber} 
+                            onChange={handleInputChange} 
+                            placeholder="Emergency Contact Number" 
+                            maxLength="10" 
+                            inputMode="tel" 
+                            pattern="[0-9]*" 
+                          />
+                        </div>
                         {errors.parentContactNumber && <span className="error-msg">Parent's contact is required</span>}
                       </div>
                       <div className="input-field">
