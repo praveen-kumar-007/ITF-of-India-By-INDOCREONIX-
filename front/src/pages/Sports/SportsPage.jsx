@@ -33,12 +33,12 @@ const SportsPage = () => {
       <section className="page-hero sports-style">
         <div className="page-hero-bg">
           <div className="page-hero-track">
-            {["WhatsApp Image 2026-04-30 at 11.16.42 PM.jpeg", "WhatsApp Image 2026-04-30 at 11.16.43 PM.jpeg", "WhatsApp Image 2026-04-30 at 11.16.44 PM.jpeg", "WhatsApp Image 2026-04-30 at 11.16.45 PM.jpeg"].map((suffix, i) => (
-              <img key={i} src={`/club_image/${suffix}`} className="page-hero-img" alt="" />
+            {[10, 11, 12, 13, 14, 15].map((num, i) => (
+              <img key={i} src={`/club_image/img${num}.jpeg`} className="page-hero-img" alt="" />
             ))}
             {/* Repeat for seamless loop */}
-            {["WhatsApp Image 2026-04-30 at 11.16.42 PM.jpeg", "WhatsApp Image 2026-04-30 at 11.16.43 PM.jpeg", "WhatsApp Image 2026-04-30 at 11.16.44 PM.jpeg", "WhatsApp Image 2026-04-30 at 11.16.45 PM.jpeg"].map((suffix, i) => (
-              <img key={`dup-${i}`} src={`/club_image/${suffix}`} className="page-hero-img" alt="" />
+            {[10, 11, 12, 13, 14, 15].map((num, i) => (
+              <img key={`dup-${i}`} src={`/club_image/img${num}.jpeg`} className="page-hero-img" alt="" />
             ))}
           </div>
           <div className="page-hero-overlay"></div>

@@ -568,15 +568,15 @@ const Registration = () => {
         <div className="hero-bg-banner no-print">
           <div className="banner-track">
             {/* Horizontal oriented images from the collection */}
-            {[1, 2, 3, 4, 5].map((num) => (
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
               <div className="bg-image-box" key={num}>
-                <img src={`/club_image/athlete_banner_${num}.jpeg`} alt="ITF India Athlete" />
+                <img src={`/club_image/img${num}.jpeg`} alt="ITF India Athlete" />
               </div>
             ))}
             {/* Repeat for seamless loop */}
-            {[1, 2, 3, 4, 5].map((num) => (
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
               <div className="bg-image-box" key={`dup-${num}`}>
-                <img src={`/club_image/athlete_banner_${num}.jpeg`} alt="ITF India Athlete" />
+                <img src={`/club_image/img${num}.jpeg`} alt="ITF India Athlete" />
               </div>
             ))}
           </div>

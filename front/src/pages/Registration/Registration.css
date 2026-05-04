@@ -31,7 +31,7 @@
 .banner-track {
   display: flex;
   height: 100%;
-  width: calc(600px * 10); /* Wide enough for 10 horizontal images */
+  width: calc(600px * 16); /* Wide enough for 16 horizontal images (8 unique * 2) */
   animation: scroll 60s linear infinite;
 }
 
@@ -700,7 +700,7 @@
 
 @keyframes scroll {
   0% { transform: translateX(0); }
-  100% { transform: translateX(calc(-600px * 5)); }
+  100% { transform: translateX(calc(-600px * 8)); }
 }
 
 @media print {

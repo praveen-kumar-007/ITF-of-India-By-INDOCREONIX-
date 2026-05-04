@@ -2,13 +2,61 @@
   height: 60vh;
   min-height: 400px;
   position: relative;
-  background: url("/club_image/WhatsApp Image 2026-04-30 at 11.16.45 PM.jpeg");
+  background: url("/club_image/img20.jpeg");
   background-size: cover;
   background-position: center 25%;
   display: flex;
   align-items: center;
   color: white;
   text-align: center;
+}
+
+.page-hero {
+  position: relative;
+  padding: 100px 0 80px;
+  background: #000;
+  overflow: hidden;
+  color: white;
+  min-height: 40vh;
+  display: flex;
+  align-items: center;
+}
+
+.page-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.page-hero-track {
+  display: flex;
+  height: 100%;
+  width: calc(100vw * 12); /* 6 images * 2 for loop */
+  animation: scrollSports 40s linear infinite;
+}
+
+.page-hero-img {
+  width: 100vw;
+  height: 100%;
+  object-fit: cover;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.page-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(5, 10, 31, 0.8),
+    rgba(5, 10, 31, 0.4)
+  );
+  z-index: 1;
+}
+
+@keyframes scrollSports {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-100vw * 6)); }
 }
 
 .sports-hero-overlay {
