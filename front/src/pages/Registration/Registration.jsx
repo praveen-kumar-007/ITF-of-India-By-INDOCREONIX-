@@ -871,6 +871,14 @@ const Registration = () => {
     paymentProof: null,
   });
 
+  const [imageMeta, setImageMeta] = useState({
+    photo: null,
+    signature: null,
+    aadharFront: null,
+    aadharBack: null,
+    paymentProof: null,
+  });
+
   const [registrationResult, setRegistrationResult] = useState(null);
   const [errors, setErrors] = useState({});
   const [resendTimer, setResendTimer] = useState(0);
@@ -915,12 +923,36 @@ const Registration = () => {
     if (savedDraft) {
       try {
         const parsedDraft = JSON.parse(savedDraft);
+        const { previews: savedPreviews, imageMeta: savedImageMeta, ...draftFields } =
+          parsedDraft;
+
         setFormData((prev) => ({
           ...prev,
-          ...parsedDraft,
+          ...draftFields,
           loading: false, // Reset non-persistent states
           toast: { message: "", type: "" },
         }));
+
+        if (savedPreviews) {
+          setPreviews(savedPreviews);
+        }
+
+        if (savedImageMeta) {
+          setImageMeta(savedImageMeta);
+        }
+
+        if (savedPreviews) {
+          const restoredFiles = {};
+          Object.keys(savedPreviews).forEach((key) => {
+            const preview = savedPreviews[key];
+            if (!preview) return;
+            const filename = savedImageMeta?.[key]?.name || `${key}-image.jpeg`;
+            restoredFiles[key] = dataURLtoFile(preview, filename);
+          });
+          if (Object.keys(restoredFiles).length > 0) {
+            setFiles((prev) => ({ ...prev, ...restoredFiles }));
+          }
+        }
 
         const savedStep = localStorage.getItem("itf_reg_step");
         if (savedStep) setStep(parseInt(savedStep));
@@ -945,13 +977,32 @@ const Registration = () => {
       ...persistentData
     } = formData;
 
-    localStorage.setItem("itf_reg_draft", JSON.stringify(persistentData));
+    const draftToSave = {
+      ...persistentData,
+      previews,
+      imageMeta,
+    };
+
+    localStorage.setItem("itf_reg_draft", JSON.stringify(draftToSave));
     localStorage.setItem("itf_reg_step", step.toString());
   }, [formData, step]);
 
   const clearDraft = () => {
     localStorage.removeItem("itf_reg_draft");
     localStorage.removeItem("itf_reg_step");
+  };
+
+  const dataURLtoFile = (dataUrl, filename) => {
+    const arr = dataUrl.split(",");
+    const mimeMatch = arr[0].match(/:(.*?);/);
+    const mime = mimeMatch ? mimeMatch[1] : "image/jpeg";
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
   };
 
   const resetRegistrationForm = (
@@ -1002,6 +1053,14 @@ const Registration = () => {
     });
 
     setPreviews({
+      photo: null,
+      signature: null,
+      aadharFront: null,
+      aadharBack: null,
+      paymentProof: null,
+    });
+
+    setImageMeta({
       photo: null,
       signature: null,
       aadharFront: null,
@@ -1132,6 +1191,10 @@ const Registration = () => {
         reader.readAsDataURL(file);
       } else {
         setFiles((prev) => ({ ...prev, [name]: file }));
+        setImageMeta((prev) => ({
+          ...prev,
+          [name]: { name: file.name, type: file.type },
+        }));
         const reader = new FileReader();
         reader.onload = (event) => {
           setPreviews((prev) => ({ ...prev, [name]: event.target.result }));
@@ -1144,6 +1207,10 @@ const Registration = () => {
   const handleCropComplete = (croppedFile) => {
     const fieldName = cropField;
     setFiles((prev) => ({ ...prev, [fieldName]: croppedFile }));
+    setImageMeta((prev) => ({
+      ...prev,
+      [fieldName]: { name: croppedFile.name, type: croppedFile.type },
+    }));
 
     const reader = new FileReader();
     reader.onload = (e) => {
