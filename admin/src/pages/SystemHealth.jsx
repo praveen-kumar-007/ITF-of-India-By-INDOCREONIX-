@@ -11,9 +11,8 @@ const SystemHealth = () => {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
-  const [refreshing, setRefreshing] = useState(false);
-  const [countdown, setCountdown] = useState(10);
   const [secondsSinceSync, setSecondsSinceSync] = useState(0);
+  const [liveUptime, setLiveUptime] = useState(0);
 
   const fetchHealth = async () => {
     try {
@@ -27,7 +26,7 @@ const SystemHealth = () => {
       if (result.success) {
         setData(result.data);
         setSecondsSinceSync(0);
-        setCountdown(10);
+        setLiveUptime(result.data.uptime || 0);
       } else {
         showToast(result.message || 'Failed to fetch health data', 'error');
       }
@@ -42,31 +41,25 @@ const SystemHealth = () => {
   useEffect(() => {
     fetchHealth();
     
-    // Auto-refresh countdown logic
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          fetchHealth();
-          return 10;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    // Auto-refresh interval (10 seconds)
+    const refreshTimer = setInterval(() => {
+      fetchHealth();
+    }, 10000);
 
-    // Relative sync time logic
-    const syncTimer = setInterval(() => {
+    // Local clock tick (every second)
+    const tickTimer = setInterval(() => {
       setSecondsSinceSync((prev) => prev + 1);
+      setLiveUptime((prev) => prev + 1);
     }, 1000);
 
     return () => {
-      clearInterval(timer);
-      clearInterval(syncTimer);
+      clearInterval(refreshTimer);
+      clearInterval(tickTimer);
     };
   }, []);
 
   const handleRefresh = () => {
     setRefreshing(true);
-    setCountdown(10);
     fetchHealth();
   };
 
@@ -108,18 +101,12 @@ const SystemHealth = () => {
           <p>Real-time monitor for ITF India infrastructure.</p>
         </div>
         <div className="header-action-group">
-          <div className="refresh-countdown">
-            <div className="countdown-ring" style={{ '--progress': `${(countdown / 10) * 100}%` }}>
-              <Clock size={14} />
-            </div>
-            <span>Next sync in {countdown}s</span>
-          </div>
           <button 
             className={`refresh-btn ${refreshing ? 'spinning' : ''}`} 
             onClick={handleRefresh}
             disabled={refreshing}
           >
-            <RefreshCw size={18} /> {refreshing ? 'Syncing...' : 'Force Refresh'}
+            <RefreshCw size={18} /> {refreshing ? 'Syncing...' : 'Refresh Status'}
           </button>
         </div>
       </div>
@@ -188,7 +175,7 @@ const SystemHealth = () => {
           <div className="card-icon"><Server size={28} /></div>
           <h3>Node.js Runtime</h3>
           <div className="info-stats">
-            <div className="stat-row"><Clock size={16} /> <span>Uptime:</span> <strong>{formatUptime(data.uptime)}</strong></div>
+            <div className="stat-row"><Clock size={16} /> <span>Uptime:</span> <strong>{formatUptime(liveUptime)}</strong></div>
             <div className="stat-row"><Cpu size={16} /> <span>Engine:</span> <strong>Node {data.nodeVersion}</strong></div>
             <div className="stat-row"><HardDrive size={16} /> <span>RAM:</span> <strong>{formatMemory(data.memory?.rss)}</strong></div>
           </div>
