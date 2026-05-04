@@ -795,6 +795,8 @@ const Registration = () => {
                               key={idx}
                               id={`otp-${idx}`}
                               type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
                               maxLength="1"
                               value={digit}
                               onChange={(e) => handleOtpChange(idx, e.target.value)}
@@ -842,7 +844,7 @@ const Registration = () => {
                       </div>
                       <div className={`input-field ${errors.contactNumber ? 'field-error' : ''}`}>
                         <label>Athlete Contact Number</label>
-                        <input type="tel" name="contactNumber" value={formData.contactNumber} onChange={handleInputChange} placeholder="10 Digit Number" maxLength="10" />
+                        <input type="tel" name="contactNumber" value={formData.contactNumber} onChange={handleInputChange} placeholder="10 Digit Number" maxLength="10" inputMode="tel" pattern="[0-9]*" />
                         {errors.contactNumber && <span className="error-msg">Contact number is required</span>}
                       </div>
                     </div>
@@ -850,7 +852,7 @@ const Registration = () => {
                     <div className="input-group">
                       <div className={`input-field ${errors.parentContactNumber ? 'field-error' : ''}`}>
                         <label>Parent / Guardian Contact</label>
-                        <input type="tel" name="parentContactNumber" value={formData.parentContactNumber} onChange={handleInputChange} placeholder="Emergency Contact Number" maxLength="10" />
+                        <input type="tel" name="parentContactNumber" value={formData.parentContactNumber} onChange={handleInputChange} placeholder="Emergency Contact Number" maxLength="10" inputMode="tel" pattern="[0-9]*" />
                         {errors.parentContactNumber && <span className="error-msg">Parent's contact is required</span>}
                       </div>
                       <div className="input-field">
