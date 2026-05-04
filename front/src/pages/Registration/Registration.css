@@ -457,116 +457,7 @@
   border-color: rgba(147, 106, 0, 0.2);
 }
 
-/* Receipt Design */
-.receipt-container {
-  background: #ffffff;
-  max-width: 850px;
-  margin: 0 auto;
-  padding: 60px;
-  border: 1px solid #000;
-}
 
-.receipt-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 3px solid #000;
-  padding-bottom: 30px;
-  margin-bottom: 40px;
-}
-
-.receipt-logo-img {
-  height: 80px;
-}
-.org-info h2 {
-  font-size: 2.2rem;
-  font-weight: 900;
-  color: #000;
-  margin: 0;
-}
-.receipt-badge {
-  background: #000;
-  color: #fff;
-  padding: 5px 15px;
-  font-weight: 800;
-  font-size: 0.8rem;
-  margin-bottom: 10px;
-  display: inline-block;
-}
-
-.receipt-content-body {
-  display: flex;
-  gap: 40px;
-}
-.player-photo-column {
-  flex: 0 0 180px;
-  text-align: center;
-}
-.receipt-photo-frame {
-  width: 180px;
-  height: 220px;
-  border: 2px solid #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-.receipt-photo-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.details-column {
-  flex: 1;
-}
-.receipt-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-.receipt-table td {
-  padding: 10px 0;
-  border-bottom: 1px solid #ddd;
-}
-.receipt-table .label {
-  font-weight: 800;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  color: #666;
-  width: 40%;
-}
-.receipt-table .value {
-  font-weight: 700;
-  font-size: 1rem;
-  color: #000;
-}
-
-.address-full-row {
-  margin-top: 30px;
-  padding: 20px;
-  border: 1px solid #000;
-  background: #f9fafb;
-}
-.receipt-signatures-block {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 60px;
-  padding-top: 40px;
-}
-.signature-item {
-  width: 220px;
-  text-align: center;
-}
-.signature-space {
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.signature-line {
-  border-top: 2px solid #000;
-  margin-top: 5px;
-}
 
 /* Success Popup */
 .success-overlay {
@@ -1040,17 +931,7 @@
   }
 }
 
-@media print {
-  .no-print,
-  nav,
-  footer {
-    display: none !important;
-  }
-  .registration-page {
-    background: #fff !important;
-    padding: 0 !important;
-  }
-}
+
 
 /* Tablet & Mobile Responsiveness */
 @media (max-width: 1024px) {
@@ -1530,33 +1411,7 @@
   width: 100%;
 }
 
-.verify-btn {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  color: #fbbf24;
-  border: 1px solid rgba(251, 191, 36, 0.3);
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: 800;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  white-space: nowrap;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
 
-.verify-btn:hover:not(:disabled) {
-  background: #fbbf24;
-  color: #0f172a;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3);
-}
-
-.verify-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
 
 .verified-badge {
   background: #dcfce7;
@@ -1687,6 +1542,7 @@
   font-weight: 800;
   margin-bottom: 0.5rem;
   letter-spacing: -0.02em;
+  color: #ffffff; /* Changed to white for visibility */
 }
 
 .status-text p {
@@ -1708,13 +1564,27 @@
   width: 100%;
   max-width: 900px;
   min-height: 1100px;
-  padding: 4rem;
-  border-radius: 4px; /* Paper look */
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.15);
+  padding: 5rem;
+  border-radius: 4px;
+  box-shadow: 0 50px 100px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
-  color: #1e293b;
+  color: #050a1f;
+  border: 15px solid #fff;
+  outline: 1px solid #e2e8f0;
   transition: all 0.3s ease;
+}
+
+.receipt-professional-document::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 2px solid #050a1f;
+  pointer-events: none;
+  opacity: 0.1;
 }
 
 .receipt-professional-document.short-receipt {
@@ -1723,17 +1593,19 @@
   padding: 3rem;
 }
 
-/* Watermark */
 .receipt-professional-document::before {
-  content: "ITF OF INDIA";
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) rotate(-45deg);
-  font-size: 8rem;
-  font-weight: 900;
-  color: rgba(0, 0, 0, 0.02);
-  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  background-image: url("/logo.jpeg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.03;
   pointer-events: none;
   z-index: 0;
 }
@@ -1786,13 +1658,16 @@
 }
 
 .reg-badge {
-  background: #050a1f;
+  background: linear-gradient(135deg, #050a1f 0%, #1e293b 100%);
   color: #fbbf24;
-  padding: 6px 15px;
-  font-weight: 800;
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
+  padding: 8px 20px;
+  font-weight: 900;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
   display: inline-block;
+  border: 1px solid #fbbf24;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-transform: uppercase;
 }
 
 .meta-item label {
@@ -1945,6 +1820,23 @@
   filter: grayscale(1);
 }
 
+.official-seal {
+  opacity: 1 !important;
+  filter: none !important;
+  width: 120px;
+  height: 120px;
+  top: -100px;
+  border: 2px solid #fbbf24;
+  border-radius: 50%;
+  padding: 5px;
+  background: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.center-sig {
+  margin: 0 auto;
+}
+
 .verification-notice-box {
   background: #fdf2f2;
   border: 1px dashed #ef4444;
@@ -1967,6 +1859,7 @@
 .receipt-footer-actions {
   display: flex;
   justify-content: center;
+  gap: 1.5rem;
   width: 100%;
   margin-top: 2rem;
 }
@@ -1991,68 +1884,57 @@
 }
 
 @media (max-width: 600px) {
-  .document-header {
-    flex-direction: column;
-    gap: 2rem;
-  }
-  .doc-meta {
-    text-align: left;
-    width: 100%;
-  }
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
-  .info-cell.full-width {
-    grid-column: span 1;
-  }
-  .payment-status-box {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.5rem;
-  }
-  .signature-area {
-    flex-direction: column;
-    align-items: center;
-    gap: 4rem;
-  }
-  .sig-box {
-    width: 100%;
-  }
+  .document-header { flex-direction: column; gap: 2rem; }
+  .doc-meta { text-align: left; width: 100%; }
+  .info-grid { grid-template-columns: 1fr; }
+  .info-cell.full-width { grid-column: span 1; }
+  .payment-status-box { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+  .signature-area { flex-direction: column; align-items: center; gap: 4rem; }
+  .sig-box { width: 100%; }
 }
 
 @media print {
-  body {
-    background: white !important;
+  @page { size: A4; margin: 0; }
+  body { background: white !important; margin: 0; padding: 0; }
+  .registration-page, .receipt-view-page { background: white !important; padding: 0 !important; min-height: auto !important; }
+  .receipt-hero-banner, .success-status, .receipt-footer-actions, .no-print { display: none !important; }
+  .receipt-document-wrapper { margin: 0 !important; padding: 20mm !important; display: block !important; width: 210mm; }
+  .receipt-professional-document { box-shadow: none !important; border: none !important; width: 100% !important; max-width: none !important; padding: 0 !important; min-height: auto !important; margin: 0 auto !important; }
+  .document-header { border-bottom: 2px solid #050a1f !important; margin-bottom: 2rem !important; }
+  .section-divider::after { background: #e2e8f0 !important; }
+  .payment-status-box { 
+    print-color-adjust: exact; 
+    -webkit-print-color-adjust: exact; 
+    border: 1px solid #e2e8f0 !important; 
+    background: #f8fafc !important; 
   }
-  .receipt-view-page {
-    background: white !important;
-    padding: 0 !important;
+  .verification-notice-box { 
+    print-color-adjust: exact; 
+    -webkit-print-color-adjust: exact; 
+    border: 1px dashed #ef4444 !important; 
+    background: #fdf2f2 !important; 
   }
-  .receipt-document-wrapper {
-    margin: 0 !important;
-    padding: 0 !important;
+  .reg-badge { 
+    print-color-adjust: exact; 
+    -webkit-print-color-adjust: exact; 
+    background: #050a1f !important; 
+    color: #fbbf24 !important; 
+    border: 1px solid #fbbf24 !important; 
   }
-  .receipt-professional-document {
-    box-shadow: none !important;
-    border: none !important;
-    width: 100% !important;
-    max-width: none !important;
-    padding: 0 !important;
-  }
-  .no-print {
-    display: none !important;
-  }
-  .document-header {
-    border-bottom: 2px solid #000 !important;
-  }
-  .section-divider::after {
-    background: #000 !important;
-  }
-  .payment-status-box {
-    border: 1px solid #000 !important;
-  }
-  .footer-notes {
-    border: 1px solid #000 !important;
-    background: #fff !important;
-  }
+}
+
+/* Animations */
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }

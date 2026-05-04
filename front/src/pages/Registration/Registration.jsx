@@ -1652,15 +1652,11 @@ const Registration = () => {
 
             <div className="document-footer">
               <div className="signature-area">
-                <div className="sig-box">
-                  <div className="sig-line"></div>
-                  <p>Athlete's Signature</p>
-                </div>
-                <div className="sig-box">
+                <div className="sig-box center-sig">
                   <img
                     src="/logo.jpeg"
-                    alt="Stamp"
-                    className="watermark-stamp"
+                    alt="Official Seal"
+                    className="watermark-stamp official-seal"
                   />
                   <div className="sig-line"></div>
                   <p>Registrar, ITF OF INDIA</p>
@@ -1670,6 +1666,9 @@ const Registration = () => {
           </div>
 
           <div className="receipt-footer-actions no-print">
+            <button className="btn-outline" onClick={handlePrint}>
+              Print Official Receipt
+            </button>
             <button
               className="btn-premium"
               onClick={() => {
