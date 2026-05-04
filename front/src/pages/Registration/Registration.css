@@ -1603,6 +1603,11 @@
   width: 90px;
   height: 90px;
   object-fit: contain;
+  padding: 5px;
+  background: white;
+  border-radius: 50%;
+  border: 2px solid #0f172a;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .org-names h1 {
@@ -1806,22 +1811,23 @@
   position: absolute;
   top: -60px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) rotate(-10deg);
   opacity: 0.15;
   filter: grayscale(1);
 }
 
 .official-seal {
-  opacity: 1 !important;
-  filter: none !important;
-  width: 120px;
-  height: 120px;
-  top: -100px;
-  border: 2px solid #fbbf24;
+  opacity: 0.7 !important; /* Authentic low transparency stamp feel */
+  filter: sepia(0.3) saturate(1.2) !important;
+  width: 130px;
+  height: 130px;
+  top: -105px;
+  border: 1px solid rgba(0,0,0,0.1);
   border-radius: 50%;
-  padding: 5px;
-  background: white;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 3px;
+  background: transparent !important; /* No white background for stamp feel */
+  box-shadow: none !important;
+  mix-blend-mode: multiply;
 }
 
 .center-sig {
@@ -1864,27 +1870,40 @@
 
 @media (max-width: 768px) {
   .receipt-professional-document {
-    padding: 2rem !important;
-    min-height: auto !important;
-    transform: scale(0.95);
-    transform-origin: top center;
-    margin-bottom: -50px;
+    padding: 1.5rem !important;
+    transform: none !important;
+    margin-bottom: 0 !important;
+    width: 95% !important;
+    margin: 10px auto !important;
   }
   .info-grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 1rem !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.8rem !important;
   }
   .document-header {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+  }
+  .org-branding {
     flex-direction: row !important;
-    justify-content: space-between !important;
     align-items: center !important;
+    gap: 15px !important;
   }
-  .org-names h1 {
-    font-size: 1.2rem !important;
+  .doc-meta {
+    text-align: left !important;
+    width: 100% !important;
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
   }
-  .doc-logo {
-    width: 50px !important;
-    height: 50px !important;
+  .payment-status-box {
+    flex-direction: column !important;
+    gap: 1rem !important;
+    align-items: flex-start !important;
+  }
+  .payment-detail {
+    width: 100% !important;
   }
 }
 
@@ -1907,8 +1926,8 @@
 
 @media print {
   @page { 
-    size: A4; 
-    margin: 10mm; 
+    size: auto; 
+    margin: 5mm; 
   }
   
   html, body {
@@ -1919,11 +1938,23 @@
     print-color-adjust: exact !important;
   }
 
-  .registration-page, .receipt-view-page { 
+  .registration-page, 
+  .receipt-view-page,
+  .admin-main-content,
+  .admin-layout,
+  .receipt-generator-page,
+  .admin-receipt-view-page { 
     background: #fff !important; 
     padding: 0 !important; 
+    margin: 0 !important;
     min-height: auto !important; 
     box-shadow: none !important;
+    width: 100% !important;
+  }
+  
+  .admin-main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
   }
 
   .receipt-hero-banner, 
@@ -1933,8 +1964,17 @@
   .registration-hero,
   .registration-content,
   header,
+  .mobile-header,
+  aside,
+  .sidebar,
+  .sidebar-overlay,
   footer { 
     display: none !important; 
+    height: 0 !important;
+    width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
   }
 
   .receipt-document-wrapper { 
@@ -1950,9 +1990,9 @@
     border: 1px solid #000 !important; 
     width: 100% !important; 
     max-width: 100% !important; 
-    padding: 15mm !important; 
+    padding: 8mm !important; 
     min-height: auto !important; 
-    height: 260mm !important; /* Force fit to A4 height */
+    height: 235mm !important; /* Extremely compact to fit Letter and A4 perfectly */
     margin: 0 !important;
     border-radius: 0 !important;
     position: relative !important;
@@ -1960,16 +2000,35 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-sizing: border-box !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   .document-header { 
-    border-bottom: 2pt solid #000 !important; 
+    border-bottom: 2pt solid #0f172a !important; 
     margin-bottom: 20pt !important; 
     padding-bottom: 10pt !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+
+  .org-branding {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15pt !important;
+  }
+
+  .doc-logo {
+    width: 65pt !important;
+    height: 65pt !important;
+    border: 1.5pt solid #0f172a !important;
   }
 
   .doc-section {
-    margin-bottom: 15pt !important;
+    margin-bottom: 12pt !important;
   }
 
   .section-divider {
