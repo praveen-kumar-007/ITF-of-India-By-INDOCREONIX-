@@ -11,6 +11,7 @@ const SystemHealth = () => {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
   const [secondsSinceSync, setSecondsSinceSync] = useState(0);
   const [liveUptime, setLiveUptime] = useState(0);
 
