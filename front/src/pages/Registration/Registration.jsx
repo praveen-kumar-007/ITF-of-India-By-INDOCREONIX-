@@ -1311,7 +1311,12 @@ const Registration = () => {
             "loading",
           ].includes(key)
         ) {
-          data.append(key, formData[key]);
+          if (key === "aadharNumber") {
+            const cleanValue = (formData.aadharNumber || "").replace(/\s/g, "");
+            data.append(key, cleanValue);
+          } else {
+            data.append(key, formData[key]);
+          }
         }
       });
 
