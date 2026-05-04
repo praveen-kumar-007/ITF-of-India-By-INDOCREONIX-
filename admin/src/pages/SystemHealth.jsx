@@ -117,7 +117,8 @@ const SystemHealth = () => {
               <span>LIVE</span>
             </div>
           </div>
-          <div className="mobile-action-row mobile-only">
+          
+          <div className="header-action-row">
             <div className="master-clock-display">
               <div className="clock-label">
                 <span className="flag-icon">🇮🇳</span>
@@ -133,23 +134,14 @@ const SystemHealth = () => {
             </div>
             
             <button 
-              className={`refresh-btn mobile-only ${refreshing ? 'spinning' : ''}`} 
+              className={`refresh-btn ${refreshing ? 'spinning' : ''}`} 
               onClick={handleRefresh}
               disabled={refreshing}
             >
               <RefreshCw size={22} />
+              <span className="desktop-only">{refreshing ? 'Syncing...' : 'Refresh Status'}</span>
             </button>
           </div>
-        </div>
-        
-        <div className="header-action-group desktop-only">
-          <button 
-            className={`refresh-btn ${refreshing ? 'spinning' : ''}`} 
-            onClick={handleRefresh}
-            disabled={refreshing}
-          >
-            <RefreshCw size={18} /> <span>{refreshing ? 'Syncing...' : 'Refresh Status'}</span>
-          </button>
         </div>
       </div>
 
