@@ -225,6 +225,7 @@ const PlayerDetails = () => {
             <div className="d-cell"><label>Qualification</label><p>{player.qualification}</p></div>
             <div className="d-cell"><label>Father's Job</label><p>{player.fatherOccupation}</p></div>
             <div className="d-cell"><label>Phone</label><p>{player.contactNumber}</p></div>
+            <div className="d-cell"><label>Parent Phone</label><p className="accent-gold">{player.parentContactNumber || 'N/A'}</p></div>
             <div className="d-cell full"><label>Email</label><p>{player.email}</p></div>
           </div>
         </div>

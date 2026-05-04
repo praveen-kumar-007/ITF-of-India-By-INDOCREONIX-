@@ -86,7 +86,8 @@ const Registration = () => {
     transactionId: "",
     paymentProof: null,
     loading: false,
-    kitSize: "", // New Field
+    kitSize: "", 
+    parentContactNumber: "", // New Field
     paymentSettings: {
       upiId: '',
       merchantName: '',
@@ -400,8 +401,7 @@ const Registration = () => {
 
   const validateStep = (currentStep) => {
     const newErrors = {};
-    const stepFields = {
-      1: ["fullName", "fatherName", "dob", "gender", "bloodGroup", "kitSize", "email", "sportsDiscipline", "qualification", "fatherOccupation", "contactNumber"],
+      1: ["fullName", "fatherName", "dob", "gender", "bloodGroup", "kitSize", "email", "sportsDiscipline", "qualification", "fatherOccupation", "contactNumber", "parentContactNumber"],
       2: ["villageCity", "po", "ps", "block", "state", "district", "pinCode"],
       3: ["aadharNumber", "photo", "signature", "aadharFront", "aadharBack"],
       4: ["transactionId", "paymentProof"]
@@ -841,9 +841,20 @@ const Registration = () => {
                         {errors.fatherOccupation && <span className="error-msg">Occupation is required</span>}
                       </div>
                       <div className={`input-field ${errors.contactNumber ? 'field-error' : ''}`}>
-                        <label>Primary Contact Number</label>
+                        <label>Athlete Contact Number</label>
                         <input type="tel" name="contactNumber" value={formData.contactNumber} onChange={handleInputChange} placeholder="10 Digit Number" maxLength="10" />
                         {errors.contactNumber && <span className="error-msg">Contact number is required</span>}
+                      </div>
+                    </div>
+
+                    <div className="input-group">
+                      <div className={`input-field ${errors.parentContactNumber ? 'field-error' : ''}`}>
+                        <label>Parent / Guardian Contact</label>
+                        <input type="tel" name="parentContactNumber" value={formData.parentContactNumber} onChange={handleInputChange} placeholder="Emergency Contact Number" maxLength="10" />
+                        {errors.parentContactNumber && <span className="error-msg">Parent's contact is required</span>}
+                      </div>
+                      <div className="input-field">
+                        {/* Spacing */}
                       </div>
                     </div>
 

@@ -287,6 +287,12 @@ const AthleteProfile = () => {
                   <label>Primary Mobile</label>
                   <span className="value">{athlete.contactNumber || athlete.phone}</span>
                 </div>
+                {athlete.parentContactNumber && (
+                  <div className="data-field">
+                    <label>Parent / Guardian Mobile</label>
+                    <span className="value accent-gold">{athlete.parentContactNumber}</span>
+                  </div>
+                )}
                 <div className="data-field full-row">
                   <label>Village / City / Address</label>
                   <span className="value">{athlete.address || athlete.villageCity}</span>
