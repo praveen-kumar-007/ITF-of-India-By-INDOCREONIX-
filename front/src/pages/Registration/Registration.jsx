@@ -401,6 +401,7 @@ const Registration = () => {
 
   const validateStep = (currentStep) => {
     const newErrors = {};
+    const stepFields = {
       1: ["fullName", "fatherName", "dob", "gender", "bloodGroup", "kitSize", "email", "sportsDiscipline", "qualification", "fatherOccupation", "contactNumber", "parentContactNumber"],
       2: ["villageCity", "po", "ps", "block", "state", "district", "pinCode"],
       3: ["aadharNumber", "photo", "signature", "aadharFront", "aadharBack"],
