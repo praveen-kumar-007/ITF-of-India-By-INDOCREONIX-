@@ -879,6 +879,18 @@ const Registration = () => {
   const receiptRef = useRef();
 
   useEffect(() => {
+    if (step === 5 && registrationResult) {
+      document.body.classList.add("hide-footer");
+    } else {
+      document.body.classList.remove("hide-footer");
+    }
+
+    return () => {
+      document.body.classList.remove("hide-footer");
+    };
+  }, [step, registrationResult]);
+
+  useEffect(() => {
     fetchPaymentSettings();
   }, []);
 
@@ -1185,6 +1197,55 @@ const Registration = () => {
     }
   };
 
+  const handleStepClick = (targetStep) => {
+    if (targetStep >= 1 && targetStep <= 4) {
+      setStep(targetStep);
+    }
+  };
+
+  const isFinalSubmitReady = () => {
+    if (!formData.isEmailVerified) return false;
+
+    const requiredTextFields = [
+      "fullName",
+      "fatherName",
+      "dob",
+      "gender",
+      "bloodGroup",
+      "kitSize",
+      "email",
+      "sportsDiscipline",
+      "qualification",
+      "fatherOccupation",
+      "contactNumber",
+      "parentContactNumber",
+      "villageCity",
+      "po",
+      "ps",
+      "block",
+      "state",
+      "district",
+      "pinCode",
+      "transactionId",
+    ];
+
+    const allTextFilled = requiredTextFields.every((field) =>
+      Boolean(formData[field]),
+    );
+    const cleanAadhar = (formData.aadharNumber || "").replace(/\s/g, "");
+    const isAadharValid = /^[0-9]{12}$/.test(cleanAadhar);
+    const fileFields = [
+      "photo",
+      "signature",
+      "aadharFront",
+      "aadharBack",
+      "paymentProof",
+    ];
+    const allFilesFilled = fileFields.every((field) => Boolean(files[field]));
+
+    return allTextFilled && isAadharValid && allFilesFilled;
+  };
+
   const validateStep = (currentStep) => {
     const newErrors = {};
     const stepFields = {
@@ -1207,7 +1268,7 @@ const Registration = () => {
       4: ["transactionId", "paymentProof"],
     };
 
-    if (currentStep === 1 && !formData.isEmailVerified) {
+    if ((currentStep === 1 || currentStep === 4) && !formData.isEmailVerified) {
       newErrors.email = true;
       showToast("Verification Required", "warning");
     }
@@ -1220,27 +1281,37 @@ const Registration = () => {
       "paymentProof",
     ];
 
-    stepFields[currentStep].forEach((field) => {
-      if (fileFields.includes(field)) {
-        if (!files[field]) newErrors[field] = true;
-        return;
-      }
+    const stepsToValidate = currentStep === 4 ? [1, 2, 3, 4] : [currentStep];
 
-      if (field === "aadharNumber") {
-        const cleanAadhar = (formData.aadharNumber || "").replace(/\s/g, "");
-        if (!/^[0-9]{12}$/.test(cleanAadhar)) {
-          newErrors.aadharNumber = true;
+    stepsToValidate.forEach((stepIndex) => {
+      stepFields[stepIndex].forEach((field) => {
+        if (fileFields.includes(field)) {
+          if (!files[field]) newErrors[field] = true;
+          return;
         }
-        return;
-      }
 
-      if (!formData[field]) newErrors[field] = true;
+        if (field === "aadharNumber") {
+          const cleanAadhar = (formData.aadharNumber || "").replace(/\s/g, "");
+          if (!/^[0-9]{12}$/.test(cleanAadhar)) {
+            newErrors.aadharNumber = true;
+          }
+          return;
+        }
+
+        if (!formData[field]) newErrors[field] = true;
+      });
     });
 
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length > 0) {
-      // Scroll to first error
+      if (currentStep === 4) {
+        showToast(
+          "Complete all required fields across every section before submitting.",
+          "warning",
+        );
+      }
+
       const firstErrorField = Object.keys(newErrors)[0];
       const element =
         document.getElementsByName(firstErrorField)[0] ||
@@ -1370,73 +1441,80 @@ const Registration = () => {
   };
 
   if (step === 5 && registrationResult) {
+    const aadharDigits = (registrationResult.aadharNumber || "").replace(
+      /\s/g,
+      "",
+    );
+    const maskedAadhar =
+      aadharDigits.length === 12
+        ? `XXXX XXXX ${aadharDigits.slice(-4)}`
+        : registrationResult.aadharNumber || "N/A";
+
     return (
-      <div className="registration-page">
-        <section className="registration-hero">
-          <div className="hero-bg-banner no-print">
-            <div className="banner-track">
-              {[1, 2, 3, 4, 5].map((num) => (
-                <div className="bg-image-box" key={num}>
-                  <img
-                    src={`/club_image/athlete_banner_${num}.jpeg`}
-                    alt="ITF India Athlete"
-                  />
-                </div>
-              ))}
-              {[1, 2, 3, 4, 5].map((num) => (
-                <div className="bg-image-box" key={`dup-${num}`}>
-                  <img
-                    src={`/club_image/athlete_banner_${num}.jpeg`}
-                    alt="ITF India Athlete"
-                  />
-                </div>
-              ))}
-            </div>
-            <div className="hero-overlay"></div>
-          </div>
+      <div className="registration-page registration-receipt-page">
+        <section className="receipt-hero no-print">
           <div className="container hero-content">
-            <h1>Registration Successful</h1>
+            <p className="eyebrow">Official Receipt</p>
+            <h1>Registration Completed</h1>
             <p className="hero-desc">
-              Your official ITF OF INDIA athlete profile has been created.
+              Your athlete registration has been successfully submitted. Please
+              keep this receipt for verification and future reference.
             </p>
           </div>
         </section>
 
-        <div className="success-overlay">
-          <div className="success-modal fade-in">
-            <div className="success-icon">✓</div>
-            <h2>Registration Successful!</h2>
-            <p className="success-message">
-              Thank you, <strong>{registrationResult.fullName}</strong>. Your
-              athlete registration has been successfully recorded.
-            </p>
-
-            <div className="ref-box">
-              <span>Your Reference ID</span>
-              <div className="ref-id">{registrationResult.regNo}</div>
-              <div className="utr-badge">
-                UTR: {registrationResult.transactionId}
+        <div className="receipt-wrapper">
+          <div className="receipt-card">
+            <div className="receipt-card-header">
+              <div>
+                <span className="receipt-tag">ITF OF INDIA</span>
+                <h2>{registrationResult.fullName}</h2>
+                <p>{registrationResult.email}</p>
+              </div>
+              <div className="receipt-meta">
+                <span>Receipt No.</span>
+                <strong>{registrationResult.regNo}</strong>
+                <span>{registrationResult.date}</span>
               </div>
             </div>
 
-            <div className="next-steps">
+            <div className="receipt-details-grid">
+              <div className="detail-item">
+                <span>Registration Number</span>
+                <strong>{registrationResult.regNo}</strong>
+              </div>
+              <div className="detail-item">
+                <span>Payment UTR</span>
+                <strong>{registrationResult.transactionId || "N/A"}</strong>
+              </div>
+              <div className="detail-item">
+                <span>Contact Number</span>
+                <strong>{registrationResult.contactNumber || "N/A"}</strong>
+              </div>
+              <div className="detail-item">
+                <span>Aadhaar</span>
+                <strong>{maskedAadhar}</strong>
+              </div>
+              <div className="detail-item">
+                <span>Sport Discipline</span>
+                <strong>{registrationResult.sportsDiscipline || "N/A"}</strong>
+              </div>
+              <div className="detail-item">
+                <span>Verification Status</span>
+                <strong>Pending</strong>
+              </div>
+            </div>
+
+            <div className="receipt-note">
               <p>
-                Your application is currently{" "}
-                <strong>pending for verification</strong>. After successful
-                approval, you will receive a confirmation email at your
-                registered Mail ID.
-              </p>
-              <p
-                style={{ marginTop: "10px", fontSize: "0.8rem", opacity: 0.8 }}
-              >
-                Please save this Reference ID for future trials and
-                documentation.
+                This receipt confirms the details you submitted. Retain it until
+                your profile verification is completed successfully.
               </p>
             </div>
 
-            <div className="modal-actions">
-              <button className="btn-premium" onClick={() => setStep(1)}>
-                Register Another
+            <div className="receipt-actions">
+              <button className="btn-premium" onClick={handlePrint}>
+                Print Receipt
               </button>
               <button
                 className="btn-outline"
@@ -1530,19 +1608,43 @@ const Registration = () => {
                 </div>
               )}
               <div className="form-steps no-print">
-                <div className={`step-item ${step === 1 ? "active" : ""}`}>
+                <div
+                  className={`step-item ${step === 1 ? "active" : ""}`}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => handleStepClick(1)}
+                  onKeyDown={(e) => e.key === "Enter" && handleStepClick(1)}
+                >
                   <span className="step-num">01</span>
                   <span className="step-label">Personal</span>
                 </div>
-                <div className={`step-item ${step === 2 ? "active" : ""}`}>
+                <div
+                  className={`step-item ${step === 2 ? "active" : ""}`}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => handleStepClick(2)}
+                  onKeyDown={(e) => e.key === "Enter" && handleStepClick(2)}
+                >
                   <span className="step-num">02</span>
                   <span className="step-label">Residency</span>
                 </div>
-                <div className={`step-item ${step === 3 ? "active" : ""}`}>
+                <div
+                  className={`step-item ${step === 3 ? "active" : ""}`}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => handleStepClick(3)}
+                  onKeyDown={(e) => e.key === "Enter" && handleStepClick(3)}
+                >
                   <span className="step-num">03</span>
                   <span className="step-label">Identity</span>
                 </div>
-                <div className={`step-item ${step === 4 ? "active" : ""}`}>
+                <div
+                  className={`step-item ${step === 4 ? "active" : ""}`}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => handleStepClick(4)}
+                  onKeyDown={(e) => e.key === "Enter" && handleStepClick(4)}
+                >
                   <span className="step-num">04</span>
                   <span className="step-label">Payment</span>
                 </div>
@@ -2466,13 +2568,19 @@ const Registration = () => {
                       <button
                         type="submit"
                         className="btn-premium"
-                        disabled={formData.loading}
+                        disabled={formData.loading || !isFinalSubmitReady()}
                       >
                         {formData.loading
                           ? "Verifying & Saving..."
                           : "Complete Registration & Verify →"}
                       </button>
                     </div>
+                    {!isFinalSubmitReady() && (
+                      <div className="submit-note">
+                        Complete all required fields on every page before final
+                        submission.
+                      </div>
+                    )}
                   </div>
                 )}
               </form>
