@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Trash2, RotateCcw, Trash, Search, Filter, 
+  Trash2, RefreshCcw, Trash, Search, Filter, 
   Calendar, User, AlertTriangle, Eye, ArrowLeft
 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
@@ -168,9 +168,8 @@ const RecycleBin = () => {
   };
 
   const filtered = deletedPlayers.filter(p => 
-
-    p.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.registrationNumber.toLowerCase().includes(searchTerm.toLowerCase())
+    p.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    p.registrationNumber?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
