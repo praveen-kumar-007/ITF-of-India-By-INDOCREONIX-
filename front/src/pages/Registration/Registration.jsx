@@ -953,6 +953,66 @@ const Registration = () => {
     localStorage.removeItem("itf_reg_draft");
     localStorage.removeItem("itf_reg_step");
   };
+
+  const resetRegistrationForm = (
+    paymentSettings = { upiId: "", merchantName: "", amount: "500" },
+  ) => {
+    setFormData({
+      fullName: "",
+      fatherName: "",
+      dob: "",
+      age: "",
+      gender: "",
+      bloodGroup: "",
+      aadharNumber: "",
+      sportsDiscipline: "",
+      qualification: "",
+      fatherOccupation: "",
+      villageCity: "",
+      po: "",
+      ps: "",
+      block: "",
+      district: "",
+      state: "",
+      pinCode: "",
+      contactNumber: "",
+      photo: null,
+      signature: null,
+      aadharFront: null,
+      aadharBack: null,
+      email: "",
+      isEmailVerified: false,
+      otpValue: ["", "", "", "", "", ""],
+      otpSent: false,
+      toast: { message: "", type: "" },
+      transactionId: "",
+      paymentProof: null,
+      loading: false,
+      kitSize: "",
+      parentContactNumber: "",
+      paymentSettings,
+    });
+
+    setFiles({
+      photo: null,
+      signature: null,
+      aadharFront: null,
+      aadharBack: null,
+      paymentProof: null,
+    });
+
+    setPreviews({
+      photo: null,
+      signature: null,
+      aadharFront: null,
+      aadharBack: null,
+      paymentProof: null,
+    });
+
+    setErrors({});
+    setCropImage(null);
+    setCropField(null);
+  };
   // --- END PERSISTENCE ---
 
   useEffect(() => {
@@ -1415,12 +1475,14 @@ const Registration = () => {
       }
 
       if (response.ok && result.success) {
+        const preservedPaymentSettings = formData.paymentSettings;
         setRegistrationResult({
           regNo: result.data.registrationNumber,
           date: new Date().toLocaleDateString(),
           ...formData,
         });
         clearDraft(); // Cleanup on success
+        resetRegistrationForm(preservedPaymentSettings);
         setStep(5);
         window.scrollTo(0, 0);
       } else {
