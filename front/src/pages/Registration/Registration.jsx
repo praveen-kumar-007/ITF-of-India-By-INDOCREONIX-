@@ -1673,11 +1673,6 @@ const Registration = () => {
             <div className="document-footer">
               <div className="signature-area">
                 <div className="sig-box center-sig">
-                  <img
-                    src="/logo.jpeg"
-                    alt="Official Seal"
-                    className="watermark-stamp official-seal"
-                  />
                   <div className="sig-line"></div>
                   <p>Registrar, ITF OF INDIA</p>
                   <p style={{ fontSize: '0.7rem', opacity: 0.6, marginTop: '5px' }}>National Headquarters, India</p>
