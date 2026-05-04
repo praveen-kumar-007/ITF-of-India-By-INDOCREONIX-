@@ -1579,15 +1579,6 @@ const Registration = () => {
   };
 
   if (step === 5 && registrationResult) {
-    const aadharDigits = (registrationResult.aadharNumber || "").replace(
-      /\s/g,
-      "",
-    );
-    const maskedAadhar =
-      aadharDigits.length === 12
-        ? `XXXX XXXX ${aadharDigits.slice(-4)}`
-        : registrationResult.aadharNumber || "N/A";
-
     return (
       <div className="registration-page receipt-view-page">
         <section className="receipt-hero-banner no-print">
@@ -1596,14 +1587,14 @@ const Registration = () => {
               <div className="status-icon">✓</div>
               <div className="status-text">
                 <h1>Registration Successful</h1>
-                <p>Your application has been received and is under review.</p>
+                <p>Application under verification. We will contact within 2-3 working days.</p>
               </div>
             </div>
           </div>
         </section>
 
         <div className="receipt-document-wrapper">
-          <div className="receipt-professional-document" id="printable-receipt">
+          <div className="receipt-professional-document short-receipt" id="printable-receipt">
             <div className="document-header">
               <div className="org-branding">
                 <img src="/logo.jpeg" alt="ITF Logo" className="doc-logo" />
@@ -1627,27 +1618,11 @@ const Registration = () => {
 
             <div className="document-body">
               <div className="doc-section">
-                <h3 className="section-divider">Athlete Information</h3>
+                <h3 className="section-divider">Athlete Details</h3>
                 <div className="info-grid">
                   <div className="info-cell">
                     <label>Full Name</label>
                     <span>{registrationResult.fullName}</span>
-                  </div>
-                  <div className="info-cell">
-                    <label>Father's Name</label>
-                    <span>{registrationResult.fatherName}</span>
-                  </div>
-                  <div className="info-cell">
-                    <label>Date of Birth</label>
-                    <span>{registrationResult.dob}</span>
-                  </div>
-                  <div className="info-cell">
-                    <label>Gender</label>
-                    <span>{registrationResult.gender}</span>
-                  </div>
-                  <div className="info-cell">
-                    <label>Blood Group</label>
-                    <span>{registrationResult.bloodGroup}</span>
                   </div>
                   <div className="info-cell">
                     <label>Sport Discipline</label>
@@ -1657,77 +1632,25 @@ const Registration = () => {
               </div>
 
               <div className="doc-section">
-                <h3 className="section-divider">Contact & Identity</h3>
-                <div className="info-grid">
-                  <div className="info-cell">
-                    <label>Email Address</label>
-                    <span>{registrationResult.email}</span>
-                  </div>
-                  <div className="info-cell">
-                    <label>Mobile Number</label>
-                    <span>{registrationResult.contactNumber}</span>
-                  </div>
-                  <div className="info-cell">
-                    <label>Aadhaar Number</label>
-                    <span>{maskedAadhar}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="doc-section">
-                <h3 className="section-divider">Address Details</h3>
-                <div className="info-grid">
-                  <div className="info-cell full-width">
-                    <label>Permanent Address</label>
-                    <span>
-                      {registrationResult.villageCity}, {registrationResult.po},{" "}
-                      {registrationResult.ps}, {registrationResult.block}
-                    </span>
-                  </div>
-                  <div className="info-cell">
-                    <label>District</label>
-                    <span>{registrationResult.district}</span>
-                  </div>
-                  <div className="info-cell">
-                    <label>State</label>
-                    <span>{registrationResult.state}</span>
-                  </div>
-                  <div className="info-cell">
-                    <label>PIN Code</label>
-                    <span>{registrationResult.pinCode}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="doc-section">
-                <h3 className="section-divider">Payment Verification</h3>
+                <h3 className="section-divider">Verification Status</h3>
                 <div className="payment-status-box">
                   <div className="payment-detail">
                     <label>Transaction ID / UTR</label>
                     <strong>{registrationResult.transactionId}</strong>
                   </div>
                   <div className="payment-detail">
-                    <label>Verification Status</label>
-                    <span className="status-pending-pill">Pending Approval</span>
-                  </div>
-                  <div className="payment-detail">
-                    <label>Uniform Kit Size</label>
-                    <span>{registrationResult.kitSize}</span>
+                    <label>Status</label>
+                    <span className="status-pending-pill">Under Verification</span>
                   </div>
                 </div>
+              </div>
+
+              <div className="verification-notice-box">
+                <p>Application is currently under official review. Our verification team will contact you on your registered mobile/email within <strong>2-3 working days</strong> for the final approval.</p>
               </div>
             </div>
 
             <div className="document-footer">
-              <div className="footer-notes">
-                <p>
-                  <strong>Important Notice:</strong> This receipt is
-                  system-generated and confirms the submission of your
-                  application. Your athlete profile will be activated after
-                  verification of documents and payment. Please keep this for
-                  future reference.
-                </p>
-              </div>
               <div className="signature-area">
                 <div className="sig-box">
                   <div className="sig-line"></div>
@@ -1746,21 +1669,22 @@ const Registration = () => {
             </div>
           </div>
 
-          <div className="receipt-actions-floating no-print">
-            <button className="btn-print-large" onClick={handlePrint}>
-              <span className="icon">🖨️</span> Print Official Receipt
-            </button>
+          <div className="receipt-footer-actions no-print">
             <button
-              className="btn-home-link"
-              onClick={() => (window.location.href = "/")}
+              className="btn-premium"
+              onClick={() => {
+                clearDraft();
+                window.location.reload();
+              }}
             >
-              Return to Portal Home
+              Finish & Return Home
             </button>
           </div>
         </div>
       </div>
     );
   }
+
 
   return (
     <div className="registration-page">
