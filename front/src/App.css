@@ -124,8 +124,8 @@ body.hide-footer .footer-main {
 }
 
 .logo-frame.small {
-  width: 45px;
-  height: 45px;
+  width: 42px;
+  height: 42px;
   padding: 2px;
 }
 
@@ -362,20 +362,16 @@ body.hide-footer .footer-main {
 
 .mobile-menu-header {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  padding: 30px 20px;
+  padding-bottom: 20px;
   border-bottom: 1px solid #f0f0f0;
-  position: relative;
 }
 
 .menu-logo {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  text-align: center;
-  width: 100%;
+  gap: 12px;
 }
 
 .menu-logo img {
@@ -403,9 +399,6 @@ body.hide-footer .footer-main {
 }
 
 .menu-close-x {
-  position: absolute;
-  top: 15px;
-  right: 15px;
   background: transparent;
   border: none;
   font-size: 1.5rem;
@@ -454,32 +447,34 @@ body.hide-footer .footer-main {
 }
 
 .affiliate-box {
-  background: #ffffff;
-  border: 1px solid #edf2f7;
-  border-radius: 15px;
-  padding: 15px;
+  background: linear-gradient(145deg, #ffffff, #f8fafc);
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 25px 20px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
 .footer-affiliate-logo {
-  height: 45px;
-  width: 45px;
+  height: 60px;
+  width: 60px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #f7fafc;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
 }
 
 .affiliate-text {
-  text-align: left;
+  text-align: center;
 }
 
 .affiliate-text .title {
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: #1a202c;
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--primary);
   margin: 0;
   letter-spacing: 0.05em;
 }
@@ -533,37 +528,19 @@ body.hide-footer .footer-main {
   }
 
   .brand {
-    flex-direction: column;
-    gap: 8px;
-    align-items: center;
-    max-width: 100%;
-    text-align: center;
-    padding: 5px 0;
-  }
-
-  .brand-text {
-    align-items: center;
+    gap: 12px;
+    max-width: 80%;
   }
 
   .brand-text .main {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     white-space: nowrap;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.4);
-    letter-spacing: 0.5px;
-  }
-
-  .brand-text .sub {
-    font-size: 0.65rem;
-    letter-spacing: 0.25em;
-    opacity: 1;
-    color: var(--secondary);
-    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
   }
 
   .logo-frame {
-    width: 60px;
-    height: 60px;
-    box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+    width: 48px;
+    height: 48px;
   }
 
   .links a {
