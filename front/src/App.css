@@ -459,8 +459,8 @@ body.hide-footer .footer-main {
 }
 
 .footer-affiliate-logo {
-  height: 60px;
-  width: 60px;
+  height: 85px;
+  width: 85px;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #ffffff;
