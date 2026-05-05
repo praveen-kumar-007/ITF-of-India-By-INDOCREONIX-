@@ -20,10 +20,10 @@ const SystemHealth = () => {
   const [liveUptime, setLiveUptime] = useState(0);
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  const fetchHealth = async () => {
+  const fetchHealth = async (force = false) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/system-health`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/system-health?refresh=${force}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -117,7 +117,7 @@ const SystemHealth = () => {
 
   const handleRefresh = () => {
     setRefreshing(true);
-    fetchHealth();
+    fetchHealth(true);
   };
 
   if (loading) {
@@ -348,17 +348,33 @@ const SystemHealth = () => {
           </div>
         </div>
 
+        {/* Redis Mediation Check */}
+        <div className={`health-card ${services.redis?.status}`}>
+          <div className="card-icon"><Zap size={28} /></div>
+          <h3>Redis Mediation</h3>
+          <div className={`status-badge`}>
+            {services.redis?.status === 'healthy' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+            {services.redis?.mode === 'redis-cloud' ? `Cloud Cache: ${services.redis?.memory_used}` : 'Local Memory Caching'}
+          </div>
+          <div className="card-footer">
+            <span>High-Speed DB Mediator</span>
+          </div>
+        </div>
+
         {/* Server Info */}
         <div className="health-card info">
           <div className="card-icon"><Server size={28} /></div>
           <h3>Node.js Runtime</h3>
           <div className="info-stats">
             <div className="stat-row"><Clock size={16} /> <span>Uptime:</span> <strong>{formatUptime(liveUptime)}</strong></div>
-            <div className="stat-row"><Cpu size={16} /> <span>Engine:</span> <strong>Node {data?.nodeVersion || '...'}</strong></div>
-            <div className="stat-row"><HardDrive size={16} /> <span>RAM:</span> <strong>{data?.memory?.rss ? formatMemory(data.memory.rss) : '...'}</strong></div>
+            <div className="stat-row"><HardDrive size={16} /> <span>RAM Usage:</span> <strong>{data?.memory?.used ? formatMemory(data.memory.used) : '...'}</strong></div>
+            <div className="stat-row"><Zap size={16} /> <span>RAM Available:</span> <strong>{data?.memory?.free ? formatMemory(data.memory.free) : '...'}</strong></div>
+          </div>
+          <div className={`status-badge ${data?.memory?.percentageUsed > 80 ? 'unhealthy' : 'healthy'}`} style={{ marginTop: '10px' }}>
+             {data?.memory?.percentageUsed?.toFixed(1)}% Memory Utilized
           </div>
           <div className="card-footer">
-            <span>Operating System: {data?.platform || '...'}</span>
+            <span>System Platform: {data?.platform || '...'}</span>
           </div>
         </div>
       </div>

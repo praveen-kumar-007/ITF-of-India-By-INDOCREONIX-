@@ -19,6 +19,7 @@ const { sendSuccess, sendError } = require('../utils/responseHandler');
 const { logAudit } = require('../utils/logger');
 const { getPublicIdFromUrl } = require('../utils/cloudinaryUtils');
 const { getCache, setCache } = require('../utils/cache');
+const redis = require('../config/redis');
 const os = require('os');
 
 /**
@@ -228,15 +229,47 @@ const updateAdmin = async (req, res, next) => {
  */
 const getSystemHealth = async (req, res, next) => {
   try {
-    // 🚀 Check cache first
-    const cachedData = await getCache('system_health');
-    if (cachedData) {
-      return sendSuccess(res, 200, 'System health retrieved from cache', cachedData);
+    // 🚀 Check cache first (Bypass if refresh=true is passed)
+    const forceRefresh = req.query.refresh === 'true';
+    
+    if (!forceRefresh) {
+      const cachedData = await getCache('system_health');
+      if (cachedData) {
+        return sendSuccess(res, 200, 'System health retrieved from cache', cachedData);
+      }
     }
 
     const firebase = await checkFirebaseHealth();
     const cloudinary = await checkCloudinaryHealth();
     const mail = checkMailHealth();
+
+    // 🚀 Redis Health & Usage Check
+    const checkRedisHealth = async () => {
+      if (!redis || redis.status !== 'ready') {
+        return { 
+          status: 'warning', 
+          mode: 'in-memory', 
+          message: 'Redis not connected. Using local fallback.',
+          memory_used: '0 B'
+        };
+      }
+      try {
+        const info = await redis.info('memory');
+        const usedMemory = info.match(/used_memory_human:(.*)/)?.[1] || 'Unknown';
+        const peakMemory = info.match(/used_memory_peak_human:(.*)/)?.[1] || 'Unknown';
+        return {
+          status: 'healthy',
+          mode: 'redis-cloud',
+          message: 'Mediation layer active',
+          memory_used: usedMemory,
+          memory_peak: peakMemory
+        };
+      } catch (err) {
+        return { status: 'unhealthy', message: 'Redis check failed' };
+      }
+    };
+
+    const redisHealth = await checkRedisHealth();
 
     // Integrity Checks: Verify if key collections are readable and active
     const checkIntegrity = async (path, filterFn = null) => {
@@ -279,10 +312,15 @@ const getSystemHealth = async (req, res, next) => {
 
     const healthData = {
       timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
       nodeVersion: process.version,
-      platform: process.platform,
-      memory: process.memoryUsage(),
+      platform: os.platform(),
+      memory: {
+        total: os.totalmem(),
+        free: os.freemem(),
+        used: os.totalmem() - os.freemem(),
+        percentageUsed: ((os.totalmem() - os.freemem()) / os.totalmem()) * 100,
+        node_rss: process.memoryUsage().rss
+      },
       stats: {
         totalAdmins: adminCount,
         totalAthletes: athleteCount,
@@ -302,7 +340,8 @@ const getSystemHealth = async (req, res, next) => {
           status: mail.status, 
           message: mail.message,
           mode: mail.mode
-        }
+        },
+        redis: redisHealth
       },
       integrity: {
         gallery: galleryIntegrity,
