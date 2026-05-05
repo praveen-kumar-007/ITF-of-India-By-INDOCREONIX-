@@ -627,6 +627,7 @@
     .gallery-controls {
         flex-direction: column;
         gap: 1.5rem;
+        margin-bottom: 2rem;
     }
     
     .filter-group {
