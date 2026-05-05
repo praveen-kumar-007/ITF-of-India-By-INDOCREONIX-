@@ -26,8 +26,7 @@ const sendEmail = async (to, subject, html) => {
     }
 
     if (!resend) {
-      console.log(`\x1b[36m%s\x1b[0m`, `[MOCK EMAIL] To: ${to} | Subject: ${subject}`);
-      return { id: 'mock-id', message: 'Sent in mock mode' };
+      throw new Error('Mail Service Unconfigured: RESEND_API_KEY is missing. Transactional emails cannot be sent.');
     }
 
     const { data, error } = await resend.emails.send({
@@ -399,8 +398,8 @@ const sendContactConfirmation = async (to, name, messageSnippet) => {
 const checkMailHealth = () => {
   return {
     status: resend ? 'healthy' : 'warning',
-    mode: resend ? 'production' : 'mock',
-    message: resend ? 'Mail service is ready' : 'Mail service is running in MOCK mode (Check console for OTPs)'
+    mode: resend ? 'production' : 'unconfigured',
+    message: resend ? 'Mail service is ready' : 'Mail service is unconfigured (RESEND_API_KEY is missing)'
   };
 };
 

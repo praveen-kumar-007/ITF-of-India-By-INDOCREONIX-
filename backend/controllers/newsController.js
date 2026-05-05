@@ -2,6 +2,7 @@ const { saveData, getAllData, getDataById, deleteData } = require('../services/f
 const { uploadToCloudinary, deleteFromCloudinary } = require('../services/cloudinaryService');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
 const { getPublicIdFromUrl } = require('../utils/cloudinaryUtils');
+const { getCache, setCache, delCache } = require('../utils/cache');
 
 /**
  * Admin: Create News Item
@@ -40,6 +41,10 @@ const createNews = async (req, res, next) => {
     };
 
     const docId = await saveData('news', newsData);
+    
+    // 🚀 Invalidate Cache
+    await delCache('public_news');
+
     sendSuccess(res, 201, 'News item created successfully', { id: docId, ...newsData });
   } catch (error) {
     next(error);
@@ -51,9 +56,19 @@ const createNews = async (req, res, next) => {
  */
 const getNews = async (req, res, next) => {
   try {
+    // 🚀 Redis Mediation: Hit cache first
+    const cachedNews = await getCache('public_news');
+    if (cachedNews) {
+      return sendSuccess(res, 200, 'News fetched from cache', cachedNews);
+    }
+
     const news = await getAllData('news');
     // Sort by date or createdAt descending
     const sortedNews = news.sort((a, b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt));
+
+    // 🚀 Store in cache for 1 hour
+    await setCache('public_news', sortedNews, 3600);
+
     sendSuccess(res, 200, 'News fetched successfully', sortedNews);
   } catch (error) {
     next(error);
@@ -80,6 +95,9 @@ const deleteNews = async (req, res, next) => {
 
     // Delete from Firebase
     await deleteData('news', id);
+
+    // 🚀 Invalidate Cache
+    await delCache('public_news');
 
     sendSuccess(res, 200, 'News item deleted successfully');
   } catch (error) {

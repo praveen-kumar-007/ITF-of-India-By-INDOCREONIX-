@@ -18,6 +18,8 @@ const { checkMailHealth } = require('../services/mailService');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
 const { logAudit } = require('../utils/logger');
 const { getPublicIdFromUrl } = require('../utils/cloudinaryUtils');
+const { getCache, setCache } = require('../utils/cache');
+const os = require('os');
 
 /**
  * Admin Login
@@ -226,6 +228,12 @@ const updateAdmin = async (req, res, next) => {
  */
 const getSystemHealth = async (req, res, next) => {
   try {
+    // 🚀 Check cache first
+    const cachedData = await getCache('system_health');
+    if (cachedData) {
+      return sendSuccess(res, 200, 'System health retrieved from cache', cachedData);
+    }
+
     const firebase = await checkFirebaseHealth();
     const cloudinary = await checkCloudinaryHealth();
     const mail = checkMailHealth();
@@ -313,6 +321,10 @@ const getSystemHealth = async (req, res, next) => {
     };
 
     console.log('System Health Data Size:', JSON.stringify(healthData).length);
+    
+    // 🚀 Store in cache for 60 seconds
+    await setCache('system_health', healthData, 60);
+
     sendSuccess(res, 200, 'System health retrieved successfully', healthData);
   } catch (error) {
     next(error);

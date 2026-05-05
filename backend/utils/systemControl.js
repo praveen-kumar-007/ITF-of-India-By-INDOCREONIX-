@@ -1,4 +1,5 @@
 const { db } = require('../config/firebase');
+const { getCache, setCache } = require('./cache');
 
 /**
  * Check if a specific system service is enabled
@@ -7,11 +8,25 @@ const { db } = require('../config/firebase');
  */
 const isServiceEnabled = async (serviceName) => {
   try {
-    const snapshot = await db.ref(`settings/system_control/${serviceName}`).once('value');
-    const isEnabled = snapshot.val();
+    // 🚀 Redis Mediation: Use the full settings cache if available
+    let settings = await getCache('system_controls');
+
+    if (!settings) {
+      const snapshot = await db.ref('settings/system_control').once('value');
+      settings = snapshot.val();
+      
+      if (settings) {
+        // Cache for 5 minutes
+        await setCache('system_controls', settings, 300);
+      }
+    }
+
+    if (settings && typeof settings[serviceName] !== 'undefined') {
+      return settings[serviceName] !== false;
+    }
     
-    // Default to true if setting is missing
-    return isEnabled !== false;
+    // Fallback if cache/db fails or setting missing
+    return true;
   } catch (error) {
     console.error(`System Control Check Error (${serviceName}):`, error);
     return true; // Fail safe to enabled

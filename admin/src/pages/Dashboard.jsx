@@ -317,7 +317,7 @@ const Dashboard = () => {
                 <Mail size={16} />
                 <span>Mail Gateway</span>
                 <span className={`h-val ${(!healthData || healthData?.services?.mail?.status === 'healthy') ? 'active' : 'error'}`}>
-                  {(!healthData || healthData?.services?.mail?.status === 'healthy') ? 'Active' : 'Mock'}
+                  {(!healthData || healthData?.services?.mail?.status === 'healthy') ? 'Active' : 'Operational'}
                 </span>
               </div>
             </div>

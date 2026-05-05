@@ -2,6 +2,7 @@ const { saveData, getAllData, getDataById, deleteData } = require('../services/f
 const { uploadToCloudinary, deleteFromCloudinary } = require('../services/cloudinaryService');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
 const { getPublicIdFromUrl } = require('../utils/cloudinaryUtils');
+const { getCache, setCache, delCache } = require('../utils/cache');
 
 /**
  * Admin: Upload Photos to Gallery (Supports Multiple)
@@ -51,6 +52,9 @@ const uploadPhoto = async (req, res, next) => {
       uploadResults.push({ id: docId, ...photoData });
     }
 
+    // 🚀 Invalidate Cache
+    await delCache('public_gallery');
+
     sendSuccess(res, 201, `${files.length} photo(s) uploaded successfully`, uploadResults);
   } catch (error) {
     console.error('Multi-Upload Error:', error);
@@ -63,9 +67,19 @@ const uploadPhoto = async (req, res, next) => {
  */
 const getGallery = async (req, res, next) => {
   try {
+    // 🚀 Redis Mediation: Hit cache first
+    const cachedGallery = await getCache('public_gallery');
+    if (cachedGallery) {
+      return sendSuccess(res, 200, 'Gallery fetched from cache', cachedGallery);
+    }
+
     const photos = await getAllData('gallery');
     // Sort by createdAt descending
     const sortedPhotos = photos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    // 🚀 Store in cache for 1 hour
+    await setCache('public_gallery', sortedPhotos, 3600);
+
     sendSuccess(res, 200, 'Gallery fetched successfully', sortedPhotos);
   } catch (error) {
     next(error);
@@ -93,6 +107,9 @@ const deletePhoto = async (req, res, next) => {
 
     // Delete from Firebase
     await deleteData('gallery', id);
+
+    // 🚀 Invalidate Cache
+    await delCache('public_gallery');
 
     sendSuccess(res, 200, 'Photo deleted successfully');
   } catch (error) {
