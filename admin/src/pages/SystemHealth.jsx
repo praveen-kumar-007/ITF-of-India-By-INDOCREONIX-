@@ -168,9 +168,13 @@ const SystemHealth = () => {
           </div>
           
           <div className="header-action-row">
-            <div className="master-clock-display">
+            <div className="master-clock-display" style={{ width: '100%', flex: 1 }}>
               <div className="clock-label">
-                <span className="flag-icon">🇮🇳</span>
+                <img 
+                  src="https://flagcdn.com/w40/in.png" 
+                  alt="India Flag" 
+                  style={{ width: '24px', borderRadius: '2px', marginBottom: '4px' }}
+                />
                 <span className="timezone-text">IST</span>
               </div>
               <div className="time-unit"><span>{timeParts.h}</span><label>HRS</label></div>
@@ -350,11 +354,11 @@ const SystemHealth = () => {
           <h3>Node.js Runtime</h3>
           <div className="info-stats">
             <div className="stat-row"><Clock size={16} /> <span>Uptime:</span> <strong>{formatUptime(liveUptime)}</strong></div>
-            <div className="stat-row"><Cpu size={16} /> <span>Engine:</span> <strong>Node {data.nodeVersion}</strong></div>
-            <div className="stat-row"><HardDrive size={16} /> <span>RAM:</span> <strong>{formatMemory(data.memory?.rss)}</strong></div>
+            <div className="stat-row"><Cpu size={16} /> <span>Engine:</span> <strong>Node {data?.nodeVersion || '...'}</strong></div>
+            <div className="stat-row"><HardDrive size={16} /> <span>RAM:</span> <strong>{data?.memory?.rss ? formatMemory(data.memory.rss) : '...'}</strong></div>
           </div>
           <div className="card-footer">
-            <span>Operating System: {data.platform}</span>
+            <span>Operating System: {data?.platform || '...'}</span>
           </div>
         </div>
       </div>
@@ -364,32 +368,32 @@ const SystemHealth = () => {
         <Database size={18} /> Content Integrity Monitor
       </div>
       <div className="integrity-grid">
-        <div className={`integrity-card ${data.integrity?.gallery?.status}`}>
+        <div className={`integrity-card ${data?.integrity?.gallery?.status || 'checking'}`}>
           <div className="integrity-header">
             <Globe size={20} />
             <span>Gallery Module</span>
           </div>
           <div className="integrity-body">
             <div className="integrity-status">
-              <CheckCircle2 size={14} /> {data.integrity?.gallery?.message}
+              <CheckCircle2 size={14} /> {data?.integrity?.gallery?.message || 'Validating connectivity...'}
             </div>
             <div className="integrity-count">
-              <strong>{data.integrity?.gallery?.count}</strong> Assets Linked
+              <strong>{data?.integrity?.gallery?.count || 0}</strong> Assets Linked
             </div>
           </div>
         </div>
 
-        <div className={`integrity-card ${data.integrity?.news?.status}`}>
+        <div className={`integrity-card ${data?.integrity?.news?.status || 'checking'}`}>
           <div className="integrity-header">
             <TrendingUp size={20} />
             <span>News Module</span>
           </div>
           <div className="integrity-body">
             <div className="integrity-status">
-              <CheckCircle2 size={14} /> {data.integrity?.news?.message}
+              <CheckCircle2 size={14} /> {data?.integrity?.news?.message || 'Synchronizing stories...'}
             </div>
             <div className="integrity-count">
-              <strong>{data.integrity?.news?.count}</strong> Active Stories
+              <strong>{data?.integrity?.news?.count || 0}</strong> Active Stories
             </div>
           </div>
         </div>

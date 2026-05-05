@@ -203,19 +203,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 45px;
+  min-width: 60px;
 }
 
 .time-unit span {
   font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
-  font-size: 1.5rem;
+  font-size: 2.2rem;
   font-weight: 800;
   color: #0f172a;
   line-height: 1;
 }
 
 .time-unit label {
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #64748b;
   letter-spacing: 1px;
@@ -223,7 +223,7 @@
 }
 
 .time-sep {
-  font-size: 1.25rem;
+  font-size: 1.8rem;
   font-weight: 800;
   color: #cbd5e1;
   padding-bottom: 12px;
@@ -255,13 +255,19 @@
     grid-template-columns: repeat(2, 1fr);
   }
   .header-action-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: none;
   }
   .master-clock-display {
+    flex: 1;
     width: 100%;
+    max-width: none;
     justify-content: center;
+    padding: 0.75rem 1rem;
   }
 }
 
@@ -270,13 +276,13 @@
     padding: 1rem;
   }
   .time-unit {
-    min-width: 35px;
+    min-width: 45px;
   }
   .time-unit span {
-    font-size: 1.2rem;
+    font-size: 1.6rem;
   }
   .time-unit.ms {
-    min-width: 45px;
+    min-width: 50px;
   }
   .stats-strip {
     flex-wrap: wrap;
@@ -287,14 +293,28 @@
     min-width: 140px;
     justify-content: center;
   }
+  .refresh-btn {
+    padding: 0;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    justify-content: center;
+    border-radius: 12px;
+  }
 }
 
 @media (max-width: 480px) {
-  .time-unit.ms {
-    display: none; /* Hide milliseconds on very small screens to prevent overflow */
+  .time-unit {
+    min-width: 35px;
   }
-  .time-sep:last-of-type {
-    display: none;
+  .time-unit span {
+    font-size: 1.3rem;
+  }
+  .time-unit.ms {
+    min-width: 40px;
+  }
+  .time-sep {
+    font-size: 1.2rem;
   }
   .header-info h1 {
     font-size: 1.8rem;
