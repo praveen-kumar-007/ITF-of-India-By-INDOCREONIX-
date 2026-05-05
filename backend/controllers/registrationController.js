@@ -3,6 +3,7 @@ const { uploadToCloudinary, deleteFromCloudinary } = require('../services/cloudi
 const { sendSuccess, sendError } = require('../utils/responseHandler');
 const { getPublicIdFromUrl } = require('../utils/cloudinaryUtils');
 const { sendPendingEmail, sendApprovalEmail, sendRejectionEmail } = require('../services/mailService');
+const { getCache, setCache, delCache } = require('../utils/cache');
 
 
 
@@ -67,9 +68,14 @@ const registerAthlete = async (req, res, next) => {
     for (const fieldName of expectedFiles) {
       if (files[fieldName] && files[fieldName][0]) {
         const file = files[fieldName][0];
+        
+        // 🚀 Size Validation: Max 2MB
+        if (file.size > 2 * 1024 * 1024) {
+          return sendError(res, 400, `Image ${fieldName} exceeds 2MB limit.`);
+        }
+
         const result = await uploadToCloudinary(
           file.buffer, 
-          'registrations', 
           `${formData.fullName.replace(/\s+/g, '_')}_${fieldName}_${Date.now()}`
         );
         uploadedUrls[fieldName] = result.secure_url;
@@ -77,8 +83,11 @@ const registerAthlete = async (req, res, next) => {
     }
 
     const regNo = await generateUniqueRegId();
-    const registrationData = { ...formData, ...uploadedUrls, registrationNumber: regNo, status: 'pending' };
+    const registrationData = { ...formData, ...uploadedUrls, registrationNumber: regNo, status: 'pending', createdAt: new Date().toISOString() };
     const docId = await saveData('registrations', registrationData);
+
+    // 🚀 Invalidate Cache
+    await delCache('admin_registrations');
 
     // [ASYNC] Send Pending Verification Email with Details
     sendPendingEmail(formData.email, formData.fullName, regNo, registrationData)
@@ -95,8 +104,20 @@ const registerAthlete = async (req, res, next) => {
  */
 const getRegistrations = async (req, res, next) => {
   try {
+    // 🚀 Redis Mediation: Hit cache first
+    const cached = await getCache('admin_registrations');
+    if (cached) {
+      return sendSuccess(res, 200, 'Registrations fetched from cache', cached);
+    }
+
     const registrations = await getAllData('registrations');
-    sendSuccess(res, 200, 'Registrations fetched successfully', registrations);
+    // Sort by createdAt descending (optional but recommended for admin)
+    const sorted = registrations.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    
+    // 🚀 Store in cache for 30 mins
+    await setCache('admin_registrations', sorted, 1800);
+
+    sendSuccess(res, 200, 'Registrations fetched successfully', sorted);
   } catch (error) {
     next(error);
   }
@@ -134,6 +155,9 @@ const updateRegistrationStatus = async (req, res, next) => {
     }
     await updateData('registrations', id, updateFields);
 
+    // 🚀 Invalidate Cache
+    await delCache('admin_registrations');
+
     // 3. Trigger Status Emails [ASYNC]
     if (status === 'approved') {
       sendApprovalEmail(athlete.email, athlete.fullName, athlete.registrationNumber, athlete)
@@ -159,6 +183,8 @@ const deleteRegistration = async (req, res, next) => {
       status: 'deleted',
       deletedAt: new Date().toISOString()
     });
+    // 🚀 Invalidate Cache
+    await delCache('admin_registrations');
     sendSuccess(res, 200, 'Athlete moved to trash');
   } catch (error) {
     next(error);
@@ -172,6 +198,8 @@ const restoreRegistration = async (req, res, next) => {
   try {
     const { id } = req.params;
     await updateData('registrations', id, { status: 'pending', deletedAt: null });
+    // 🚀 Invalidate Cache
+    await delCache('admin_registrations');
     sendSuccess(res, 200, 'Athlete restored successfully');
   } catch (error) {
     next(error);
@@ -194,6 +222,8 @@ const permanentDeleteRegistration = async (req, res, next) => {
     }
 
     await deleteData('registrations', id);
+    // 🚀 Invalidate Cache
+    await delCache('admin_registrations');
     sendSuccess(res, 200, 'Athlete and files deleted permanently');
   } catch (error) {
     next(error);
@@ -216,6 +246,9 @@ const emptyTrash = async (req, res, next) => {
       }
       await deleteData('registrations', player.id);
     }
+
+    // 🚀 Invalidate Cache
+    await delCache('admin_registrations');
 
     sendSuccess(res, 200, `${trash.length} items cleared permanently`);
   } catch (error) {
@@ -246,6 +279,11 @@ const updateRegistration = async (req, res, next) => {
         if (files[fieldName] && files[fieldName][0]) {
           const file = files[fieldName][0];
           
+          // 🚀 Size Validation: Max 2MB
+          if (file.size > 2 * 1024 * 1024) {
+            return sendError(res, 400, `Image ${fieldName} exceeds 2MB limit.`);
+          }
+
           // Delete old asset if it exists
           if (currentData[fieldName]) {
             const oldPublicId = getPublicIdFromUrl(currentData[fieldName]);
@@ -265,6 +303,9 @@ const updateRegistration = async (req, res, next) => {
 
     // 3. Save to DB
     await updateData('registrations', id, updateFields);
+    
+    // 🚀 Invalidate Cache
+    await delCache('admin_registrations');
     
     sendSuccess(res, 200, 'Profile updated successfully', updateFields);
   } catch (error) {

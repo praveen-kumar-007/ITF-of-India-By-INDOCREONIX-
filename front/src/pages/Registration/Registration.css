@@ -937,7 +937,7 @@
 @media (max-width: 1024px) {
   .registration-layout {
     grid-template-columns: 1fr;
-    margin-top: -30px;
+    margin-top: -60px;
   }
 
   .registration-sidebar {
@@ -949,7 +949,7 @@
 
 @media (max-width: 768px) {
   .registration-layout {
-    margin-top: 20px;
+    margin-top: -60px;
   }
 
   .registration-form-container,

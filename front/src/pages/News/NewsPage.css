@@ -20,10 +20,16 @@
     padding: 1.4rem 0;
     border-bottom: 1px solid #e2e8f0;
     position: sticky;
-    top: 70px;
+    top: 80px;
     z-index: 100;
     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
     margin-top: -1px; /* Prevents white line gap from hero */
+}
+
+@media (max-width: 768px) {
+    .news-filter-bar {
+        top: 67px;
+    }
 }
 
 .filter-scroll-container {

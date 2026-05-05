@@ -1195,6 +1195,12 @@ const Registration = () => {
         return;
       }
 
+      const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+      if (file.size > MAX_SIZE) {
+        showToast("Image size must be less than 2MB", "error");
+        return;
+      }
+
       const fieldsToCrop = ["photo", "signature", "aadharFront", "aadharBack"];
 
       if (fieldsToCrop.includes(name)) {

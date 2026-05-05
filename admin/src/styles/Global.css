@@ -34,6 +34,9 @@ body {
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
 }
 
 .admin-layout {
@@ -127,13 +130,10 @@ body {
 
 
 .sidebar-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px); /* Optimized blur */
   z-index: 10000; /* Above header (9999) but below sidebar (10001) */
   animation: fadeIn 0.3s ease;
+  will-change: opacity;
 }
 
 @keyframes fadeIn {

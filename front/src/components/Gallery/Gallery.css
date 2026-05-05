@@ -12,13 +12,19 @@
 
 .gallery-filter-bar {
   position: sticky;
-  top: 70px;
+  top: 80px;
   z-index: 50;
   background: #ffffff;
   padding: 1.2rem 0;
   border-bottom: 1px solid rgba(148, 163, 184, 0.15);
   box-shadow: 0 10px 40px rgba(15, 23, 42, 0.03);
   margin-top: -1px; /* Prevents white line gap from hero */
+}
+
+@media (max-width: 768px) {
+  .gallery-filter-bar {
+    top: 67px;
+  }
 }
 
 .gallery-filter-scroll {

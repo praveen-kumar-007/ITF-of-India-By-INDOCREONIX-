@@ -153,7 +153,13 @@ ul {
   overflow: hidden;
   color: white;
   text-align: center;
-  margin-bottom: -1px; /* Prevents sub-pixel gaps between sections */
+  margin-bottom: -60px; /* Pulls next section up for seamless join */
+}
+
+@media (max-width: 768px) {
+  .page-hero {
+    margin-bottom: -40px;
+  }
 }
 
 .page-hero-bg {
