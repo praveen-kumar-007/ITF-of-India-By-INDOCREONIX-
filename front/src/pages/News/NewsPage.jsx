@@ -1,85 +1,117 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
+import { Calendar, Tag, ChevronRight, Newspaper, Bell } from 'lucide-react';
 import './NewsPage.css';
+import { NewsSkeleton } from '../../components/Skeleton';
 
 const NewsPage = () => {
   const { t } = useLanguage();
-  const newsItems = [
-    {
-      date: "15 May 2024",
-      tag: t('news.tag_tournament'),
-      title: t('news.item1_title'),
-      excerpt: t('news.item1_excerpt'),
-      img: "img6.jpeg"
-    },
-    {
-      date: "02 Jun 2024",
-      tag: t('news.tag_workshop'),
-      title: t('news.item2_title'),
-      excerpt: t('news.item2_excerpt'),
-      img: "img7.jpeg"
-    },
-    {
-      date: "20 Jun 2024",
-      tag: t('news.tag_announcement'),
-      title: t('news.item3_title'),
-      excerpt: t('news.item3_excerpt'),
-      img: "img8.jpeg"
-    },
-    {
-      date: "10 Jul 2024",
-      tag: t('news.tag_infrastructure'),
-      title: t('news.item4_title'),
-      excerpt: t('news.item4_excerpt'),
-      img: "img9.jpeg"
-    }
-  ];
+  const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('All');
+
+  const API_URL = import.meta.env.VITE_API_URL;
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const res = await fetch(`${API_URL}/news`);
+        const data = await res.json();
+        if (data.success) {
+          setNews(data.data);
+        }
+      } catch (err) {
+        console.error("News Fetch Error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNews();
+  }, [API_URL]);
+
+  const categories = ['All', 'Latest', 'Tournament', 'Event', 'Notice', 'Announcement'];
+  const filteredNews = filter === 'All' ? news : news.filter(n => n.category === filter);
 
   return (
     <div className="news-page">
       {/* Hero Header */}
       <section className="page-hero news-style">
         <div className="page-hero-bg">
-          <div className="page-hero-track">
-            {["hero.png", "hero_dark.png"].map((img, i) => (
-              <img key={i} src={`/${img}`} className="page-hero-img" alt="" />
-            ))}
-            {/* Repeat for seamless loop */}
-            {["hero.png", "hero_dark.png"].map((img, i) => (
-              <img key={`dup-${i}`} src={`/${img}`} className="page-hero-img" alt="" />
-            ))}
-          </div>
           <div className="page-hero-overlay"></div>
+          {news.length > 0 && news[0].imageUrl && (
+            <img src={news[0].imageUrl} className="news-hero-bg-img" alt="" />
+          )}
         </div>
         <div className="container">
-          <span className="section-tag">{t('news.tag')}</span>
-          <h1>{t('news.title')}</h1>
-          <p className="lead">Stay updated with the latest events, tournament results, and national announcements from ITF OF INDIA.</p>
+          <span className="section-tag">{t('news.tag') || 'Updates'}</span>
+          <h1>{t('news.title') || 'Official News & Notices'}</h1>
+          <p className="lead">{t('news.desc') || 'Stay informed about the latest happenings, tournament results, and official announcements from ITF OF INDIA.'}</p>
         </div>
       </section>
 
-      <div className="container section">
-
-        <div className="news-grid">
-          {newsItems.map((news, i) => (
-            <article key={i} className="news-card">
-              <div className="news-img">
-                <span className="news-badge">{news.tag}</span>
-                <img src={`/club_image/${news.img}`} alt={news.title} />
-              </div>
-              <div className="news-content">
-                <span className="news-date">{news.date}</span>
-                <h3>{news.title}</h3>
-                <p>{news.excerpt}</p>
-                <button className="read-more-btn">{t('news.read_more')} →</button>
-              </div>
-            </article>
-          ))}
+      {/* Filter Section */}
+      <div className="news-filter-bar">
+        <div className="container">
+          <div className="filter-scroll-container">
+            {categories.map(cat => (
+              <button 
+                key={cat} 
+                className={`news-filter-chip ${filter === cat ? 'active' : ''}`}
+                onClick={() => setFilter(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
+      </div>
+
+      <div className="container section">
+        {loading ? (
+          <NewsSkeleton />
+        ) : filteredNews.length > 0 ? (
+          <div className="news-grid-premium">
+            {filteredNews.map((item, i) => (
+              <article key={item.id || i} className="news-article-card" style={{ animationDelay: `${i * 0.1}s` }}>
+                <div className="article-image">
+                  {item.imageUrl ? (
+                    <img src={item.imageUrl} alt={item.title} loading="lazy" />
+                  ) : (
+                    <div className="article-image-fallback">
+                      <Newspaper size={40} />
+                    </div>
+                  )}
+                  <div className="article-category">{item.category}</div>
+                </div>
+                <div className="article-content">
+                  <div className="article-meta">
+                    <span className="article-date">
+                      <Calendar size={14} />
+                      {new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </span>
+                  </div>
+                  <h3>{item.title}</h3>
+                  <p>{item.content.length > 150 ? item.content.substring(0, 150) + '...' : item.content}</p>
+                  <button className="read-more-btn">
+                    Read Bulletin <ChevronRight size={16} />
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="news-empty-state">
+            <div className="empty-bell-icon">
+              <Bell size={60} />
+              <div className="ping-circle"></div>
+            </div>
+            <h3>No bulletins found in {filter}</h3>
+            <p>We haven't posted any updates in this category yet. Check back soon for the latest news.</p>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default NewsPage;
-

@@ -1,4 +1,5 @@
 const { Resend } = require('resend');
+const { isServiceEnabled } = require('../utils/systemControl');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -17,6 +18,13 @@ if (!resend) {
  */
 const sendEmail = async (to, subject, html) => {
   try {
+    // Check if mail service is enabled in system control
+    const enabled = await isServiceEnabled('mail_enabled');
+    if (!enabled) {
+      console.warn(`\x1b[33m%s\x1b[0m`, `[SYSTEM CONTROL] Mail service is DISABLED. Email to ${to} blocked.`);
+      return { id: 'disabled-id', message: 'Mail service disabled by administrator' };
+    }
+
     if (!resend) {
       console.log(`\x1b[36m%s\x1b[0m`, `[MOCK EMAIL] To: ${to} | Subject: ${subject}`);
       return { id: 'mock-id', message: 'Sent in mock mode' };
@@ -287,7 +295,7 @@ const sendApprovalEmail = async (to, name, regNo, data = {}) => {
           <p>To finalize your membership and access your official athlete profile, please complete your security setup using the button below:</p>
           
           <div style="text-align: center;">
-            <a href="https://itf-of-india.vercel.app/setup-password?email=${to}" class="action-button" style="background: #fbbf24; box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);">Complete Security Setup →</a>
+            <a href="${process.env.FRONTEND_URL}/setup-password?email=${to}" class="action-button" style="background: #fbbf24; box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);">Complete Security Setup →</a>
           </div>
 
           <p style="font-size: 13px; color: #64748b; background: #f8fafc; padding: 10px; border-radius: 6px;">
@@ -346,6 +354,45 @@ const sendRejectionEmail = async (to, name, reason = "Documentation criteria not
 };
 
 /**
+ * Send Contact Confirmation Email
+ */
+const sendContactConfirmation = async (to, name, messageSnippet) => {
+  const subject = `ITF OF INDIA - We've received your message, ${name}`;
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8">${getEmailStyles()}</head>
+    <body>
+      <div class="email-container">
+        <div class="header">
+          <img src="${LOGO_URL}" alt="ITF Logo" class="logo">
+          <span class="org-name">ITF OF INDIA</span>
+        </div>
+        <div class="content">
+          <div style="text-align: center;"><span class="status-badge status-approved">Message Received</span></div>
+          <h1 class="title">Thank You for Reaching Out!</h1>
+          <p>Hello <strong>${name}</strong>,</p>
+          <p>We've successfully received your enquiry via the <strong>ITF OF INDIA</strong> official website. Our administrative team is reviewing your message and will respond as soon as possible.</p>
+          
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 25px 0;">
+            <p style="margin: 0; font-weight: 700; color: #64748b; text-transform: uppercase; font-size: 11px;">Your Message Preview:</p>
+            <p style="margin: 8px 0 0; color: #334155; font-size: 14px; font-style: italic;">"${messageSnippet.length > 150 ? messageSnippet.substring(0, 150) + '...' : messageSnippet}"</p>
+          </div>
+
+          <p style="color: #64748b; font-size: 14px;">If your enquiry is urgent, please feel free to contact us directly via the details provided on our website.</p>
+        </div>
+        <div class="footer">
+          <p>ITF OF INDIA - National Multi-Sport Organization Trust</p>
+          <p>Indra the Fighter of India</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+  return sendEmail(to, subject, html);
+};
+
+/**
  * Check Mail service health
  * @returns {Object}
  */
@@ -363,5 +410,6 @@ module.exports = {
   sendPendingEmail,
   sendApprovalEmail,
   sendRejectionEmail,
+  sendContactConfirmation,
   checkMailHealth
 };

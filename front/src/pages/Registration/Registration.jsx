@@ -3,6 +3,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import ImageCropper from "../../components/ImageCropper/ImageCropper";
 import { QRCodeSVG } from "qrcode.react";
 import "./Registration.css";
+import { FormSkeleton } from "../../components/Skeleton";
 
 const stateDistrictMap = {
   "Andhra Pradesh": [
@@ -810,7 +811,7 @@ const sportsDisciplines = [
 ];
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  import.meta.env.VITE_API_URL;
 
 const Registration = () => {
   const { t } = useLanguage();
@@ -848,6 +849,7 @@ const Registration = () => {
     loading: false,
     kitSize: "",
     parentContactNumber: "", // New Field
+    pageLoading: true, // Initial loading state
     paymentSettings: {
       upiId: "",
       merchantName: "",
@@ -910,10 +912,14 @@ const Registration = () => {
         setFormData((prev) => ({
           ...prev,
           paymentSettings: result.data,
+          pageLoading: false
         }));
+      } else {
+        setFormData((prev) => ({ ...prev, pageLoading: false }));
       }
     } catch (error) {
       console.error("Failed to fetch payment settings");
+      setFormData((prev) => ({ ...prev, pageLoading: false }));
     }
   };
 
@@ -1577,6 +1583,10 @@ const Registration = () => {
   const handlePrint = () => {
     window.print();
   };
+
+  if (formData.pageLoading) {
+    return <FormSkeleton />;
+  }
 
   if (step === 5 && registrationResult) {
     return (

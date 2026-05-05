@@ -26,7 +26,7 @@ const AthleteProfile = () => {
     // Fetch latest status from backend to prevent stale local data
     const syncStatus = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/athlete/profile`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/athlete/profile`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const result = await response.json();

@@ -189,6 +189,8 @@
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
     border-bottom: 1.5px solid #f1f5f9;
+    word-break: break-all;
+    overflow-wrap: break-word;
 }
 
 .dense-grid {
@@ -345,48 +347,45 @@
 
 .final-actions {
     display: flex;
-    gap: 1.25rem;
-    justify-content: center; /* Center for 1 button */
-    flex-wrap: wrap;
-}
-
-/* 2 or more buttons: Corners/Distribution */
-.final-actions:has(.action-btn:nth-child(2)) {
     justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 .action-btn {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 0.9rem 2.2rem;
-    border-radius: 16px;
+    justify-content: center;
+    gap: 12px;
+    padding: 1.25rem 3rem; /* Much larger padding */
+    min-width: 180px; /* Ensures a substantial button size */
+    border-radius: 20px;
     border: none;
-    font-size: 0.9rem;
-    font-weight: 800;
+    font-size: 0.95rem;
+    font-weight: 900; /* Extra bold */
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1.2px;
+    white-space: nowrap; /* Prevents text from breaking */
 }
 
 .action-btn.approve {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
-    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
 }
 
 .action-btn.reject {
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white;
-    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25);
+    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
 }
 
 .action-btn.delete {
-    background: white;
-    color: #475569;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    background: linear-gradient(135deg, #475569 0%, #1e293b 100%);
+    color: white;
+    box-shadow: 0 10px 25px rgba(30, 41, 59, 0.3);
 }
 
 .action-btn:hover:not(:disabled) {
@@ -413,6 +412,137 @@
     box-shadow: none;
 }
 
+/* Edit Mode Enhancements */
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-right-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.btn-premium-edit {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 14px;
+    border: none;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(245, 158, 11, 0.2);
+    transition: all 0.3s;
+}
+
+.btn-premium-edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 25px rgba(245, 158, 11, 0.3);
+}
+
+.edit-controls {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-save-edit {
+    background: #10b981;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 14px;
+    border: none;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.btn-cancel-edit {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+/* Edit Inputs */
+.edit-input, .edit-select {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1e293b;
+    transition: all 0.3s;
+}
+
+.edit-input:focus, .edit-select:focus {
+    outline: none;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+}
+
+.edit-input-large {
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: transparent;
+    border: none;
+    border-bottom: 2px dashed #cbd5e1;
+    width: 100%;
+    margin-bottom: 0.5rem;
+    color: #1a237e;
+}
+
+.edit-input-large:focus {
+    outline: none;
+    border-bottom-color: #f59e0b;
+}
+
+/* Image Edit Overlays */
+.edit-target {
+    position: relative;
+}
+
+.image-edit-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: 0.8rem;
+    gap: 8px;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s;
+}
+
+.edit-target:hover .image-edit-overlay {
+    opacity: 1;
+}
+
+.editing-active .glass-panel {
+    border: 2px dashed #f59e0b;
+    background: rgba(255, 255, 255, 0.95);
+}
+
 @media (max-width: 1200px) {
     .perfect-grid {
         grid-template-columns: 1fr 1fr;
@@ -427,63 +557,199 @@
 
 @media (max-width: 768px) {
     .player-detail-showcase {
-        padding: 1.5rem;
+        padding: 0.75rem;
+        overflow-x: hidden;
+    }
+
+    .showcase-nav {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        border-radius: 20px;
+    }
+
+    .nav-left, .nav-right-actions {
+        width: auto !important;
+        display: flex;
+        align-items: center;
+    }
+
+    .action-panel {
+        padding: 1.25rem 0.75rem !important;
+        margin: 1rem 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        border-radius: 20px;
+        overflow: hidden;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .final-actions-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.35rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        transform: none !important;
+    }
+
+    .action-btn {
+        width: 100% !important;
+        padding: 0.4rem 0.1rem !important;
+        font-size: 0.58rem !important;
+        border-radius: 8px;
+        white-space: normal;
+        text-align: center;
+        flex-direction: column;
+        gap: 2px;
+        min-height: auto;
+        box-sizing: border-box !important;
+        border: none !important;
+        margin: 0 !important;
+        transform: none !important;
+    }
+
+    .action-btn svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .action-btn span {
+        font-size: 0.65rem;
+        font-weight: 900;
     }
 
     .perfect-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    .profile-summary,
-    .payment-panel,
-    .action-panel {
-        grid-column: span 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        width: 100%;
     }
 
     .profile-summary {
         flex-direction: column;
+        padding: 2rem 1rem;
         text-align: center;
         gap: 1.5rem;
-        padding: 2.5rem 1.5rem;
+    }
+
+    .compact-avatar {
+        width: 140px;
+        height: 140px;
+        margin: 0 auto;
     }
 
     .summary-text h2 {
-        font-size: 1.8rem;
+        font-size: 1.75rem;
+        word-break: break-word;
+    }
+
+    .reg-number-tag {
+        font-size: 0.8rem;
+        padding: 0.5rem 1rem;
+        justify-content: center;
+        width: fit-content;
+        margin: 0 auto;
+    }
+
+    .dense-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .d-cell {
+        padding: 0.75rem 0;
     }
 
     .compact-docs {
         grid-template-columns: 1fr;
+        gap: 1.5rem;
     }
 
     .compact-payment {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 1.5rem;
+        text-align: center;
     }
 
     .pay-img {
         width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
     }
 
-    .final-actions {
-        display: flex;
-        flex-direction: row;
-        justify-content: center; /* Center for 1 button */
-        gap: 1rem;
-        width: 100%;
-    }
-
-    /* 2 or more buttons: Corners/Distribution */
-    .final-actions:has(button:nth-child(2)) {
-        justify-content: space-between;
+    .final-actions-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem;
     }
 
     .action-btn {
-        flex: 0 1 auto;
-        min-width: 100px;
-        padding: 0.7rem 1.2rem;
-        font-size: 0.8rem;
-        justify-content: center;
+        padding: 1rem 0.25rem;
+        font-size: clamp(0.6rem, 3vw, 0.75rem);
+        border-radius: 10px;
+        white-space: normal; /* Allow text to wrap if absolutely necessary */
+        text-align: center;
+        flex-direction: column; /* Stack icon and text on very small screens */
+        gap: 4px;
+        min-height: 80px;
+    }
+
+    .action-btn span {
+        display: block;
+        line-height: 1.1;
+    }
+
+    /* Fix for inputs causing overflow */
+    .edit-input, .edit-select, .edit-input-large {
+        width: 100% !important;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .image-edit-overlay {
+        opacity: 1;
+        background: rgba(0,0,0,0.4);
+        padding: 0.5rem;
     }
 }
+
+/* NEW GRID STYLES */
+.final-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 1.25rem 0.5rem;
+    border: none;
+    border-radius: 14px;
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.action-btn.approve { background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25); }
+.action-btn.edit-main { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 8px 20px rgba(245, 158, 11, 0.25); }
+.action-btn.reject { background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%); box-shadow: 0 8px 20px rgba(244, 63, 94, 0.25); }
+.action-btn.delete { background: linear-gradient(135deg, #64748b 0%, #475569 100%); box-shadow: 0 8px 20px rgba(100, 116, 139, 0.25); }
+.action-btn.save-main { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); box-shadow: 0 8px 20px rgba(139, 92, 246, 0.25); }
+.action-btn.cancel-main { background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%); box-shadow: 0 8px 20px rgba(148, 163, 184, 0.25); }

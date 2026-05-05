@@ -3,7 +3,7 @@ import { Camera, User, Mail, Lock, Shield, Save, Upload } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import './Profile.css';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const Profile = () => {
   const { showToast } = useToast();

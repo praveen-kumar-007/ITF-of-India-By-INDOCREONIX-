@@ -337,123 +337,137 @@
 
 table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0 8px; /* Adds space between rows */
 }
 
 th {
     text-align: left;
-    padding: 1rem;
-    font-size: 0.75rem;
+    padding: 1rem 1.5rem;
+    font-size: 0.7rem;
     font-weight: 800;
     color: #94a3b8;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.activity-table-wrapper th:nth-child(2),
-.activity-table-wrapper td:nth-child(2),
-.activity-table-wrapper th:nth-child(3),
-.activity-table-wrapper td:nth-child(3) {
-    display: table-cell;
-}
-
-@media (max-width: 768px) {
-    .activity-table-wrapper th:nth-child(3),
-    .activity-table-wrapper td:nth-child(3) {
-        display: none; /* Hide State column on tablet/mobile */
-    }
-}
-
-@media (max-width: 500px) {
-    .activity-table-wrapper th:nth-child(2),
-    .activity-table-wrapper td:nth-child(2) {
-        display: none; /* Hide Discipline column on small mobile */
-    }
-    
-    .athlete-cell img {
-        width: 32px;
-        height: 32px;
-    }
-    
-    .athlete-cell strong {
-        font-size: 0.85rem;
-    }
-    
-    .athlete-cell span {
-        font-size: 0.7rem;
-    }
+    letter-spacing: 0.1em;
+    border: none;
 }
 
 td {
-    padding: 1.25rem 1rem;
-    border-bottom: 1px solid #f8fafc;
+    padding: 1.25rem 1.5rem;
+    background: #ffffff;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+td:first-child {
+    border-left: 1px solid #f1f5f9;
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+}
+
+td:last-child {
+    border-right: 1px solid #f1f5f9;
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+
+tr {
+    transition: transform 0.3s;
+}
+
+tr:hover td {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+tr:hover {
+    transform: scale(1.01) translateX(5px);
+    z-index: 5;
 }
 
 .athlete-cell {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
 }
 
 .athlete-cell img {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
     object-fit: cover;
     flex-shrink: 0;
-}
-
-.athlete-cell div {
-    display: flex;
-    flex-direction: column;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
 .athlete-cell strong {
-    font-size: 0.95rem;
-    color: #1e293b;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.3px;
 }
 
 .athlete-cell span {
     font-size: 0.75rem;
     color: #64748b;
+    font-weight: 500;
 }
 
 .status-pill {
-    padding: 5px 12px;
+    padding: 6px 14px;
     border-radius: 100px;
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-size: 0.7rem;
+    font-weight: 800;
     white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 
-.status-pill.status-pending { background: #fffbeb; color: #d97706; }
-.status-pill.status-approved { background: #f0fdf4; color: #16a34a; }
-.status-pill.status-rejected { background: #fef2f2; color: #dc2626; }
+.status-pill.status-pending { 
+    background: #fffbeb; 
+    color: #d97706;
+    border: 1px solid rgba(217, 119, 6, 0.1);
+}
+
+.status-pill.status-approved { 
+    background: #f0fdf4; 
+    color: #16a34a;
+    border: 1px solid rgba(22, 163, 74, 0.1);
+}
+
+.status-pill.status-rejected { 
+    background: #fef2f2; 
+    color: #dc2626;
+    border: 1px solid rgba(220, 38, 38, 0.1);
+}
 
 .action-row {
     display: flex;
-    gap: 12px;
-    justify-content: center; /* Center for 1 button */
-}
-
-/* 2 or more buttons: Corners/Distribution */
-.action-row:has(button:nth-child(2)) {
-    justify-content: space-between;
+    gap: 10px;
 }
 
 .mini-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    border: 1px solid #e2e8f0;
-    background: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    background: #f8fafc;
     color: #64748b;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mini-btn:hover { 
+    background: white; 
+    color: #0f172a; 
+    border-color: #0f172a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .mini-btn:hover { background: #f8fafc; color: #0f172a; border-color: #cbd5e1; }

@@ -7,8 +7,9 @@ import {
 import { useToast } from '../context/ToastContext';
 import './Dashboard.css';
 import ActionModal from '../components/ActionModal';
+import { DashboardSkeleton } from '../components/Skeleton';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -192,15 +193,11 @@ const Dashboard = () => {
     .slice(0, 8);
 
   if (loading) {
-    return (
-      <div className="loading-spinner">
-        <div className="spinner"></div>
-        <p>Loading System Analytics...</p>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   return (
+    <>
     <main className="dashboard-container animate-fade-in">
       {/* Welcome Hero Section */}
       <section className="welcome-hero">
@@ -488,21 +485,22 @@ const Dashboard = () => {
           </button>
         </div>
       </section>
-
-      <ActionModal 
-        isOpen={actionModal.isOpen}
-        onClose={() => setActionModal(prev => ({ ...prev, isOpen: false }))}
-        onConfirm={actionModal.onConfirm}
-        title={actionModal.title}
-        message={actionModal.message}
-        type={actionModal.type}
-        showInput={actionModal.showInput}
-        inputPlaceholder={actionModal.inputPlaceholder}
-        confirmText={actionModal.confirmText}
-        loading={isProcessing}
-      />
     </main>
-  );
+
+    <ActionModal 
+      isOpen={actionModal.isOpen}
+      onClose={() => setActionModal(prev => ({ ...prev, isOpen: false }))}
+      onConfirm={actionModal.onConfirm}
+      title={actionModal.title}
+      message={actionModal.message}
+      type={actionModal.type}
+      showInput={actionModal.showInput}
+      inputPlaceholder={actionModal.inputPlaceholder}
+      confirmText={actionModal.confirmText}
+      loading={isProcessing}
+    />
+  </>
+);
 };
 
 export default Dashboard;

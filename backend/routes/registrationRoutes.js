@@ -14,6 +14,7 @@ const { protect, authorize } = require('../middleware/authMiddleware');
 const { authLimiter } = require('../middleware/rateLimiter');
 const validate = require('../middleware/validateMiddleware');
 const { athleteRegistrationSchema } = require('../utils/validationSchemas');
+const { checkSystemControl } = require('../middleware/systemControlMiddleware');
 
 // Define file upload fields
 const cpUpload = upload.fields([
@@ -25,12 +26,12 @@ const cpUpload = upload.fields([
 ]);
 
 // Routes
-router.get('/check-availability', (req, res, next) => {
+router.get('/check-availability', checkSystemControl('registration_enabled', 'Registration Portal'), (req, res, next) => {
   const { checkAvailability } = require('../controllers/registrationController');
   checkAvailability(req, res, next);
 });
 router.get('/generate-id', protect, getUniqueId);
-router.post('/register', authLimiter, cpUpload, validate(athleteRegistrationSchema), registerAthlete); // Public
+router.post('/register', checkSystemControl('registration_enabled', 'Registration Portal'), authLimiter, cpUpload, validate(athleteRegistrationSchema), registerAthlete); // Public
 
 router.get('/', protect, getRegistrations);
 router.get('/:id', protect, getRegistrationById);
@@ -47,7 +48,7 @@ router.delete('/empty-trash', protect, authorize('superadmin'), (req, res, next)
   const { emptyTrash } = require('../controllers/registrationController');
   emptyTrash(req, res, next);
 });
-router.put('/:id', protect, authorize('superadmin', 'admin'), updateRegistration);
+router.put('/:id', protect, authorize('superadmin', 'admin'), cpUpload, updateRegistration);
 
 router.delete('/:id', protect, authorize('superadmin', 'admin'), deleteRegistration);
 

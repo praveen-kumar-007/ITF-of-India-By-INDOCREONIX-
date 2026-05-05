@@ -34,13 +34,6 @@ app.use(helmet({
 })); // Security headers
 
 const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:5174',
-  'http://localhost:5175',
-  'http://localhost:5176',
-  'http://localhost:5177',
-  'http://localhost:5178',
-  'http://localhost:3000',
   process.env.FRONTEND_URL,
   process.env.ADMIN_URL
 ].filter(Boolean);
@@ -51,8 +44,7 @@ app.use(cors({
     if (!origin) return callback(null, true);
     
     // In production, strictly check against allowedOrigins
-    const isAllowed = allowedOrigins.includes(origin) || 
-                     (process.env.NODE_ENV === 'development' && origin.startsWith('http://localhost:'));
+    const isAllowed = allowedOrigins.includes(origin);
     
     if (isAllowed) {
       callback(null, true);
@@ -97,11 +89,17 @@ app.use('/api/auth', authRoutes);
 
 const athleteAuthRoutes = require('./routes/athleteAuthRoutes');
 const settingRoutes = require('./routes/settingRoutes');
+const galleryRoutes = require('./routes/galleryRoutes');
+const newsRoutes = require('./routes/newsRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 
 app.use('/api/registrations', registrationRoutes);
 app.use('/api/otp', otpRoutes);
 app.use('/api/athlete', athleteAuthRoutes);
 app.use('/api/settings', settingRoutes);
+app.use('/api/gallery', galleryRoutes);
+app.use('/api/news', newsRoutes);
+app.use('/api/contact', contactRoutes);
 
 // 404 Handler
 app.use((req, res, next) => {

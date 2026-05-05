@@ -48,3 +48,44 @@ exports.updatePaymentSettings = async (req, res) => {
     sendError(res, 500, error.message);
   }
 };
+
+// @desc    Get system control settings (toggles)
+// @route   GET /api/settings/system-control
+exports.getSystemControl = async (req, res) => {
+  try {
+    const snapshot = await db.ref('settings/system_control').once('value');
+    let settings = snapshot.val();
+    
+    if (!settings) {
+      // Initialize defaults if not present
+      settings = {
+        mail_enabled: true,
+        registration_enabled: true,
+        contact_enabled: true,
+        gallery_enabled: true,
+        news_enabled: true
+      };
+      await db.ref('settings/system_control').set(settings);
+    }
+    
+    sendSuccess(res, 200, 'System control settings fetched', settings);
+  } catch (error) {
+    sendError(res, 500, error.message);
+  }
+};
+
+// @desc    Update system control settings
+// @route   PATCH /api/settings/system-control
+exports.updateSystemControl = async (req, res) => {
+  try {
+    const updates = req.body;
+    await db.ref('settings/system_control').update({
+      ...updates,
+      updatedAt: new Date().toISOString(),
+      updatedBy: req.user.email
+    });
+    sendSuccess(res, 200, 'System controls updated successfully', updates);
+  } catch (error) {
+    sendError(res, 500, error.message);
+  }
+};

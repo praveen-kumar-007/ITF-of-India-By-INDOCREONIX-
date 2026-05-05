@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 const Hero = () => {
   const { t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [notices, setNotices] = useState([]);
 
   const heroImages = [
     "/club_image/img1.jpeg",
@@ -15,13 +16,32 @@ const Hero = () => {
   ];
 
   const animations = ['zoom', 'fade', 'slide-left', 'slide-right', 'blur-in'];
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroImages.length);
     }, 4000);
+
+    const fetchNotices = async () => {
+      try {
+        const res = await fetch(`${API_URL}/news`);
+        const data = await res.json();
+        if (data.success) {
+          // Priority to Announcements and Notices for the hero section
+          const filtered = data.data
+            .filter(item => item.category === 'Notice' || item.category === 'Announcement' || item.category === 'Latest' || item.category === 'News')
+            .slice(0, 5);
+          setNotices(filtered);
+        }
+      } catch (err) {
+        console.error("Hero Notice Fetch Error:", err);
+      }
+    };
+
+    fetchNotices();
     return () => clearInterval(slideInterval);
-  }, [heroImages.length]);
+  }, [heroImages.length, API_URL]);
 
   return (
     <header id="home" className="sport-hero">
@@ -52,20 +72,22 @@ const Hero = () => {
               <h3>{t('hero.notices')}</h3>
             </div>
             <div className="notice-body">
-              <div className="notice-item">
-                <span className="date">05 May</span>
-                <p>State Level Karate Championship 2024 - Registration Portal Now Open.</p>
-              </div>
-              <div className="notice-item">
-                <span className="date">12 May</span>
-                <p>National Coaching Workshop: Special Focus on Grassroots Training.</p>
-              </div>
-              <div className="notice-item">
-                <span className="date">01 Jun</span>
-                <p>Upcoming Trials for Junior Athletics & Wrestling Contingents.</p>
-              </div>
+              {notices.length > 0 ? (
+                notices.map((notice, idx) => (
+                  <div key={notice.id || idx} className="notice-item">
+                    <span className="date">
+                      {new Date(notice.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                    </span>
+                    <p>{notice.title}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="notice-empty">
+                  <p>No active notices at the moment. Stay tuned for official updates.</p>
+                </div>
+              )}
             </div>
-            <a href="#contact" className="notice-more">Explore All Official Notices →</a>
+            <Link to="/news" className="notice-more">Explore All Official Notices →</Link>
           </div>
         </div>
       </div>

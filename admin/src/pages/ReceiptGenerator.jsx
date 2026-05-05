@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileCheck, UserPlus, ArrowRight, RefreshCcw } from 'lucide-react';
+import { FileCheck, UserPlus, ArrowRight, RefreshCw } from 'lucide-react';
 import './ReceiptGenerator.css';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const ReceiptGenerator = () => {
   const navigate = useNavigate();
@@ -57,9 +57,9 @@ const ReceiptGenerator = () => {
 
   const handleLoadSample = () => {
     const sampleData = {
-      fullName: 'Praveen Kumar',
-      fatherName: 'Late Sh. Ram Kumar',
-      sportsDiscipline: 'Kabaddi',
+      fullName: 'Athlete Name',
+      fatherName: 'Guardian Name',
+      sportsDiscipline: 'Sports Category',
       state: 'Haryana',
       district: 'Rohtak',
       contactNumber: '9876543210',
@@ -125,7 +125,7 @@ const ReceiptGenerator = () => {
                     title="Generate New ID"
                     disabled={loadingId}
                   >
-                    <RefreshCcw size={16} className={loadingId ? 'spin' : ''} />
+                    <RefreshCw size={18} className={loadingId ? 'spin' : ''} />
                   </button>
                 </div>
               </div>

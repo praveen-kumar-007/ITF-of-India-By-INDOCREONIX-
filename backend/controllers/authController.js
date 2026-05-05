@@ -17,6 +17,7 @@ const {
 const { checkMailHealth } = require('../services/mailService');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
 const { logAudit } = require('../utils/logger');
+const { getPublicIdFromUrl } = require('../utils/cloudinaryUtils');
 
 /**
  * Admin Login
@@ -132,11 +133,9 @@ const deleteAdmin = async (req, res, next) => {
     
     // Get admin to find photo URL
     const admin = await getDataById('admins', id);
-    if (admin && admin.photo && admin.photo.includes('cloudinary')) {
-      // Extract public ID and delete from Cloudinary
-      const publicId = admin.photo.split('/').pop().split('.')[0];
-      const folder = admin.photo.split('ITF_India/')[1].split('/')[0];
-      await deleteFromCloudinary(`ITF_India/${folder}/${publicId}`);
+    const publicId = getPublicIdFromUrl(admin?.photo);
+    if (publicId) {
+      await deleteFromCloudinary(publicId);
     }
 
     await deleteData('admins', id);
@@ -171,10 +170,9 @@ const updateProfile = async (req, res, next) => {
 
     if (file) {
       // Delete old photo if exists
-      if (admin.photo && admin.photo.includes('cloudinary')) {
-        const oldPublicId = admin.photo.split('/').pop().split('.')[0];
-        const oldFolder = admin.photo.split('ITF_India/')[1].split('/')[0];
-        await deleteFromCloudinary(`ITF_India/${oldFolder}/${oldPublicId}`);
+      const oldPublicId = getPublicIdFromUrl(admin.photo);
+      if (oldPublicId) {
+        await deleteFromCloudinary(oldPublicId);
       }
 
       // Upload new photo
@@ -232,6 +230,30 @@ const getSystemHealth = async (req, res, next) => {
     const cloudinary = await checkCloudinaryHealth();
     const mail = checkMailHealth();
 
+    // Integrity Checks: Verify if key collections are readable and active
+    const checkIntegrity = async (path, filterFn = null) => {
+      try {
+        const data = await getAllData(path);
+        const filteredData = filterFn ? data.filter(filterFn) : data;
+        return {
+          status: 'healthy',
+          count: filteredData.length,
+          message: 'System Link Operational'
+        };
+      } catch (error) {
+        return {
+          status: 'unhealthy',
+          count: 0,
+          message: 'Integrity Breach or Collection Missing'
+        };
+      }
+    };
+
+    const galleryIntegrity = await checkIntegrity('gallery');
+    const newsIntegrity = await checkIntegrity('news', (item) => item.category === 'News' || item.category === 'General' || !item.category);
+    const noticeIntegrity = await checkIntegrity('news', (item) => item.category === 'Notice' || item.category === 'Announcement');
+    const contactIntegrity = await checkIntegrity('contacts');
+
     // Get basic stats
     const adminCount = (await getAllData('admins')).length;
     const athleteCount = (await getAllData('registrations')).length;
@@ -273,9 +295,24 @@ const getSystemHealth = async (req, res, next) => {
           message: mail.message,
           mode: mail.mode
         }
+      },
+      integrity: {
+        gallery: galleryIntegrity,
+        news: newsIntegrity,
+        notices: noticeIntegrity,
+        contact: contactIntegrity
+      },
+      pageConnectivity: {
+        home: { status: 'healthy', title: 'Home Page', link: '/' },
+        about: { status: 'healthy', title: 'About Page', link: '/about' },
+        gallery: { status: galleryIntegrity.status, title: 'Gallery Page', link: '/gallery' },
+        news: { status: newsIntegrity.status, title: 'News & Notices', link: '/news' },
+        registration: { status: 'healthy', title: 'Registration Portal', link: '/registration' },
+        contact: { status: contactIntegrity.status, title: 'Contact Section', link: '/#contact' }
       }
     };
 
+    console.log('System Health Data Size:', JSON.stringify(healthData).length);
     sendSuccess(res, 200, 'System health retrieved successfully', healthData);
   } catch (error) {
     next(error);

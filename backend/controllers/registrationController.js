@@ -1,19 +1,10 @@
 const { saveData, getAllData, getDataById, updateData, deleteData } = require('../services/firebaseService');
 const { uploadToCloudinary, deleteFromCloudinary } = require('../services/cloudinaryService');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
+const { getPublicIdFromUrl } = require('../utils/cloudinaryUtils');
 const { sendPendingEmail, sendApprovalEmail, sendRejectionEmail } = require('../services/mailService');
 
-/**
- * Helper to extract Public ID from Cloudinary URL
- */
-const getPublicId = (url) => {
-  if (!url) return null;
-  const parts = url.split('/');
-  const fileName = parts[parts.length - 1].split('.')[0];
-  const folder1 = parts[parts.length - 2];
-  const folder2 = parts[parts.length - 3];
-  return `${folder2}/${folder1}/${fileName}`;
-};
+
 
 /**
  * Helper to generate a unique Registration Number
@@ -198,7 +189,7 @@ const permanentDeleteRegistration = async (req, res, next) => {
 
     const assets = ['photo', 'signature', 'aadharFront', 'aadharBack', 'paymentProof'];
     for (const key of assets) {
-      const publicId = getPublicId(player[key]);
+      const publicId = getPublicIdFromUrl(player[key]);
       if (publicId) await deleteFromCloudinary(publicId);
     }
 
@@ -220,7 +211,7 @@ const emptyTrash = async (req, res, next) => {
     for (const player of trash) {
       const assets = ['photo', 'signature', 'aadharFront', 'aadharBack', 'paymentProof'];
       for (const key of assets) {
-        const publicId = getPublicId(player[key]);
+        const publicId = getPublicIdFromUrl(player[key]);
         if (publicId) await deleteFromCloudinary(publicId);
       }
       await deleteData('registrations', player.id);
@@ -233,13 +224,49 @@ const emptyTrash = async (req, res, next) => {
 };
 
 /**
- * Update registration data
+ * Update registration data (Full Edit)
  */
 const updateRegistration = async (req, res, next) => {
   try {
     const { id } = req.params;
-    await updateData('registrations', id, req.body);
-    sendSuccess(res, 200, 'Registration updated');
+    const formData = req.body;
+    const files = req.files;
+
+    // 1. Get current data to handle old file deletion
+    const currentData = await getDataById('registrations', id);
+    if (!currentData) return sendError(res, 404, 'Athlete not found');
+
+    const updateFields = { ...formData };
+
+    // 2. Handle File Replacements
+    if (files && Object.keys(files).length > 0) {
+      const assetFields = ['photo', 'signature', 'aadharFront', 'aadharBack', 'paymentProof'];
+      
+      for (const fieldName of assetFields) {
+        if (files[fieldName] && files[fieldName][0]) {
+          const file = files[fieldName][0];
+          
+          // Delete old asset if it exists
+          if (currentData[fieldName]) {
+            const oldPublicId = getPublicIdFromUrl(currentData[fieldName]);
+            if (oldPublicId) await deleteFromCloudinary(oldPublicId);
+          }
+
+          // Upload new asset
+          const result = await uploadToCloudinary(
+            file.buffer, 
+            'registrations', 
+            `${(formData.fullName || currentData.fullName).replace(/\s+/g, '_')}_${fieldName}_${Date.now()}`
+          );
+          updateFields[fieldName] = result.secure_url;
+        }
+      }
+    }
+
+    // 3. Save to DB
+    await updateData('registrations', id, updateFields);
+    
+    sendSuccess(res, 200, 'Profile updated successfully', updateFields);
   } catch (error) {
     next(error);
   }

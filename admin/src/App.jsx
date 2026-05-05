@@ -12,6 +12,10 @@ import SystemHealth from './pages/SystemHealth';
 import PaymentSettings from './pages/PaymentSettings';
 import ReceiptGenerator from './pages/ReceiptGenerator';
 import ReceiptView from './pages/ReceiptView';
+import GalleryManager from './pages/GalleryManager';
+import NewsManager from './pages/NewsManager';
+import NoticeManager from './pages/NoticeManager';
+import ContactManager from './pages/ContactManager';
 import { ToastProvider } from './context/ToastContext';
 
 import './styles/Global.css';
@@ -104,6 +108,10 @@ function App() {
                         <Route path="/payment-settings" element={<PaymentSettings />} />
                         <Route path="/receipt-generator" element={<ReceiptGenerator />} />
                         <Route path="/receipt-preview" element={<ReceiptView />} />
+                        <Route path="/gallery" element={<GalleryManager />} />
+                        <Route path="/news" element={<NewsManager />} />
+                        <Route path="/notices" element={<NoticeManager />} />
+                        <Route path="/enquiries" element={<ContactManager />} />
                       </Routes>
 
                     </div>

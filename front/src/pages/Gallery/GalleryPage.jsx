@@ -1,41 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { useLanguage } from "../../context/LanguageContext";
-import "../../components/Gallery/Gallery.css"; // Re-use the masonry CSS
+import { Image as ImageIcon, Filter } from "lucide-react";
+import "../../components/Gallery/Gallery.css";
+import { GallerySkeleton } from "../../components/Skeleton";
 
 const GalleryPage = () => {
   const { t } = useLanguage();
   const [selectedImage, setSelectedImage] = useState(null);
-  const [galleryItems, setGalleryItems] = useState([]);
+  const [photos, setPhotos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState("All");
 
-  const images = [...Array(20).keys()].map(i => `img${i + 1}.jpeg`);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    const loadImages = async () => {
-      const loaded = await Promise.all(
-        images.map(
-          (img) =>
-            new Promise((resolve) => {
-              const temp = new Image();
-              temp.src = `/club_image/${img}`;
-              temp.onload = () =>
-                resolve({
-                  src: img,
-                  width: temp.naturalWidth,
-                  height: temp.naturalHeight,
-                  area: temp.naturalWidth * temp.naturalHeight,
-                });
-              temp.onerror = () =>
-                resolve({ src: img, width: 1, height: 1, area: 1 });
-            }),
-        ),
-      );
-
-      loaded.sort((a, b) => b.area - a.area);
-      setGalleryItems(loaded);
+    const fetchPhotos = async () => {
+      try {
+        const res = await fetch(`${API_URL}/gallery`);
+        const data = await res.json();
+        if (data.success) {
+          setPhotos(data.data);
+        }
+      } catch (err) {
+        console.error("Gallery Page Fetch Error:", err);
+      } finally {
+        setLoading(false);
+      }
     };
+    fetchPhotos();
+  }, [API_URL]);
 
-    loadImages();
-  }, []);
+  const categories = ["All", "General", "Tournament", "Award", "Training", "Event"];
+  const filteredPhotos = activeFilter === "All" 
+    ? photos 
+    : photos.filter(p => p.category === activeFilter);
 
   const openLightbox = (index) => {
     setSelectedImage(index);
@@ -49,13 +47,25 @@ const GalleryPage = () => {
 
   const nextImage = (e) => {
     e.stopPropagation();
-    setSelectedImage((prev) => (prev + 1) % images.length);
+    setSelectedImage((prev) => (prev + 1) % filteredPhotos.length);
   };
 
   const prevImage = (e) => {
     e.stopPropagation();
-    setSelectedImage((prev) => (prev - 1 + images.length) % images.length);
+    setSelectedImage((prev) => (prev - 1 + filteredPhotos.length) % filteredPhotos.length);
   };
+
+  const clubImages = [
+    "/club_image/img1.jpeg",
+    "/club_image/img2.jpeg",
+    "/club_image/img3.jpeg",
+    "/club_image/img4.jpeg",
+    "/club_image/img5.jpeg"
+  ];
+
+  const bannerImages = photos.length > 0 
+    ? [...clubImages, ...photos.map(p => p.imageUrl)].slice(0, 10)
+    : clubImages;
 
   return (
     <div className="gallery-page">
@@ -63,12 +73,12 @@ const GalleryPage = () => {
       <section className="page-hero gallery-style">
         <div className="page-hero-bg">
           <div className="page-hero-track">
-            {images.slice(0, 5).map((img, i) => (
-              <img key={i} src={`/club_image/${img}`} className="page-hero-img" alt="" />
+            {bannerImages.map((img, i) => (
+              <img key={i} src={img} className="page-hero-img" alt="" />
             ))}
             {/* Repeat for seamless loop */}
-            {images.slice(0, 5).map((img, i) => (
-              <img key={`dup-${i}`} src={`/club_image/${img}`} className="page-hero-img" alt="" />
+            {bannerImages.map((img, i) => (
+              <img key={`dup-${i}`} src={img} className="page-hero-img" alt="" />
             ))}
           </div>
           <div className="page-hero-overlay"></div>
@@ -80,37 +90,72 @@ const GalleryPage = () => {
         </div>
       </section>
 
-      <div className="container section">
-
-        {/* TRUE MASONRY LAYOUT */}
-        <div className="advanced-gallery-grid">
-          {(galleryItems.length
-            ? galleryItems
-            : images.map((src) => ({ src }))
-          ).map((item, i) => (
-            <div
-              key={item.src || i}
-              className="gallery-item"
-              onClick={() => openLightbox(i)}
-            >
-              <div className="gallery-img-wrapper">
-                <img
-                  src={`/club_image/${item.src}`}
-                  alt={`Achievement ${i}`}
-                  loading="lazy"
-                />
-                <div className="gallery-overlay">
-                  <span className="zoom-icon">⛶</span>
-                  <h4>View Full Size</h4>
-                </div>
-              </div>
+      {/* Branded Filter Bar */}
+      <div className="gallery-filter-section">
+        <div className="container">
+          <div className="filter-wrapper">
+            <div className="filter-icon">
+              <Filter size={18} />
+              <span>Filter By:</span>
             </div>
-          ))}
+            <div className="filter-options">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  className={`filter-chip ${activeFilter === cat ? "active" : ""}`}
+                  onClick={() => setActiveFilter(cat)}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
+      <div className="container section">
+        {loading ? (
+          <GallerySkeleton />
+        ) : filteredPhotos.length > 0 ? (
+          <div className="advanced-gallery-grid">
+            {filteredPhotos.map((item, i) => (
+              <div
+                key={item.id || i}
+                className="gallery-item animate-item"
+                onClick={() => openLightbox(i)}
+                style={{ animationDelay: `${i * 0.05}s` }}
+              >
+                <div className="gallery-img-wrapper">
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title || `Achievement ${i}`}
+                    loading="lazy"
+                  />
+                  <div className="gallery-overlay">
+                    <span className="zoom-icon">⛶</span>
+                    <h4>{item.title}</h4>
+                    <span className="cat-badge">{item.category}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="gallery-empty-state">
+            <div className="empty-visual-container">
+              <div className="empty-glow"></div>
+              <div className="empty-ring empty-ring-1"></div>
+              <div className="empty-ring empty-ring-2"></div>
+              <ImageIcon size={100} className="empty-icon-main" />
+            </div>
+            <h3>{activeFilter} Archive Pending</h3>
+            <p>We are currently assembling our latest visual chronicles for this category. Check back soon for new updates.</p>
+          </div>
+        )}
+      </div>
+
       {/* Lightbox Modal */}
-      {selectedImage !== null && (
+      {selectedImage !== null && filteredPhotos.length > 0 && (
         <div className="lightbox-modal" onClick={closeLightbox}>
           <button className="lightbox-close" onClick={closeLightbox}>
             ✕
@@ -125,11 +170,13 @@ const GalleryPage = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <img
-              src={`/club_image/${images[selectedImage]}`}
-              alt={`Full screen view ${selectedImage}`}
+              src={filteredPhotos[selectedImage].imageUrl}
+              alt={filteredPhotos[selectedImage].title || `Full screen view ${selectedImage}`}
             />
             <div className="lightbox-caption">
-              Achievement {selectedImage + 1} of {images.length}
+              <strong>{filteredPhotos[selectedImage].title}</strong>
+              <span>Category: {filteredPhotos[selectedImage].category}</span>
+              <div className="counter">{selectedImage + 1} of {filteredPhotos.length}</div>
             </div>
           </div>
 

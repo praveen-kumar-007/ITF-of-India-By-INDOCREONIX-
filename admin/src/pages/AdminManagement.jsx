@@ -5,7 +5,7 @@ import './AdminManagement.css';
 
 import ActionModal from '../components/ActionModal';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const AdminManagement = () => {
   const { showToast } = useToast();

@@ -17,6 +17,18 @@ const ActionModal = ({
   cancelText = 'Cancel',
   loading = false
 }) => {
+  // Lock scroll when modal is open
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const getIcon = () => {

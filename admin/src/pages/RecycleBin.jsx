@@ -6,10 +6,11 @@ import {
 import { useToast } from '../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 import './RecycleBin.css';
+import { TableSkeleton } from '../components/Skeleton';
 
 import ActionModal from '../components/ActionModal';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const RecycleBin = () => {
   const [deletedPlayers, setDeletedPlayers] = useState([]);
@@ -218,10 +219,7 @@ const RecycleBin = () => {
       </div>
 
       {loading ? (
-        <div className="loader-container">
-          <div className="loader"></div>
-          <p>Retrieving Deleted Records...</p>
-        </div>
+        <TableSkeleton />
       ) : (
         <div className="trash-grid">
           {filtered.length > 0 ? (

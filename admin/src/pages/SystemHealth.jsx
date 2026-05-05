@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { 
   ShieldCheck, Database, Mail, Cloud, Server, RefreshCw, 
   AlertCircle, CheckCircle2, Clock, Cpu, HardDrive, 
-  Users, Trash2, Key, Globe, TrendingUp 
+  Users, Trash2, Key, Globe, TrendingUp, Bell,
+  Layout, FileText, Smartphone, Monitor, Link2, Zap, Radio,
+  ToggleLeft, ToggleRight, Power, MessageSquare
 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import './SystemHealth.css';
@@ -11,7 +13,9 @@ const SystemHealth = () => {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
+  const [controls, setControls] = useState({});
   const [refreshing, setRefreshing] = useState(false);
+  const [toggling, setToggling] = useState(null);
   const [secondsSinceSync, setSecondsSinceSync] = useState(0);
   const [liveUptime, setLiveUptime] = useState(0);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -40,12 +44,57 @@ const SystemHealth = () => {
     }
   };
 
+  const fetchControls = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/settings/system-control`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const result = await response.json();
+      if (result.success) {
+        setControls(result.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch system controls');
+    }
+  };
+
+  const handleToggle = async (key, currentValue) => {
+    try {
+      setToggling(key);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/settings/system-control`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ [key]: !currentValue })
+      });
+      const result = await response.json();
+      if (result.success) {
+        setControls(prev => ({ ...prev, [key]: !currentValue }));
+        showToast('success', 'System control updated');
+      } else {
+        showToast('error', result.message);
+      }
+    } catch (error) {
+      showToast('error', 'Failed to update system control');
+    } finally {
+      setToggling(null);
+    }
+  };
+
   useEffect(() => {
     fetchHealth();
+    fetchControls();
     
     // Auto-refresh interval (10 seconds)
     const refreshTimer = setInterval(() => {
       fetchHealth();
+      fetchControls();
     }, 10000);
 
     // Local clock tick (every second)
@@ -145,6 +194,97 @@ const SystemHealth = () => {
         </div>
       </div>
 
+      {/* NEW: Master System Controls */}
+      <div className="health-section-title">
+        <Power size={18} /> Master System Controls
+      </div>
+      <div className="system-control-grid">
+        <div className={`control-card ${controls.mail_enabled ? 'active' : 'inactive'}`}>
+          <div className="control-info">
+            <div className="control-icon"><Mail size={20} /></div>
+            <div>
+              <h4>Mail Service</h4>
+              <p>{controls.mail_enabled ? 'Automated Emails Enabled' : 'Mail Gateway Suspended'}</p>
+            </div>
+          </div>
+          <button 
+            className="toggle-btn" 
+            onClick={() => handleToggle('mail_enabled', controls.mail_enabled)}
+            disabled={toggling === 'mail_enabled'}
+          >
+            {controls.mail_enabled ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
+          </button>
+        </div>
+
+        <div className={`control-card ${controls.registration_enabled ? 'active' : 'inactive'}`}>
+          <div className="control-info">
+            <div className="control-icon"><Zap size={20} /></div>
+            <div>
+              <h4>Registration Portal</h4>
+              <p>{controls.registration_enabled ? 'Public Registrations Active' : 'Portal Maintenance Mode'}</p>
+            </div>
+          </div>
+          <button 
+            className="toggle-btn" 
+            onClick={() => handleToggle('registration_enabled', controls.registration_enabled)}
+            disabled={toggling === 'registration_enabled'}
+          >
+            {controls.registration_enabled ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
+          </button>
+        </div>
+
+        <div className={`control-card ${controls.contact_enabled ? 'active' : 'inactive'}`}>
+          <div className="control-info">
+            <div className="control-icon"><MessageSquare size={20} /></div>
+            <div>
+              <h4>Contact Gateway</h4>
+              <p>{controls.contact_enabled ? 'Public Enquiries Active' : 'Gateway Offline'}</p>
+            </div>
+          </div>
+          <button 
+            className="toggle-btn" 
+            onClick={() => handleToggle('contact_enabled', controls.contact_enabled)}
+            disabled={toggling === 'contact_enabled'}
+          >
+            {controls.contact_enabled ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
+          </button>
+        </div>
+
+        <div className={`control-card ${controls.gallery_enabled ? 'active' : 'inactive'}`}>
+          <div className="control-info">
+            <div className="control-icon"><Globe size={20} /></div>
+            <div>
+              <h4>Public Gallery</h4>
+              <p>{controls.gallery_enabled ? 'Media Feed Online' : 'Media Feed Hidden'}</p>
+            </div>
+          </div>
+          <button 
+            className="toggle-btn" 
+            onClick={() => handleToggle('gallery_enabled', controls.gallery_enabled)}
+            disabled={toggling === 'gallery_enabled'}
+          >
+            {controls.gallery_enabled ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
+          </button>
+        </div>
+
+        <div className={`control-card ${controls.news_enabled ? 'active' : 'inactive'}`}>
+          <div className="control-info">
+            <div className="control-icon"><Bell size={20} /></div>
+            <div>
+              <h4>News & Bulletins</h4>
+              <p>{controls.news_enabled ? 'News Archive Active' : 'News Archive Locked'}</p>
+            </div>
+          </div>
+          <button 
+            className="toggle-btn" 
+            onClick={() => handleToggle('news_enabled', controls.news_enabled)}
+            disabled={toggling === 'news_enabled'}
+          >
+            {controls.news_enabled ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
+          </button>
+        </div>
+      </div>
+
       {/* Database Statistics Section */}
       <div className="health-section-title">
         <TrendingUp size={18} /> Resource Statistics
@@ -217,6 +357,101 @@ const SystemHealth = () => {
             <span>Operating System: {data.platform}</span>
           </div>
         </div>
+      </div>
+
+      {/* NEW: Content Integrity Monitor */}
+      <div className="health-section-title">
+        <Database size={18} /> Content Integrity Monitor
+      </div>
+      <div className="integrity-grid">
+        <div className={`integrity-card ${data.integrity?.gallery?.status}`}>
+          <div className="integrity-header">
+            <Globe size={20} />
+            <span>Gallery Module</span>
+          </div>
+          <div className="integrity-body">
+            <div className="integrity-status">
+              <CheckCircle2 size={14} /> {data.integrity?.gallery?.message}
+            </div>
+            <div className="integrity-count">
+              <strong>{data.integrity?.gallery?.count}</strong> Assets Linked
+            </div>
+          </div>
+        </div>
+
+        <div className={`integrity-card ${data.integrity?.news?.status}`}>
+          <div className="integrity-header">
+            <TrendingUp size={20} />
+            <span>News Module</span>
+          </div>
+          <div className="integrity-body">
+            <div className="integrity-status">
+              <CheckCircle2 size={14} /> {data.integrity?.news?.message}
+            </div>
+            <div className="integrity-count">
+              <strong>{data.integrity?.news?.count}</strong> Active Stories
+            </div>
+          </div>
+        </div>
+
+        <div className={`integrity-card ${data.integrity?.notices?.status}`}>
+          <div className="integrity-header">
+            <Bell size={20} />
+            <span>Notice Board</span>
+          </div>
+          <div className="integrity-body">
+            <div className="integrity-status">
+              <CheckCircle2 size={14} /> {data.integrity?.notices?.message}
+            </div>
+            <div className="integrity-count">
+              <strong>{data.integrity?.notices?.count}</strong> Live Alerts
+            </div>
+          </div>
+        </div>
+
+        <div className={`integrity-card ${data.integrity?.contact?.status}`}>
+          <div className="integrity-header">
+            <Mail size={20} />
+            <span>Contact Link</span>
+          </div>
+          <div className="integrity-body">
+            <div className="integrity-status">
+              <CheckCircle2 size={14} /> {data.integrity?.contact?.message}
+            </div>
+            <div className="integrity-count">
+              <strong>{data.integrity?.contact?.count}</strong> Enquiries Received
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* NEW: Global Page Connectivity */}
+      <div className="health-section-title">
+        <Radio size={18} /> Global Page Connectivity
+      </div>
+      <div className="connectivity-map">
+        {data.pageConnectivity && Object.entries(data.pageConnectivity).map(([key, page]) => (
+          <div key={key} className={`page-status-card ${page.status}`}>
+            <div className="page-icon">
+              {key === 'home' && <Monitor size={20} />}
+              {key === 'about' && <FileText size={20} />}
+              {key === 'gallery' && <Globe size={20} />}
+              {key === 'news' && <TrendingUp size={20} />}
+              {key === 'registration' && <Zap size={20} />}
+              {key === 'contact' && <Mail size={20} />}
+            </div>
+            <div className="page-info">
+              <h4>{page.title}</h4>
+              <div className="status-indicator">
+                <div className="pulse-dot"></div>
+                <span>{page.status === 'healthy' ? 'Online' : 'Link Down'}</span>
+              </div>
+            </div>
+            <a href={`${import.meta.env.VITE_FRONT_URL}${page.link}`} target="_blank" rel="noreferrer" className="visit-link">
+              <Link2 size={14} />
+            </a>
+          </div>
+        ))}
       </div>
 
       {/* Environment Config Section */}
