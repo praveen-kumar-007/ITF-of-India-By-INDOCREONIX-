@@ -14,16 +14,15 @@
     filter: grayscale(100%) contrast(1.1);
     filter: grayscale(100%) contrast(1.2);
 }
-
+.news-filter-bar {
     background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
     padding: 1.4rem 0;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
     border-bottom: 1px solid #e2e8f0;
     position: sticky;
     top: 70px;
     z-index: 100;
     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
-    background: rgba(255, 255, 255, 0.9);
 }
 
 .filter-scroll-container {
@@ -37,18 +36,17 @@
 .filter-scroll-container::-webkit-scrollbar {
     display: none;
 }
-
+.news-filter-chip {
     padding: 0.55rem 1.3rem;
     background: #f8fafc;
-    border: 1px solid rgba(148, 163, 184, 0.2);
     border: 1px solid #e2e8f0;
     color: #475569;
-    font-weight: 700;
     font-weight: 600;
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.3s;
     white-space: nowrap;
+    border-radius: 50px;
 }
 
 .news-filter-chip:hover {
@@ -151,8 +149,7 @@
     font-size: 0.85rem;
     font-weight: 600;
 }
-
-    font-size: 1.35rem;
+.article-content h3 {
     font-size: 1.3rem;
     color: #1e293b;
     margin-bottom: 1rem;
@@ -189,14 +186,13 @@
     color: var(--secondary);
 }
 
-/* Empty State */
+.news-empty-state {
     text-align: center;
     padding: 6rem 1rem;
     background: rgba(255, 255, 255, 0.7);
     border: 1px solid rgba(148, 163, 184, 0.2);
     border-radius: 24px;
     box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-    padding: 6rem 0;
 }
 
 .empty-bell-icon {
