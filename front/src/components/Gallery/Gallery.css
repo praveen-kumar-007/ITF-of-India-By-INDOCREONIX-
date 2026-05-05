@@ -1,7 +1,12 @@
 /* Advanced Gallery CSS */
 
 .gallery-page {
-  background: radial-gradient(circle at top, #f8fafc 0%, #eef2f7 45%, #e8edf5 100%);
+  background: radial-gradient(
+    circle at top,
+    #f8fafc 0%,
+    #eef2f7 45%,
+    #e8edf5 100%
+  );
   min-height: 100vh;
 }
 
@@ -84,7 +89,7 @@
 }
 
 .loading-shimmer-ring::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: -8px;
   border-radius: 50%;
@@ -95,7 +100,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .premium-loading-container p {
@@ -141,7 +148,9 @@
   cursor: pointer;
   display: block;
   width: 100%;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .gallery-item:hover {
@@ -542,11 +551,19 @@
   animation: rotate 20s linear infinite;
 }
 
-.empty-ring-1 { width: 180px; height: 180px; }
-.empty-ring-2 { width: 240px; height: 240px; animation-duration: 30s; animation-direction: reverse; }
+.empty-ring-1 {
+  width: 180px;
+  height: 180px;
+}
+.empty-ring-2 {
+  width: 240px;
+  height: 240px;
+  animation-duration: 30s;
+  animation-direction: reverse;
+}
 
 .gallery-empty-state h3 {
-  font-family: 'Outfit', sans-serif;
+  font-family: "Outfit", sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
   color: white;
@@ -582,7 +599,7 @@
 }
 
 .empty-shimmer-btn::after {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
@@ -599,29 +616,56 @@
 }
 
 @keyframes premiumFloat {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  33% { transform: translateY(-20px) rotate(2deg); }
-  66% { transform: translateY(-10px) rotate(-2deg); }
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-20px) rotate(2deg);
+  }
+  66% {
+    transform: translateY(-10px) rotate(-2deg);
+  }
 }
 
 @keyframes glowPulse {
-  from { transform: scale(0.8); opacity: 0.1; }
-  to { transform: scale(1.3); opacity: 0.3; }
+  from {
+    transform: scale(0.8);
+    opacity: 0.1;
+  }
+  to {
+    transform: scale(1.3);
+    opacity: 0.3;
+  }
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes shimmerMove {
-  0% { transform: translateX(-100%) rotate(45deg); }
-  100% { transform: translateX(100%) rotate(45deg); }
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
 }
 
 @keyframes premiumFadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* PUBLIC GALLERY FILTER */
@@ -696,8 +740,14 @@
 }
 
 @keyframes itemPopIn {
-  from { opacity: 0; transform: scale(0.8) translateY(20px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .cat-badge {
@@ -737,7 +787,7 @@
     align-items: flex-start;
     gap: 1.2rem;
   }
-  
+
   .filter-options {
     width: 100vw;
     margin-left: -20px; /* Offset container padding if necessary, or use padding on parent */
@@ -755,7 +805,7 @@
     flex-shrink: 0;
     border-width: 1.5px;
   }
-  
+
   .gallery-filter-section {
     top: 60px;
     padding: 1.5rem 0;
@@ -767,24 +817,28 @@
     max-height: 60vh;
     object-fit: contain;
   }
-  
+
   .lightbox-nav {
     width: 44px;
     height: 44px;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(5px);
     font-size: 1.2rem;
   }
-  
-  .lightbox-nav.prev { left: 10px; }
-  .lightbox-nav.next { right: 10px; }
+
+  .lightbox-nav.prev {
+    left: 10px;
+  }
+  .lightbox-nav.next {
+    right: 10px;
+  }
 
   .lightbox-caption {
     bottom: 20px;
     padding: 1.2rem;
     width: 92%;
     font-size: 0.85rem;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0, 0, 0, 0.8);
     border-radius: 12px;
   }
 }

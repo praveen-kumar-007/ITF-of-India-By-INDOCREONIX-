@@ -30,10 +30,18 @@ const GalleryPage = () => {
     fetchPhotos();
   }, [API_URL]);
 
-  const categories = ["All", "General", "Tournament", "Award", "Training", "Event"];
-  const filteredPhotos = activeFilter === "All" 
-    ? photos 
-    : photos.filter(p => p.category === activeFilter);
+  const categories = [
+    "All",
+    "General",
+    "Tournament",
+    "Award",
+    "Training",
+    "Event",
+  ];
+  const filteredPhotos =
+    activeFilter === "All"
+      ? photos
+      : photos.filter((p) => p.category === activeFilter);
 
   const openLightbox = (index) => {
     setSelectedImage(index);
@@ -52,12 +60,13 @@ const GalleryPage = () => {
 
   const prevImage = (e) => {
     e.stopPropagation();
-    setSelectedImage((prev) => (prev - 1 + filteredPhotos.length) % filteredPhotos.length);
+    setSelectedImage(
+      (prev) => (prev - 1 + filteredPhotos.length) % filteredPhotos.length,
+    );
   };
 
-  const bannerImages = photos.length > 0
-    ? photos.map((photo) => photo.imageUrl).slice(0, 10)
-    : [];
+  const bannerImages =
+    photos.length > 0 ? photos.map((photo) => photo.imageUrl).slice(0, 10) : [];
 
   return (
     <div className="gallery-page">
@@ -70,7 +79,12 @@ const GalleryPage = () => {
             ))}
             {/* Repeat for seamless loop */}
             {bannerImages.map((img, i) => (
-              <img key={`dup-${i}`} src={img} className="page-hero-img" alt="" />
+              <img
+                key={`dup-${i}`}
+                src={img}
+                className="page-hero-img"
+                alt=""
+              />
             ))}
           </div>
           <div className="page-hero-overlay"></div>
@@ -141,7 +155,10 @@ const GalleryPage = () => {
               <ImageIcon size={100} className="empty-icon-main" />
             </div>
             <h3>{activeFilter} Archive Pending</h3>
-            <p>We are currently assembling our latest visual chronicles for this category. Check back soon for new updates.</p>
+            <p>
+              We are currently assembling our latest visual chronicles for this
+              category. Check back soon for new updates.
+            </p>
           </div>
         )}
       </div>
@@ -163,12 +180,17 @@ const GalleryPage = () => {
           >
             <img
               src={filteredPhotos[selectedImage].imageUrl}
-              alt={filteredPhotos[selectedImage].title || `Full screen view ${selectedImage}`}
+              alt={
+                filteredPhotos[selectedImage].title ||
+                `Full screen view ${selectedImage}`
+              }
             />
             <div className="lightbox-caption">
               <strong>{filteredPhotos[selectedImage].title}</strong>
               <span>Category: {filteredPhotos[selectedImage].category}</span>
-              <div className="counter">{selectedImage + 1} of {filteredPhotos.length}</div>
+              <div className="counter">
+                {selectedImage + 1} of {filteredPhotos.length}
+              </div>
             </div>
           </div>
 
