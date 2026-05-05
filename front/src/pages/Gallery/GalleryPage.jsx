@@ -55,17 +55,9 @@ const GalleryPage = () => {
     setSelectedImage((prev) => (prev - 1 + filteredPhotos.length) % filteredPhotos.length);
   };
 
-  const clubImages = [
-    "/club_image/img1.jpeg",
-    "/club_image/img2.jpeg",
-    "/club_image/img3.jpeg",
-    "/club_image/img4.jpeg",
-    "/club_image/img5.jpeg"
-  ];
-
-  const bannerImages = photos.length > 0 
-    ? [...clubImages, ...photos.map(p => p.imageUrl)].slice(0, 10)
-    : clubImages;
+  const bannerImages = photos.length > 0
+    ? photos.map((photo) => photo.imageUrl).slice(0, 10)
+    : [];
 
   return (
     <div className="gallery-page">
