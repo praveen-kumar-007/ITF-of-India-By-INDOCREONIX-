@@ -208,7 +208,7 @@ const AthleteLogin = () => {
             </div>
             <div className="input-group">
               <label><Lock size={16} /> Password</label>
-              <div className="password-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <div className="password-wrapper">
                 <input 
                   type={showPassword ? "text" : "password"} 
                   name="password"
@@ -216,13 +216,11 @@ const AthleteLogin = () => {
                   value={formData.password}
                   onChange={handleInputChange}
                   required 
-                  style={{ width: '100%' }}
                 />
                 <button 
                   type="button" 
                   className="toggle-password"
                   onClick={() => setShowPassword(!showPassword)}
-                  style={{ position: 'absolute', right: '15px', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -300,7 +298,7 @@ const AthleteLogin = () => {
 
             <div className="input-group">
               <label><Lock size={16} /> New Password</label>
-              <div className="password-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <div className="password-wrapper">
                 <input 
                   type={showNewPassword ? "text" : "password"} 
                   name="newPassword"
@@ -308,13 +306,11 @@ const AthleteLogin = () => {
                   value={formData.newPassword}
                   onChange={handleInputChange}
                   required 
-                  style={{ width: '100%' }}
                 />
                 <button 
                   type="button" 
                   className="toggle-password"
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                  style={{ position: 'absolute', right: '15px', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}
                 >
                   {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -322,7 +318,7 @@ const AthleteLogin = () => {
             </div>
             <div className="input-group">
               <label><Lock size={16} /> Confirm Password</label>
-              <div className="password-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <div className="password-wrapper">
                 <input 
                   type={showConfirmPassword ? "text" : "password"} 
                   name="confirmPassword"
@@ -330,13 +326,11 @@ const AthleteLogin = () => {
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   required 
-                  style={{ width: '100%' }}
                 />
                 <button 
                   type="button" 
                   className="toggle-password"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  style={{ position: 'absolute', right: '15px', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}
                 >
                   {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>

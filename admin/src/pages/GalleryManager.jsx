@@ -3,6 +3,7 @@ import { Upload, Trash2, Image as ImageIcon, Plus, X, Loader2, Filter, Grid, Lis
 import { useToast } from '../context/ToastContext';
 import './GalleryManager.css';
 import { GallerySkeleton } from '../components/Skeleton';
+import ActionModal from '../components/ActionModal';
 
 const GalleryManager = () => {
   const [photos, setPhotos] = useState([]);
@@ -16,6 +17,7 @@ const GalleryManager = () => {
     category: 'General',
     photos: []
   });
+  const [deleteModal, setDeleteModal] = useState({ show: false, id: null });
 
   const { showToast } = useToast();
   const API_URL = import.meta.env.VITE_API_URL;
@@ -117,8 +119,12 @@ const GalleryManager = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Permanently remove this photo from gallery?')) return;
+  const handleDeleteClick = (id) => {
+    setDeleteModal({ show: true, id });
+  };
+
+  const handleConfirmDelete = async () => {
+    const id = deleteModal.id;
 
     try {
       const token = localStorage.getItem('token');
@@ -135,6 +141,8 @@ const GalleryManager = () => {
       }
     } catch (error) {
       showToast('error', 'Failed to delete photo');
+    } finally {
+      setDeleteModal({ show: false, id: null });
     }
   };
 
@@ -200,7 +208,7 @@ const GalleryManager = () => {
                     <img src={photo.imageUrl} alt={photo.title} loading="lazy" />
                     <div className="card-badge">{photo.category}</div>
                     <div className="card-actions-overlay">
-                      <button className="action-btn-circle delete" onClick={() => handleDelete(photo.id)} title="Delete Photo">
+                      <button className="action-btn-circle delete" onClick={() => handleDeleteClick(photo.id)} title="Delete Photo">
                         <Trash2 size={18} />
                       </button>
                     </div>
@@ -305,6 +313,16 @@ const GalleryManager = () => {
           </div>
         </div>
       )}
+
+      <ActionModal 
+        isOpen={deleteModal.show}
+        onClose={() => setDeleteModal({ show: false, id: null })}
+        onConfirm={handleConfirmDelete}
+        title="Remove Gallery Media"
+        message="Are you sure you want to permanently remove this photo? This will delete the record and the source file from storage."
+        type="danger"
+        confirmText="Delete Media"
+      />
     </div>
   );
 };

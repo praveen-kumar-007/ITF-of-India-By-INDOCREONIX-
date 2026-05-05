@@ -41,15 +41,44 @@ const login = async (req, res, next) => {
 
     // Check if admin is verified/active
     if (admin.status !== 'active') {
-      await logAudit('LOGIN_BLOCKED', { email, reason: 'account_inactive', ip: req.ip });
-      return sendError(res, 403, 'Your account is not active. Please contact Super Admin.');
+      const reason = admin.status === 'locked' ? 'account_locked' : 'account_inactive';
+      const message = admin.status === 'locked' 
+        ? 'Account locked due to 10+ failed attempts. Please use the "Forgot Password" flow to unlock.' 
+        : 'Your account is not active. Please contact Super Admin.';
+      
+      await logAudit('LOGIN_BLOCKED', { email, reason, ip: req.ip });
+      return sendError(res, 403, message);
     }
 
     // Verify password
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
-      await logAudit('LOGIN_FAILED', { email, reason: 'wrong_password', ip: req.ip });
-      return sendError(res, 401, 'Invalid credentials');
+      const newAttempts = (admin.failedAttempts || 0) + 1;
+      const shouldLock = newAttempts >= 10;
+      
+      const updateFields = { failedAttempts: newAttempts };
+      if (shouldLock) updateFields.status = 'locked';
+      
+      await updateData('admins', admin.id, updateFields);
+
+      await logAudit('LOGIN_FAILED', { 
+        email, 
+        reason: 'wrong_password', 
+        attempts: newAttempts,
+        isLocked: shouldLock,
+        ip: req.ip 
+      });
+
+      if (shouldLock) {
+        return sendError(res, 403, 'Too many failed attempts. Your account has been locked. Please reset your password to unlock.');
+      }
+      
+      return sendError(res, 401, `Invalid credentials. ${10 - newAttempts} attempts remaining.`);
+    }
+
+    // 🚀 Successful Login: Reset failed attempts
+    if (admin.failedAttempts > 0) {
+      await updateData('admins', admin.id, { failedAttempts: 0 });
     }
 
     // Generate JWT
@@ -106,6 +135,14 @@ const createAdmin = async (req, res, next) => {
 
     const id = await saveData('admins', adminData);
 
+    await logAudit('ADMIN_CREATED', { 
+      id, 
+      email: adminData.email, 
+      role: adminData.role, 
+      createdBy: req.user.email,
+      ip: req.ip 
+    });
+
     sendSuccess(res, 201, 'Admin created successfully', { id });
   } catch (error) {
     next(error);
@@ -142,6 +179,14 @@ const deleteAdmin = async (req, res, next) => {
     }
 
     await deleteData('admins', id);
+    
+    await logAudit('ADMIN_DELETED', { 
+      targetId: id, 
+      targetEmail: admin?.email, 
+      deletedBy: req.user.email,
+      ip: req.ip 
+    });
+
     sendSuccess(res, 200, 'Admin deleted successfully');
   } catch (error) {
     next(error);
@@ -188,6 +233,14 @@ const updateProfile = async (req, res, next) => {
     }
 
     await updateData('admins', id, updateFields);
+
+    await logAudit('ADMIN_PROFILE_UPDATED', { 
+      id, 
+      updatedBy: req.user.email, 
+      fields: Object.keys(updateFields).filter(f => f !== 'password'),
+      ip: req.ip 
+    });
+
     sendSuccess(res, 200, 'Profile updated successfully', { photo: updateFields.photo });
   } catch (error) {
     next(error);
@@ -215,6 +268,15 @@ const updateAdmin = async (req, res, next) => {
     }
 
     await updateData('admins', id, updateFields);
+
+    await logAudit('ADMIN_MANAGED_UPDATE', { 
+      targetId: id, 
+      targetEmail: admin.email,
+      managedBy: req.user.email, 
+      fields: Object.keys(updateFields).filter(f => f !== 'password'),
+      ip: req.ip 
+    });
+
     sendSuccess(res, 200, 'Admin updated successfully');
   } catch (error) {
     next(error);
@@ -370,6 +432,70 @@ const getSystemHealth = async (req, res, next) => {
   }
 };
 
+/**
+ * Request Admin Password Reset OTP
+ */
+const requestAdminReset = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const { sendPasswordSetupEmail } = require('../services/mailService');
+
+    const admins = await queryData('admins', 'email', email.trim().toLowerCase());
+    if (admins.length === 0) return sendError(res, 404, 'Admin account not found');
+
+    const admin = admins[0];
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiry = Date.now() + 10 * 60 * 1000; // 10 mins
+
+    await updateData('admins', admin.id, {
+      resetOtp: otp,
+      resetOtpExpiry: otpExpiry
+    });
+
+    await sendPasswordSetupEmail(admin.email, admin.fullName, otp);
+    await logAudit('ADMIN_PASSWORD_RESET_OTP_SENT', { id: admin.id, email: admin.email, ip: req.ip });
+
+    sendSuccess(res, 200, 'Verification OTP sent to your email');
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Verify Admin OTP and Set New Password
+ */
+const verifyAdminReset = async (req, res, next) => {
+  try {
+    const { email, otp, password } = req.body;
+
+    const admins = await queryData('admins', 'email', email.trim().toLowerCase());
+    if (admins.length === 0) return sendError(res, 404, 'Admin not found');
+
+    const admin = admins[0];
+
+    if (!admin.resetOtp || admin.resetOtp !== otp || Date.now() > admin.resetOtpExpiry) {
+      return sendError(res, 400, 'Invalid or expired OTP');
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    await updateData('admins', admin.id, {
+      password: hashedPassword,
+      status: 'active', // Unlock account
+      failedAttempts: 0,
+      resetOtp: null,
+      resetOtpExpiry: null
+    });
+
+    await logAudit('ADMIN_PASSWORD_RESET_SUCCESS', { id: admin.id, email: admin.email, ip: req.ip });
+    sendSuccess(res, 200, 'Password updated. You can now login.');
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   login,
   createAdmin,
@@ -377,7 +503,9 @@ module.exports = {
   deleteAdmin,
   updateProfile,
   updateAdmin,
-  getSystemHealth
+  getSystemHealth,
+  requestAdminReset,
+  verifyAdminReset
 };
 
 

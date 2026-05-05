@@ -14,12 +14,14 @@ import {
 import { useToast } from '../context/ToastContext';
 import './ContactManager.css';
 import { TableSkeleton } from '../components/Skeleton';
+import ActionModal from '../components/ActionModal';
 
 const ContactManager = () => {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all');
+  const [deleteModal, setDeleteModal] = useState({ show: false, id: null });
   const { showToast } = useToast();
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -47,8 +49,12 @@ const ContactManager = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this enquiry?')) return;
+  const handleDeleteClick = (id) => {
+    setDeleteModal({ show: true, id });
+  };
+
+  const handleConfirmDelete = async () => {
+    const id = deleteModal.id;
 
     try {
       const token = localStorage.getItem('token');
@@ -65,6 +71,8 @@ const ContactManager = () => {
       }
     } catch (error) {
       showToast('error', 'Failed to delete enquiry');
+    } finally {
+      setDeleteModal({ show: false, id: null });
     }
   };
 
@@ -168,7 +176,7 @@ const ContactManager = () => {
                     <a href={`mailto:${contact.email}`} className="action-btn-circle reply" title="Reply via Email">
                       <Mail size={16} />
                     </a>
-                    <button className="action-btn-circle delete" onClick={() => handleDelete(contact.id)} title="Delete Enquiry">
+                    <button className="action-btn-circle delete" onClick={() => handleDeleteClick(contact.id)} title="Delete Enquiry">
                       <Trash2 size={16} />
                     </button>
                   </div>
@@ -178,6 +186,16 @@ const ContactManager = () => {
           )}
         </div>
       )}
+
+      <ActionModal 
+        isOpen={deleteModal.show}
+        onClose={() => setDeleteModal({ show: false, id: null })}
+        onConfirm={handleConfirmDelete}
+        title="Delete Enquiry"
+        message="Are you sure you want to permanently delete this message? This action cannot be undone."
+        type="danger"
+        confirmText="Delete Message"
+      />
     </div>
   );
 };

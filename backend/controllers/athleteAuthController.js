@@ -1,6 +1,7 @@
 const { queryData, updateData, getDataById } = require('../services/firebaseService');
-const { sendEmail } = require('../services/mailService');
+const { sendPasswordSetupEmail } = require('../services/mailService');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
+const { logAudit } = require('../utils/logger');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -19,13 +20,19 @@ const requestPasswordSetup = async (req, res, next) => {
     if (!email) return sendError(res, 400, 'Email address is required.');
 
     // 1. Find athlete by Email
-    const athletes = await queryData('registrations', 'email', email.trim());
-    if (athletes.length === 0) return sendError(res, 404, 'No account found with this email.');
+    const emailLower = email.trim().toLowerCase();
+    const athletes = await queryData('registrations', 'email', emailLower);
+    
+    if (athletes.length === 0) {
+      await logAudit('AUTH_PASSWORD_SETUP_REQUEST_FAILED', { email: emailLower, reason: 'user_not_found', ip: req.ip });
+      return sendError(res, 404, 'No account found with this email.');
+    }
 
     const athlete = athletes[0];
 
     // Check if in Recycle Bin
     if (athlete.status === 'deleted') {
+      await logAudit('AUTH_PASSWORD_SETUP_REQUEST_BLOCKED', { email: athlete.email, reason: 'account_deleted', ip: req.ip });
       return sendError(res, 403, 'Account suspended or moved to trash. Please contact administrator.');
     }
 
@@ -39,116 +46,10 @@ const requestPasswordSetup = async (req, res, next) => {
       otpExpiry
     });
 
-
     // 5. Send Email via Unified Mail Service (Resend)
-    const subject = "Athlete Portal Verification Code";
-    const logoUrl = 'https://res.cloudinary.com/dgfpfxkpk/image/upload/q_auto/f_auto/v1777829890/logo_hdbywh.png';
-    
-    const htmlContent = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <style>
-          .email-container {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-          }
-          .header {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            padding: 40px 20px;
-            text-align: center;
-          }
-          .logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 3px solid #fbbf24;
-            padding: 5px;
-            background: white;
-            box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
-          }
-          .content {
-            padding: 40px 35px;
-            color: #1e293b;
-            line-height: 1.6;
-          }
-          .title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 16px;
-            text-align: center;
-          }
-          .otp-box {
-            background: #f8fafc;
-            border: 2px dashed #e2e8f0;
-            border-radius: 12px;
-            padding: 25px;
-            margin: 32px 0;
-            text-align: center;
-          }
-          .otp-code {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 42px;
-            font-weight: 800;
-            letter-spacing: 12px;
-            color: #b45309;
-            margin: 0;
-          }
-          .footer {
-            background-color: #f1f5f9;
-            padding: 24px;
-            text-align: center;
-            font-size: 12px;
-            color: #64748b;
-            border-top: 1px solid #e2e8f0;
-          }
-          .org-name {
-            color: #fbbf24;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-top: 10px;
-            display: block;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="email-container">
-          <div class="header">
-            <img src="${logoUrl}" alt="ITF Logo" class="logo">
-            <span class="org-name">ITF OF INDIA</span>
-          </div>
-          <div class="content">
-            <h1 class="title">Access Verification</h1>
-            <p>Hello <strong>${athlete.fullName}</strong>,</p>
-            <p>You have requested a verification code to access the official <strong>ITF OF INDIA Athlete Portal</strong>.</p>
-            
-            <div class="otp-box">
-              <h2 class="otp-code">${otp}</h2>
-              <p style="font-size: 13px; color: #64748b; margin-top: 10px;">Valid for the next 10 minutes</p>
-            </div>
-            
-            <p style="font-size: 14px; color: #475569;">Use this code to securely setup or reset your portal credentials. If you did not initiate this request, please contact our administrative department immediately.</p>
-          </div>
-          <div class="footer">
-            <p>© ${new Date().getFullYear()} ITF OF INDIA - National Multi-Sport Organization Trust</p>
-            <p>This is an automated security notification. Please do not reply.</p>
-          </div>
-        </div>
-      </body>
-      </html>
-    `;
-
     try {
-      await sendEmail(email, subject, htmlContent);
-      console.log('OTP Email sent successfully via Resend');
+      await sendPasswordSetupEmail(email, athlete.fullName, otp);
+      await logAudit('AUTH_PASSWORD_SETUP_OTP_SENT', { id: athlete.id, email: athlete.email, ip: req.ip });
     } catch (error) {
       console.error('Email Send Error:', error);
     }
@@ -194,8 +95,13 @@ const setupPassword = async (req, res, next) => {
       password: hashedPassword,
       isPasswordSet: true,
       tempOtp: null,
-      otpExpiry: null
+      otpExpiry: null,
+      lastPasswordUpdate: new Date().toISOString(),
+      failedLoginAttempts: 0,
+      isLocked: false // 🚀 Unlock account after password reset
     });
+
+    await logAudit('AUTH_PASSWORD_SETUP_SUCCESS', { id: athlete.id, email: athlete.email, ip: req.ip });
 
     sendSuccess(res, 200, 'Password setup successful. You can now login.');
   } catch (error) {
@@ -233,7 +139,14 @@ const loginAthlete = async (req, res, next) => {
 
     // Check if in Recycle Bin
     if (athlete.status === 'deleted') {
+      await logAudit('ATHLETE_LOGIN_BLOCKED', { identifier: cleanId, reason: 'account_deleted', ip: req.ip });
       return sendError(res, 403, 'Access denied. Your account is in the recycle bin.');
+    }
+
+    // 🚀 Security: Check if account is locked due to too many failed attempts
+    if (athlete.isLocked) {
+      await logAudit('ATHLETE_LOGIN_LOCKED', { identifier: cleanId, reason: 'too_many_failed_attempts', ip: req.ip });
+      return sendError(res, 423, 'Account locked due to 10+ failed attempts. Please reset your password via OTP to unlock.');
     }
 
     // 3. Check if password is set
@@ -243,7 +156,34 @@ const loginAthlete = async (req, res, next) => {
 
     // 4. Verify Password
     const isMatch = await bcrypt.compare(password, athlete.password);
-    if (!isMatch) return sendError(res, 400, 'Invalid credentials.');
+    if (!isMatch) {
+      const newAttempts = (athlete.failedLoginAttempts || 0) + 1;
+      const isLocked = newAttempts >= 10;
+      
+      await updateData('registrations', athlete.id, { 
+        failedLoginAttempts: newAttempts,
+        isLocked: isLocked 
+      });
+
+      await logAudit('ATHLETE_LOGIN_FAILED', { 
+        identifier: cleanId, 
+        reason: 'wrong_password', 
+        attempts: newAttempts,
+        locked: isLocked,
+        ip: req.ip 
+      });
+
+      if (isLocked) {
+        return sendError(res, 423, 'Too many failed attempts. Your account has been locked for security. Please reset your password to unlock.');
+      }
+      
+      return sendError(res, 400, `Invalid credentials. ${10 - newAttempts} attempts remaining.`);
+    }
+
+    // 🚀 Successful Login: Reset failed attempts
+    if (athlete.failedLoginAttempts > 0) {
+      await updateData('registrations', athlete.id, { failedLoginAttempts: 0 });
+    }
 
     // 5. Generate Token
     const token = jwt.sign(
@@ -253,6 +193,8 @@ const loginAthlete = async (req, res, next) => {
     );
 
     // 6. Response
+    await logAudit('ATHLETE_LOGIN_SUCCESS', { id: athlete.id, registrationNumber: athlete.registrationNumber, ip: req.ip });
+
     const athleteData = { ...athlete };
     delete athleteData.password;
     delete athleteData.tempOtp;

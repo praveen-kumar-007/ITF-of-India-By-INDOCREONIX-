@@ -14,6 +14,7 @@ import {
 import { useToast } from '../context/ToastContext';
 import './NewsManager.css';
 import { TableSkeleton } from '../components/Skeleton';
+import ActionModal from '../components/ActionModal';
 
 const NewsManager = () => {
   const [news, setNews] = useState([]);
@@ -29,6 +30,7 @@ const NewsManager = () => {
     date: new Date().toISOString().split('T')[0],
     image: null
   });
+  const [deleteModal, setDeleteModal] = useState({ show: false, id: null });
 
   const { showToast } = useToast();
   const API_URL = import.meta.env.VITE_API_URL;
@@ -112,8 +114,12 @@ const NewsManager = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Delete this news update permanently?')) return;
+  const handleDeleteClick = (id) => {
+    setDeleteModal({ show: true, id });
+  };
+
+  const handleConfirmDelete = async () => {
+    const id = deleteModal.id;
 
     try {
       const token = localStorage.getItem('token');
@@ -130,6 +136,8 @@ const NewsManager = () => {
       }
     } catch (error) {
       showToast('error', 'Failed to delete news item');
+    } finally {
+      setDeleteModal({ show: false, id: null });
     }
   };
 
@@ -222,7 +230,7 @@ const NewsManager = () => {
                     <h3>{item.title}</h3>
                     <p>{item.content.substring(0, 120)}...</p>
                     <div className="news-card-actions">
-                      <button className="delete-btn-news" onClick={() => handleDelete(item.id)}>
+                      <button className="delete-btn-news" onClick={() => handleDeleteClick(item.id)}>
                         <Trash2 size={16} /> Delete
                       </button>
                     </div>
@@ -336,6 +344,16 @@ const NewsManager = () => {
           </div>
         </div>
       )}
+
+      <ActionModal 
+        isOpen={deleteModal.show}
+        onClose={() => setDeleteModal({ show: false, id: null })}
+        onConfirm={handleConfirmDelete}
+        title="Delete News Bulletin"
+        message="Are you sure you want to permanently remove this news update? This action cannot be reversed."
+        type="danger"
+        confirmText="Delete Bulletin"
+      />
     </div>
   );
 };

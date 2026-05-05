@@ -7,7 +7,9 @@ const {
   deleteAdmin, 
   updateProfile, 
   updateAdmin,
-  getSystemHealth 
+  getSystemHealth,
+  requestAdminReset,
+  verifyAdminReset
 } = require('../controllers/authController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 const { authLimiter } = require('../middleware/rateLimiter');
@@ -16,6 +18,10 @@ const { loginSchema, adminCreateSchema, adminUpdateSchema } = require('../utils/
 const upload = require('../middleware/multer');
 
 router.post('/login', authLimiter, validate(loginSchema), login);
+
+// Password Reset Routes (Public)
+router.post('/request-reset', authLimiter, requestAdminReset);
+router.post('/verify-reset', authLimiter, verifyAdminReset);
 
 // Admin management routes (Super Admin only)
 router.get('/', protect, authorize('superadmin'), getAllAdmins);

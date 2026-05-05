@@ -11,6 +11,7 @@ import {
 import { useToast } from '../context/ToastContext';
 import './NewsManager.css'; // Reuse the news styling for consistency
 import { TableSkeleton } from '../components/Skeleton';
+import ActionModal from '../components/ActionModal';
 
 const NoticeManager = () => {
   const [notices, setNotices] = useState([]);
@@ -21,6 +22,7 @@ const NoticeManager = () => {
     title: '',
     date: new Date().toISOString().split('T')[0],
   });
+  const [deleteModal, setDeleteModal] = useState({ show: false, id: null });
 
   const { showToast } = useToast();
   const API_URL = import.meta.env.VITE_API_URL;
@@ -87,8 +89,12 @@ const NoticeManager = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Remove this notice from the board?')) return;
+  const handleDeleteClick = (id) => {
+    setDeleteModal({ show: true, id });
+  };
+
+  const handleConfirmDelete = async () => {
+    const id = deleteModal.id;
 
     try {
       const token = localStorage.getItem('token');
@@ -105,6 +111,8 @@ const NoticeManager = () => {
       }
     } catch (error) {
       showToast('error', 'Deletion failed');
+    } finally {
+      setDeleteModal({ show: false, id: null });
     }
   };
 
@@ -159,7 +167,7 @@ const NoticeManager = () => {
                     <p>{notice.title}</p>
                   </div>
                   <div className="notice-strip-actions">
-                    <button className="action-btn-circle delete" onClick={() => handleDelete(notice.id)}>
+                    <button className="action-btn-circle delete" onClick={() => handleDeleteClick(notice.id)}>
                       <Trash2 size={16} />
                     </button>
                   </div>
@@ -338,6 +346,16 @@ const NoticeManager = () => {
           opacity: 1;
         }
       `}</style>
+
+      <ActionModal 
+        isOpen={deleteModal.show}
+        onClose={() => setDeleteModal({ show: false, id: null })}
+        onConfirm={handleConfirmDelete}
+        title="Remove Live Notice"
+        message="Are you sure you want to remove this notice from the scrolling board? It will be deleted from the database."
+        type="danger"
+        confirmText="Delete Notice"
+      />
     </div>
   );
 };

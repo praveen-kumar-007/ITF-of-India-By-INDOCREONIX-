@@ -139,6 +139,38 @@
   color: #94a3b8;
   font-size: 0.75rem;
 }
+
+/* Password Toggle Styling */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-wrapper input {
+  padding-right: 45px !important;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  border-radius: 8px;
+}
+
+.toggle-password:hover {
+  color: #050a1f;
+  background: rgba(0, 0, 0, 0.05);
+}
 @media (max-width: 480px) {
   .login-card {
     padding: 24px;

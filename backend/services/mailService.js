@@ -30,10 +30,12 @@ const sendEmail = async (to, subject, html) => {
     }
 
     const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+      from: process.env.EMAIL_FROM || 'ITF OF INDIA <onboarding@resend.dev>',
       to: [to],
       subject: subject,
-      html: html
+      html: html,
+      text: html.replace(/<[^>]*>?/gm, '').trim(), // Basic text version extraction
+      reply_to: 'support@itfindia.com'
     });
 
     if (error) {
@@ -53,8 +55,16 @@ const sendEmail = async (to, subject, html) => {
  */
 const getEmailStyles = () => `
   <style>
+    /* Reset styles for better client compatibility */
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+    table { border-collapse: collapse !important; }
+    body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
+
     .email-container {
       font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      width: 100%;
       max-width: 600px;
       margin: 0 auto;
       background-color: #ffffff;
@@ -135,16 +145,36 @@ const getEmailStyles = () => `
       border-radius: 16px;
       border: 1px solid #e2e8f0;
       overflow: hidden;
+      table-layout: fixed;
     }
     .data-table td {
       padding: 16px 20px;
       border-bottom: 1px solid #e2e8f0;
       font-size: 15px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     .data-table tr:last-child td { border-bottom: none; }
-    .data-label { color: #64748b; font-weight: 600; width: 40%; }
-    .data-value { color: #0f172a; font-weight: 700; }
+    .data-label { color: #64748b; font-weight: 600; width: 35%; }
+    .data-value { color: #0f172a; font-weight: 700; width: 65%; }
     
+    .otp-display {
+      background: #f8fafc; 
+      border: 2px dashed #e2e8f0; 
+      border-radius: 12px; 
+      padding: 25px; 
+      margin: 32px 0; 
+      text-align: center;
+    }
+    .otp-code {
+      font-family: 'Courier New', Courier, monospace; 
+      font-size: 42px; 
+      font-weight: 800; 
+      letter-spacing: 12px; 
+      color: #b45309; 
+      margin: 0;
+    }
+
     .action-button {
       display: inline-block;
       background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
@@ -177,6 +207,78 @@ const getEmailStyles = () => `
       display: block;
       font-size: 18px;
     }
+
+    /* Tablet Styles */
+    @media only screen and (max-width: 620px) {
+      .email-container {
+        width: 95% !important;
+        margin: 10px auto !important;
+      }
+    }
+
+    /* Mobile Styles */
+    @media only screen and (max-width: 480px) {
+      .email-container {
+        width: 100% !important;
+        border-radius: 0 !important;
+        border-left: none !important;
+        border-right: none !important;
+        margin: 0 !important;
+      }
+      .content {
+        padding: 30px 20px !important;
+      }
+      .title {
+        font-size: 22px !important;
+      }
+      .otp-code {
+        font-size: 32px !important;
+        letter-spacing: 6px !important;
+      }
+      .otp-display {
+        padding: 15px !important;
+        margin: 20px 0 !important;
+      }
+      .data-table td {
+        padding: 12px 10px !important;
+        font-size: 13px !important;
+      }
+      .data-label {
+        width: 40% !important;
+      }
+      .data-value {
+        width: 60% !important;
+      }
+      .header {
+        padding: 30px 20px !important;
+      }
+      .logo {
+        width: 70px !important;
+        height: 70px !important;
+      }
+      .action-button {
+        padding: 14px 20px !important;
+        font-size: 12px !important;
+        display: block !important;
+        width: auto !important;
+        margin: 20px 0 !important;
+      }
+      .status-badge {
+        padding: 8px 15px !important;
+        font-size: 11px !important;
+      }
+    }
+
+    /* Small Mobile Styles */
+    @media only screen and (max-width: 320px) {
+      .otp-code {
+        font-size: 26px !important;
+        letter-spacing: 4px !important;
+      }
+      .data-table td {
+        font-size: 12px !important;
+      }
+    }
   </style>
 `;
 
@@ -186,7 +288,7 @@ const LOGO_URL = 'https://res.cloudinary.com/dgfpfxkpk/image/upload/q_auto/f_aut
  * Send OTP Email
  */
 const sendOTPEmail = async (to, otp) => {
-  const subject = 'ITF OF INDIA - Email Verification';
+  const subject = `Verification Code: ${otp} | ITF OF INDIA`;
   const html = `
     <!DOCTYPE html>
     <html>
@@ -201,11 +303,11 @@ const sendOTPEmail = async (to, otp) => {
           <span class="org-name">ITF OF INDIA</span>
         </div>
         <div class="content">
-          <h1 class="title">Security Verification</h1>
-          <p>Please use the following high-security verification code to complete your action. This code ensures the safety of your official records.</p>
+          <h1 class="title">Verification Code</h1>
+          <p>Please use the following verification code to complete your request. This code is required to verify your identity for official records.</p>
           
-          <div style="background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 12px; padding: 25px; margin: 32px 0; text-align: center;">
-            <h2 style="font-family: 'Courier New', Courier, monospace; font-size: 42px; font-weight: 800; letter-spacing: 12px; color: #b45309; margin: 0;">${otp}</h2>
+          <div class="otp-display">
+            <h2 class="otp-code">${otp}</h2>
             <p style="font-size: 13px; color: #64748b; margin-top: 10px;">Valid for 10 minutes</p>
           </div>
         </div>
@@ -223,7 +325,7 @@ const sendOTPEmail = async (to, otp) => {
  * Send Registration Pending Email
  */
 const sendPendingEmail = async (to, name, regNo, data = {}) => {
-  const subject = `Welcome to ITF OF INDIA, ${name}! 🇮🇳`;
+  const subject = `Registration Received: ${name} (ID: ${regNo}) | ITF OF INDIA`;
   const html = `
     <!DOCTYPE html>
     <html>
@@ -267,7 +369,7 @@ const sendPendingEmail = async (to, name, regNo, data = {}) => {
  * Send Approval Email
  */
 const sendApprovalEmail = async (to, name, regNo, data = {}) => {
-  const subject = `Congrats ${name}! Your Athlete ID is Approved 🏆`;
+  const subject = `Application Approved: ${name} (ID: ${regNo}) | ITF OF INDIA`;
   const html = `
     <!DOCTYPE html>
     <html>
@@ -317,7 +419,7 @@ const sendApprovalEmail = async (to, name, regNo, data = {}) => {
  * Send Rejection Email
  */
 const sendRejectionEmail = async (to, name, reason = "Documentation criteria not met") => {
-  const subject = `Update regarding your Registration - ${name}`;
+  const subject = `Registration Update: ${name} | ITF OF INDIA`;
   const html = `
     <!DOCTYPE html>
     <html>
@@ -378,7 +480,7 @@ const sendContactConfirmation = async (to, name, messageSnippet) => {
             <p style="margin: 8px 0 0; color: #334155; font-size: 14px; font-style: italic;">"${messageSnippet.length > 150 ? messageSnippet.substring(0, 150) + '...' : messageSnippet}"</p>
           </div>
 
-          <p style="color: #64748b; font-size: 14px;">If your enquiry is urgent, please feel free to contact us directly via the details provided on our website.</p>
+          <p style="color: #64748b; font-size: 14px;">If your enquiry is time-sensitive, please feel free to contact us directly via the details provided on our website.</p>
         </div>
         <div class="footer">
           <p>ITF OF INDIA - National Multi-Sport Organization Trust</p>
@@ -403,6 +505,44 @@ const checkMailHealth = () => {
   };
 };
 
+/**
+ * Send Password Setup/Reset OTP Email
+ */
+const sendPasswordSetupEmail = async (to, name, otp) => {
+  const subject = `Verification Code: ${otp} | ITF OF INDIA`;
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8">${getEmailStyles()}</head>
+    <body>
+      <div class="email-container">
+        <div class="header">
+          <img src="${LOGO_URL}" alt="ITF Logo" class="logo">
+          <span class="org-name">ITF OF INDIA</span>
+        </div>
+        <div class="content">
+          <h1 class="title">Access Verification</h1>
+          <p>Hello <strong>${name}</strong>,</p>
+          <p>You have requested a verification code to access the official <strong>ITF OF INDIA Athlete Portal</strong>.</p>
+          
+          <div class="otp-display">
+            <h2 class="otp-code">${otp}</h2>
+            <p style="font-size: 13px; color: #64748b; margin-top: 10px;">Valid for 10 minutes</p>
+          </div>
+          
+          <p style="font-size: 14px; color: #475569;">Use this code to securely setup or reset your portal credentials. If you did not initiate this request, please ignore this email.</p>
+        </div>
+        <div class="footer">
+          <p>© ${new Date().getFullYear()} ITF OF INDIA - National Multi-Sport Organization Trust</p>
+          <p>This is an automated security notification.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+  return sendEmail(to, subject, html);
+};
+
 module.exports = {
   sendEmail,
   sendOTPEmail,
@@ -410,5 +550,6 @@ module.exports = {
   sendApprovalEmail,
   sendRejectionEmail,
   sendContactConfirmation,
+  sendPasswordSetupEmail,
   checkMailHealth
 };

@@ -1,4 +1,4 @@
-const { saveData, getAllData } = require('../services/firebaseService');
+const { saveData, getAllData, deleteData } = require('../services/firebaseService');
 const { sendContactConfirmation } = require('../services/mailService');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
 
@@ -42,7 +42,18 @@ const getContacts = async (req, res, next) => {
   }
 };
 
+const deleteContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await deleteData('contacts', id);
+    sendSuccess(res, 200, 'Enquiry deleted successfully');
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   submitContact,
-  getContacts
+  getContacts,
+  deleteContact
 };

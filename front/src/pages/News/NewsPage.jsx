@@ -4,14 +4,13 @@ import { Calendar, Tag, ChevronRight, Newspaper, Bell } from "lucide-react";
 import pageHeroImages from "../../utils/pageHeroImages";
 import "./NewsPage.css";
 import { NewsSkeleton } from "../../components/Skeleton";
+import DialerFilterBar from "../../components/Gallery/DialerFilterBar";
 
 const NewsPage = () => {
   const { t } = useLanguage();
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("All");
-  const scrollRef = React.useRef(null);
-  const [isPaused, setIsPaused] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -32,33 +31,10 @@ const NewsPage = () => {
     fetchNews();
   }, [API_URL]);
 
-  // Auto-scroll logic for mobile filter bar
-  useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer) return;
-
-    let interval;
-    const startScrolling = () => {
-      interval = setInterval(() => {
-        if (!isPaused && window.innerWidth <= 768) {
-          // Continuous loop logic
-          if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
-            scrollContainer.scrollLeft = 0;
-          } else {
-            scrollContainer.scrollLeft += 1;
-          }
-        }
-      }, 30);
-    };
-
-    startScrolling();
-    return () => clearInterval(interval);
-  }, [isPaused]);
+  // Auto-scroll logic removed in favor of DialerFilterBar component
 
   const handleFilterClick = (cat) => {
     setFilter(cat);
-    setIsPaused(true);
-    setTimeout(() => setIsPaused(false), 3000);
   };
 
   const categories = [
@@ -70,7 +46,12 @@ const NewsPage = () => {
     "Announcement",
   ];
   const filteredNews =
-    filter === "All" ? news : news.filter((n) => n.category === filter);
+    filter === "All"
+      ? news
+      : news.filter(
+          (n) =>
+            n.category?.trim().toLowerCase() === filter.trim().toLowerCase(),
+        );
 
   return (
     <div className="news-page">
@@ -106,17 +87,12 @@ const NewsPage = () => {
       {/* Filter Section */}
       <div className="news-filter-bar">
         <div className="container">
-          <div className="filter-scroll-container" ref={scrollRef}>
-            {[...categories, ...categories].map((cat, idx) => (
-              <button
-                key={`${cat}-${idx}`}
-                className={`news-filter-chip ${filter === cat ? "active" : ""}`}
-                onClick={() => handleFilterClick(cat)}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          <DialerFilterBar 
+            categories={categories} 
+            activeFilter={filter} 
+            onFilterClick={handleFilterClick} 
+            chipClass="news-filter-chip"
+          />
         </div>
       </div>
 

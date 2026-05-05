@@ -4,6 +4,7 @@ import { Image as ImageIcon } from "lucide-react";
 import pageHeroImages from "../../utils/pageHeroImages";
 import "../../components/Gallery/Gallery.css";
 import { GallerySkeleton } from "../../components/Skeleton";
+import DialerFilterBar from "../../components/Gallery/DialerFilterBar";
 
 const GalleryPage = () => {
   const { t } = useLanguage();
@@ -11,8 +12,6 @@ const GalleryPage = () => {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("All");
-  const scrollRef = React.useRef(null);
-  const [isPaused, setIsPaused] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -33,33 +32,10 @@ const GalleryPage = () => {
     fetchPhotos();
   }, [API_URL]);
 
-  // Auto-scroll logic for mobile filter bar
-  useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer) return;
-
-    let interval;
-    const startScrolling = () => {
-      interval = setInterval(() => {
-        if (!isPaused && window.innerWidth <= 768) {
-          // Continuous loop logic
-          if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
-            scrollContainer.scrollLeft = 0;
-          } else {
-            scrollContainer.scrollLeft += 1;
-          }
-        }
-      }, 30);
-    };
-
-    startScrolling();
-    return () => clearInterval(interval);
-  }, [isPaused]);
+  // Auto-scroll logic removed in favor of DialerFilterBar component
 
   const handleFilterClick = (cat) => {
     setActiveFilter(cat);
-    setIsPaused(true);
-    setTimeout(() => setIsPaused(false), 3000);
   };
 
   const categories = [
@@ -73,7 +49,10 @@ const GalleryPage = () => {
   const filteredPhotos =
     activeFilter === "All"
       ? photos
-      : photos.filter((p) => p.category === activeFilter);
+      : photos.filter(
+          (p) =>
+            p.category?.trim().toLowerCase() === activeFilter.trim().toLowerCase(),
+        );
 
   const openLightbox = (index) => {
     setSelectedImage(index);
@@ -130,19 +109,12 @@ const GalleryPage = () => {
       {/* Filter Bar */}
       <div className="gallery-filter-bar">
         <div className="container">
-          <div className="gallery-filter-scroll" ref={scrollRef}>
-            {[...categories, ...categories].map((cat, idx) => (
-              <button
-                key={`${cat}-${idx}`}
-                className={`gallery-filter-chip ${
-                  activeFilter === cat ? "active" : ""
-                }`}
-                onClick={() => handleFilterClick(cat)}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          <DialerFilterBar 
+            categories={categories} 
+            activeFilter={activeFilter} 
+            onFilterClick={handleFilterClick} 
+            chipClass="gallery-filter-chip"
+          />
         </div>
       </div>
 
