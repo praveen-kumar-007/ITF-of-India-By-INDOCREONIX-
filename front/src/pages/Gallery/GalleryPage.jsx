@@ -42,11 +42,9 @@ const GalleryPage = () => {
     const startScrolling = () => {
       interval = setInterval(() => {
         if (!isPaused && window.innerWidth <= 768) {
-          if (
-            scrollContainer.scrollLeft >=
-            scrollContainer.scrollWidth - scrollContainer.clientWidth
-          ) {
-            scrollContainer.scrollLeft = 0; // Reset to start
+          // Continuous loop logic
+          if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
+            scrollContainer.scrollLeft = 0;
           } else {
             scrollContainer.scrollLeft += 1;
           }
@@ -133,9 +131,9 @@ const GalleryPage = () => {
       <div className="gallery-filter-bar">
         <div className="container">
           <div className="gallery-filter-scroll" ref={scrollRef}>
-            {categories.map((cat) => (
+            {[...categories, ...categories].map((cat, idx) => (
               <button
-                key={cat}
+                key={`${cat}-${idx}`}
                 className={`gallery-filter-chip ${
                   activeFilter === cat ? "active" : ""
                 }`}

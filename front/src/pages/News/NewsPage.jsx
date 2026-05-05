@@ -41,11 +41,9 @@ const NewsPage = () => {
     const startScrolling = () => {
       interval = setInterval(() => {
         if (!isPaused && window.innerWidth <= 768) {
-          if (
-            scrollContainer.scrollLeft >=
-            scrollContainer.scrollWidth - scrollContainer.clientWidth
-          ) {
-            scrollContainer.scrollLeft = 0; // Reset to start
+          // Continuous loop logic
+          if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
+            scrollContainer.scrollLeft = 0;
           } else {
             scrollContainer.scrollLeft += 1;
           }
@@ -109,9 +107,9 @@ const NewsPage = () => {
       <div className="news-filter-bar">
         <div className="container">
           <div className="filter-scroll-container" ref={scrollRef}>
-            {categories.map((cat) => (
+            {[...categories, ...categories].map((cat, idx) => (
               <button
-                key={cat}
+                key={`${cat}-${idx}`}
                 className={`news-filter-chip ${filter === cat ? "active" : ""}`}
                 onClick={() => handleFilterClick(cat)}
               >
