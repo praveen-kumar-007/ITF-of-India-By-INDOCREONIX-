@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLanguage } from "../../context/LanguageContext";
-import { Image as ImageIcon, Filter } from "lucide-react";
+import { Image as ImageIcon } from "lucide-react";
+import pageHeroImages from "../../utils/pageHeroImages";
 import "../../components/Gallery/Gallery.css";
 import { GallerySkeleton } from "../../components/Skeleton";
 
@@ -65,8 +66,7 @@ const GalleryPage = () => {
     );
   };
 
-  const bannerImages =
-    photos.length > 0 ? photos.map((photo) => photo.imageUrl).slice(0, 10) : [];
+  const bannerImages = pageHeroImages;
 
   return (
     <div className="gallery-page">
@@ -96,25 +96,21 @@ const GalleryPage = () => {
         </div>
       </section>
 
-      {/* Branded Filter Bar */}
-      <div className="gallery-filter-section">
+      {/* Filter Bar */}
+      <div className="gallery-filter-bar">
         <div className="container">
-          <div className="filter-wrapper">
-            <div className="filter-icon">
-              <Filter size={18} />
-              <span>Filter By:</span>
-            </div>
-            <div className="filter-options">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  className={`filter-chip ${activeFilter === cat ? "active" : ""}`}
-                  onClick={() => setActiveFilter(cat)}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
+          <div className="gallery-filter-scroll">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                className={`gallery-filter-chip ${
+                  activeFilter === cat ? "active" : ""
+                }`}
+                onClick={() => setActiveFilter(cat)}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
         </div>
       </div>

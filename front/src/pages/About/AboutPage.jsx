@@ -1,8 +1,9 @@
-import React from 'react';
-import { useLanguage } from '../../context/LanguageContext';
-import About from '../../components/About/About';
-import StatsBar from '../../components/StatsBar/StatsBar';
-import './AboutPage.css';
+import React from "react";
+import { useLanguage } from "../../context/LanguageContext";
+import About from "../../components/About/About";
+import StatsBar from "../../components/StatsBar/StatsBar";
+import pageHeroImages from "../../utils/pageHeroImages";
+import "./AboutPage.css";
 
 const AboutPage = () => {
   const { t } = useLanguage();
@@ -13,20 +14,25 @@ const AboutPage = () => {
       <section className="page-hero about-style">
         <div className="page-hero-bg">
           <div className="page-hero-track">
-            {["hero.png", "about.png", "hero_dark.png", "about_dark.png"].map((img, i) => (
-              <img key={i} src={`/${img}`} className="page-hero-img" alt="" />
+            {pageHeroImages.map((img, i) => (
+              <img key={i} src={img} className="page-hero-img" alt="" />
             ))}
             {/* Repeat for seamless loop */}
-            {["hero.png", "about.png", "hero_dark.png", "about_dark.png"].map((img, i) => (
-              <img key={`dup-${i}`} src={`/${img}`} className="page-hero-img" alt="" />
+            {pageHeroImages.map((img, i) => (
+              <img
+                key={`dup-${i}`}
+                src={img}
+                className="page-hero-img"
+                alt=""
+              />
             ))}
           </div>
           <div className="page-hero-overlay"></div>
         </div>
         <div className="container">
-          <span className="section-tag">{t('about.tag')}</span>
-          <h1>{t('about.title')}</h1>
-          <p className="lead">{t('about.description')}</p>
+          <span className="section-tag">{t("about.tag")}</span>
+          <h1>{t("about.title")}</h1>
+          <p className="lead">{t("about.description")}</p>
         </div>
       </section>
 
@@ -34,23 +40,23 @@ const AboutPage = () => {
       <section className="leadership section">
         <div className="container">
           <div className="section-header center">
-            <span className="section-tag">{t('about.leadership_tag')}</span>
-            <h2 className="section-title">{t('about.leadership_title')}</h2>
+            <span className="section-tag">{t("about.leadership_tag")}</span>
+            <h2 className="section-title">{t("about.leadership_title")}</h2>
           </div>
           <div className="leadership-grid">
             <div className="member-card">
               <div className="member-img">
-                <img src="/president.jpeg" alt={t('about.name_president')} />
+                <img src="/president.jpeg" alt={t("about.name_president")} />
               </div>
-              <h4>{t('about.name_president')}</h4>
-              <span>{t('about.role_president')}</span>
+              <h4>{t("about.name_president")}</h4>
+              <span>{t("about.role_president")}</span>
             </div>
             <div className="member-card">
               <div className="member-img">
-                <img src="/Secratery.jpeg" alt={t('about.name_secretary')} />
+                <img src="/Secratery.jpeg" alt={t("about.name_secretary")} />
               </div>
-              <h4>{t('about.name_secretary')}</h4>
-              <span>{t('about.role_secretary')}</span>
+              <h4>{t("about.name_secretary")}</h4>
+              <span>{t("about.role_secretary")}</span>
             </div>
           </div>
         </div>
@@ -65,13 +71,13 @@ const AboutPage = () => {
           <div className="vision-grid">
             <div className="vision-card">
               <div className="icon">👁️</div>
-              <h3>{t('about.vision_title')}</h3>
-              <p>{t('about.vision_text')}</p>
+              <h3>{t("about.vision_title")}</h3>
+              <p>{t("about.vision_text")}</p>
             </div>
             <div className="vision-card highlight">
               <div className="icon">🎯</div>
-              <h3>{t('about.mission_title')}</h3>
-              <p>{t('about.mission_text')}</p>
+              <h3>{t("about.mission_title")}</h3>
+              <p>{t("about.mission_text")}</p>
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { useLanguage } from "../../context/LanguageContext";
+import pageHeroImages from "../../utils/pageHeroImages";
 import "./SportsPage.css";
 
 const SportsPage = () => {
@@ -33,12 +34,17 @@ const SportsPage = () => {
       <section className="page-hero sports-style">
         <div className="page-hero-bg">
           <div className="page-hero-track">
-            {[10, 11, 12, 13, 14, 15].map((num, i) => (
-              <img key={i} src={`/club_image/img${num}.jpeg`} className="page-hero-img" alt="" />
+            {pageHeroImages.map((img, i) => (
+              <img key={i} src={img} className="page-hero-img" alt="" />
             ))}
             {/* Repeat for seamless loop */}
-            {[10, 11, 12, 13, 14, 15].map((num, i) => (
-              <img key={`dup-${i}`} src={`/club_image/img${num}.jpeg`} className="page-hero-img" alt="" />
+            {pageHeroImages.map((img, i) => (
+              <img
+                key={`dup-${i}`}
+                src={img}
+                className="page-hero-img"
+                alt=""
+              />
             ))}
           </div>
           <div className="page-hero-overlay"></div>

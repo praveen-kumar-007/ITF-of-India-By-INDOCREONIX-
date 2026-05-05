@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { useLanguage } from '../../context/LanguageContext';
-import { Calendar, Tag, ChevronRight, Newspaper, Bell } from 'lucide-react';
-import './NewsPage.css';
-import { NewsSkeleton } from '../../components/Skeleton';
+import React, { useState, useEffect } from "react";
+import { useLanguage } from "../../context/LanguageContext";
+import { Calendar, Tag, ChevronRight, Newspaper, Bell } from "lucide-react";
+import pageHeroImages from "../../utils/pageHeroImages";
+import "./NewsPage.css";
+import { NewsSkeleton } from "../../components/Skeleton";
 
 const NewsPage = () => {
   const { t } = useLanguage();
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState("All");
 
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -29,23 +30,45 @@ const NewsPage = () => {
     fetchNews();
   }, [API_URL]);
 
-  const categories = ['All', 'Latest', 'Tournament', 'Event', 'Notice', 'Announcement'];
-  const filteredNews = filter === 'All' ? news : news.filter(n => n.category === filter);
+  const categories = [
+    "All",
+    "Latest",
+    "Tournament",
+    "Event",
+    "Notice",
+    "Announcement",
+  ];
+  const filteredNews =
+    filter === "All" ? news : news.filter((n) => n.category === filter);
 
   return (
     <div className="news-page">
       {/* Hero Header */}
       <section className="page-hero news-style">
         <div className="page-hero-bg">
+          <div className="page-hero-track">
+            {pageHeroImages.map((img, i) => (
+              <img key={i} src={img} className="page-hero-img" alt="" />
+            ))}
+            {/* Repeat for seamless loop */}
+            {pageHeroImages.map((img, i) => (
+              <img
+                key={`dup-${i}`}
+                src={img}
+                className="page-hero-img"
+                alt=""
+              />
+            ))}
+          </div>
           <div className="page-hero-overlay"></div>
-          {news.length > 0 && news[0].imageUrl && (
-            <img src={news[0].imageUrl} className="news-hero-bg-img" alt="" />
-          )}
         </div>
         <div className="container">
-          <span className="section-tag">{t('news.tag') || 'Updates'}</span>
-          <h1>{t('news.title') || 'Official News & Notices'}</h1>
-          <p className="lead">{t('news.desc') || 'Stay informed about the latest happenings, tournament results, and official announcements from ITF OF INDIA.'}</p>
+          <span className="section-tag">{t("news.tag") || "Updates"}</span>
+          <h1>{t("news.title") || "Official News & Notices"}</h1>
+          <p className="lead">
+            {t("news.desc") ||
+              "Stay informed about the latest happenings, tournament results, and official announcements from ITF OF INDIA."}
+          </p>
         </div>
       </section>
 
@@ -53,10 +76,10 @@ const NewsPage = () => {
       <div className="news-filter-bar">
         <div className="container">
           <div className="filter-scroll-container">
-            {categories.map(cat => (
-              <button 
-                key={cat} 
-                className={`news-filter-chip ${filter === cat ? 'active' : ''}`}
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                className={`news-filter-chip ${filter === cat ? "active" : ""}`}
                 onClick={() => setFilter(cat)}
               >
                 {cat}
@@ -72,7 +95,11 @@ const NewsPage = () => {
         ) : filteredNews.length > 0 ? (
           <div className="news-grid-premium">
             {filteredNews.map((item, i) => (
-              <article key={item.id || i} className="news-article-card" style={{ animationDelay: `${i * 0.1}s` }}>
+              <article
+                key={item.id || i}
+                className="news-article-card"
+                style={{ animationDelay: `${i * 0.1}s` }}
+              >
                 <div className="article-image">
                   {item.imageUrl ? (
                     <img src={item.imageUrl} alt={item.title} loading="lazy" />
@@ -87,11 +114,19 @@ const NewsPage = () => {
                   <div className="article-meta">
                     <span className="article-date">
                       <Calendar size={14} />
-                      {new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      {new Date(item.date).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </span>
                   </div>
                   <h3>{item.title}</h3>
-                  <p>{item.content.length > 150 ? item.content.substring(0, 150) + '...' : item.content}</p>
+                  <p>
+                    {item.content.length > 150
+                      ? item.content.substring(0, 150) + "..."
+                      : item.content}
+                  </p>
                   <button className="read-more-btn">
                     Read Bulletin <ChevronRight size={16} />
                   </button>
@@ -106,7 +141,10 @@ const NewsPage = () => {
               <div className="ping-circle"></div>
             </div>
             <h3>No bulletins found in {filter}</h3>
-            <p>We haven't posted any updates in this category yet. Check back soon for the latest news.</p>
+            <p>
+              We haven't posted any updates in this category yet. Check back
+              soon for the latest news.
+            </p>
           </div>
         )}
       </div>
