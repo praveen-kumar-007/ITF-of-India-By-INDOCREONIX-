@@ -249,5 +249,6 @@
     
     .news-filter-bar {
         top: 60px;
+        margin-bottom: 2rem;
     }
 }
