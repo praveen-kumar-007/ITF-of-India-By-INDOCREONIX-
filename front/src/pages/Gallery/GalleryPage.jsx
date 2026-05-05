@@ -11,6 +11,8 @@ const GalleryPage = () => {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("All");
+  const scrollRef = React.useRef(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -30,6 +32,37 @@ const GalleryPage = () => {
     };
     fetchPhotos();
   }, [API_URL]);
+
+  // Auto-scroll logic for mobile filter bar
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    let interval;
+    const startScrolling = () => {
+      interval = setInterval(() => {
+        if (!isPaused && window.innerWidth <= 768) {
+          if (
+            scrollContainer.scrollLeft >=
+            scrollContainer.scrollWidth - scrollContainer.clientWidth
+          ) {
+            scrollContainer.scrollLeft = 0; // Reset to start
+          } else {
+            scrollContainer.scrollLeft += 1;
+          }
+        }
+      }, 30);
+    };
+
+    startScrolling();
+    return () => clearInterval(interval);
+  }, [isPaused]);
+
+  const handleFilterClick = (cat) => {
+    setActiveFilter(cat);
+    setIsPaused(true);
+    setTimeout(() => setIsPaused(false), 3000);
+  };
 
   const categories = [
     "All",
@@ -99,14 +132,14 @@ const GalleryPage = () => {
       {/* Filter Bar */}
       <div className="gallery-filter-bar">
         <div className="container">
-          <div className="gallery-filter-scroll">
+          <div className="gallery-filter-scroll" ref={scrollRef}>
             {categories.map((cat) => (
               <button
                 key={cat}
                 className={`gallery-filter-chip ${
                   activeFilter === cat ? "active" : ""
                 }`}
-                onClick={() => setActiveFilter(cat)}
+                onClick={() => handleFilterClick(cat)}
               >
                 {cat}
               </button>

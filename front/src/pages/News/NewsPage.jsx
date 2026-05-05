@@ -10,6 +10,8 @@ const NewsPage = () => {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("All");
+  const scrollRef = React.useRef(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -29,6 +31,37 @@ const NewsPage = () => {
     };
     fetchNews();
   }, [API_URL]);
+
+  // Auto-scroll logic for mobile filter bar
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    let interval;
+    const startScrolling = () => {
+      interval = setInterval(() => {
+        if (!isPaused && window.innerWidth <= 768) {
+          if (
+            scrollContainer.scrollLeft >=
+            scrollContainer.scrollWidth - scrollContainer.clientWidth
+          ) {
+            scrollContainer.scrollLeft = 0; // Reset to start
+          } else {
+            scrollContainer.scrollLeft += 1;
+          }
+        }
+      }, 30);
+    };
+
+    startScrolling();
+    return () => clearInterval(interval);
+  }, [isPaused]);
+
+  const handleFilterClick = (cat) => {
+    setFilter(cat);
+    setIsPaused(true);
+    setTimeout(() => setIsPaused(false), 3000);
+  };
 
   const categories = [
     "All",
@@ -75,12 +108,12 @@ const NewsPage = () => {
       {/* Filter Section */}
       <div className="news-filter-bar">
         <div className="container">
-          <div className="filter-scroll-container">
+          <div className="filter-scroll-container" ref={scrollRef}>
             {categories.map((cat) => (
               <button
                 key={cat}
                 className={`news-filter-chip ${filter === cat ? "active" : ""}`}
-                onClick={() => setFilter(cat)}
+                onClick={() => handleFilterClick(cat)}
               >
                 {cat}
               </button>
