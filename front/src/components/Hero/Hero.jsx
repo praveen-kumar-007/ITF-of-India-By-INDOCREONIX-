@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { Link } from 'react-router-dom';
+import { NoticeSkeleton } from '../Skeleton';
 
 const Hero = () => {
   const { t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [notices, setNotices] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const heroImages = [
     "/club_image/img1.jpeg",
@@ -25,6 +27,7 @@ const Hero = () => {
 
     const fetchNotices = async () => {
       try {
+        setLoading(true);
         const res = await fetch(`${API_URL}/news`);
         const data = await res.json();
         if (data.success) {
@@ -34,6 +37,8 @@ const Hero = () => {
         }
       } catch (err) {
         console.error("Hero Notice Fetch Error:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -70,7 +75,9 @@ const Hero = () => {
               <h3>{t('hero.notices')}</h3>
             </div>
             <div className="notice-body">
-              {notices.length > 0 ? (
+              {loading ? (
+                <NoticeSkeleton />
+              ) : notices.length > 0 ? (
                 notices.map((notice, idx) => (
                   <div key={notice.id || idx} className="notice-item">
                     <span className="date">

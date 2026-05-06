@@ -42,3 +42,14 @@ export const FormSkeleton = () => (
     <div className="skeleton-form-btn shimmer"></div>
   </div>
 );
+
+export const NoticeSkeleton = () => (
+  <>
+    {[1, 2, 3, 4, 5].map((i) => (
+      <div key={i} className="notice-skeleton-item">
+        <div className="skeleton-date-hero dark-shimmer"></div>
+        <div className="skeleton-line-hero dark-shimmer"></div>
+      </div>
+    ))}
+  </>
+);
