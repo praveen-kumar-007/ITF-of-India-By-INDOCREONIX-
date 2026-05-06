@@ -1,28 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { User, Lock, Mail, ShieldCheck, ArrowRight, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react';
-import './Login.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import {
+  User,
+  Lock,
+  Mail,
+  ShieldCheck,
+  ArrowRight,
+  CheckCircle,
+  AlertCircle,
+  Eye,
+  EyeOff,
+} from "lucide-react";
+import GoogleSignInButton from "../../components/Auth/GoogleSignInButton";
+import { exchangeGoogleCredential } from "../../utils/googleAuth";
+import "./Login.css";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const AthleteLogin = () => {
   const navigate = useNavigate();
-  const [mode, setMode] = useState('login'); // 'login' or 'setup' or 'verify'
+  const [mode, setMode] = useState("login"); // 'login' or 'setup' or 'verify'
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [resendTimer, setResendTimer] = useState(0);
 
   // Form States
   const [formData, setFormData] = useState({
-    registrationNumber: '', // Used for identifier in login
-    email: '',
-    password: '',
+    registrationNumber: "", // Used for identifier in login
+    email: "",
+    password: "",
     otpValue: ["", "", "", "", "", ""], // Digit-by-digit OTP
-    newPassword: '',
-    confirmPassword: ''
+    newPassword: "",
+    confirmPassword: "",
   });
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -43,19 +56,19 @@ const AthleteLogin = () => {
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError('');
+    setError("");
   };
 
   const handleOtpChange = (index, value) => {
     if (isNaN(value)) return;
     const newOtp = [...formData.otpValue];
     newOtp[index] = value.substring(value.length - 1);
-    setFormData(prev => ({ ...prev, otpValue: newOtp }));
+    setFormData((prev) => ({ ...prev, otpValue: newOtp }));
 
     // Auto-focus next
     if (value && index < 5) {
@@ -74,64 +87,88 @@ const AthleteLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    
+    setError("");
+
     try {
       const response = await fetch(`${API_BASE_URL}/athlete/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           identifier: formData.registrationNumber,
-          password: formData.password
-        })
+          password: formData.password,
+        }),
       });
-      
+
       const result = await response.json();
       if (result.success) {
-        localStorage.setItem('athleteToken', result.data.token);
-        localStorage.setItem('athlete', JSON.stringify(result.data.athlete));
+        localStorage.setItem("athleteToken", result.data.token);
+        localStorage.setItem("athlete", JSON.stringify(result.data.athlete));
         // Force refresh to update Navbar instantly
-        window.location.href = '/athlete/profile';
+        window.location.href = "/athlete/profile";
       } else {
-        setError(result.message || 'Login failed');
+        setError(result.message || "Login failed");
       }
     } catch (err) {
-      setError('Connection error. Please try again.');
+      setError("Connection error. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleGoogleSignIn = async (credential) => {
+    setGoogleLoading(true);
+    setError("");
+
+    const result = await exchangeGoogleCredential(credential);
+    if (!result?.success) {
+      setError(result?.message || "Google sign-in failed.");
+      setGoogleLoading(false);
+      return;
+    }
+
+    const athlete = result?.data?.athlete;
+    const token = result?.data?.token;
+    if (!athlete || !token) {
+      setError("No verified athlete record found for this Google account.");
+      setGoogleLoading(false);
+      return;
+    }
+
+    localStorage.setItem("athleteToken", token);
+    localStorage.setItem("athlete", JSON.stringify(athlete));
+    window.location.href = "/athlete/profile";
+  };
+
   const handleRequestOtp = async (e) => {
     if (e) e.preventDefault();
-    if (!formData.email) return setError('Email is required');
+    if (!formData.email) return setError("Email is required");
 
     setLoading(true);
-    setError('');
-    
+    setError("");
+
     try {
       const response = await fetch(`${API_BASE_URL}/athlete/request-setup`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: formData.email
-        })
+          email: formData.email,
+        }),
       });
-      
+
       const result = await response.json();
       if (result.success) {
-        setMode('verify');
+        setMode("verify");
         setResendTimer(180); // 3 minutes
-        let msg = 'OTP sent to your registered email.';
+        let msg = "OTP sent to your registered email.";
         if (result.data?.devOtp) {
           msg = `Dev Mode: Your OTP is ${result.data.devOtp}`;
         }
         setSuccess(msg);
       } else {
-        setError(result.message || 'Failed to send OTP');
+        setError(result.message || "Failed to send OTP");
       }
     } catch (err) {
-      setError('Connection error. Please try again.');
+      setError("Connection error. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -140,36 +177,42 @@ const AthleteLogin = () => {
   const handleVerifyAndSet = async (e) => {
     e.preventDefault();
     const code = formData.otpValue.join("");
-    if (code.length < 6) return setError('Please enter 6-digit OTP');
+    if (code.length < 6) return setError("Please enter 6-digit OTP");
 
     if (formData.newPassword !== formData.confirmPassword) {
-      return setError('Passwords do not match');
+      return setError("Passwords do not match");
     }
-    
+
     setLoading(true);
-    setError('');
-    
+    setError("");
+
     try {
       const response = await fetch(`${API_BASE_URL}/athlete/setup-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: formData.email,
           otp: code,
-          password: formData.newPassword
-        })
+          password: formData.newPassword,
+        }),
       });
-      
+
       const result = await response.json();
       if (result.success) {
-        setMode('login');
-        setSuccess('Password set successfully! You can now login.');
-        setFormData({ ...formData, password: '', otpValue: ["", "", "", "", "", ""], newPassword: '', confirmPassword: '' });
+        setMode("login");
+        setSuccess("Password set successfully! You can now login.");
+        setFormData({
+          ...formData,
+          password: "",
+          otpValue: ["", "", "", "", "", ""],
+          newPassword: "",
+          confirmPassword: "",
+        });
       } else {
-        setError(result.message || 'Failed to set password');
+        setError(result.message || "Failed to set password");
       }
     } catch (err) {
-      setError('Connection error. Please try again.');
+      setError("Connection error. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -184,41 +227,63 @@ const AthleteLogin = () => {
           </div>
           <h1>Athlete Portal</h1>
           <p>
-            {mode === 'login' ? 'Welcome back! Login to your portal' : 
-             mode === 'setup' ? 'Setup or Reset your password via Email' : 
-             'Verify your identity with OTP'}
+            {mode === "login"
+              ? "Welcome back! Login to your portal"
+              : mode === "setup"
+                ? "Setup or Reset your password via Email"
+                : "Verify your identity with OTP"}
           </p>
         </div>
 
-        {error && <div className="auth-alert error"><AlertCircle size={18} /> {error}</div>}
-        {success && <div className="auth-alert success"><CheckCircle size={18} /> {success}</div>}
+        {error && (
+          <div className="auth-alert error">
+            <AlertCircle size={18} /> {error}
+          </div>
+        )}
+        {success && (
+          <div className="auth-alert success">
+            <CheckCircle size={18} /> {success}
+          </div>
+        )}
 
-        {mode === 'login' && (
+        {mode === "login" && (
           <form className="auth-form" onSubmit={handleLogin}>
+            <GoogleSignInButton
+              onSuccess={handleGoogleSignIn}
+              onError={(message) => setError(message)}
+              disabled={loading || googleLoading}
+            />
+            <div className="auth-divider">
+              <span>or continue with email</span>
+            </div>
             <div className="input-group">
-              <label><User size={16} /> Reg. ID or Email</label>
-              <input 
-                type="text" 
+              <label>
+                <User size={16} /> Reg. ID or Email
+              </label>
+              <input
+                type="text"
                 name="registrationNumber"
                 placeholder="ID or Registered Email"
                 value={formData.registrationNumber}
                 onChange={handleInputChange}
-                required 
+                required
               />
             </div>
             <div className="input-group">
-              <label><Lock size={16} /> Password</label>
+              <label>
+                <Lock size={16} /> Password
+              </label>
               <div className="password-wrapper">
-                <input 
-                  type={showPassword ? "text" : "password"} 
+                <input
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleInputChange}
-                  required 
+                  required
                 />
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="toggle-password"
                   onClick={() => setShowPassword(!showPassword)}
                 >
@@ -227,49 +292,74 @@ const AthleteLogin = () => {
               </div>
             </div>
             <button type="submit" className="auth-btn" disabled={loading}>
-              {loading ? 'Authenticating...' : 'Sign In'} <ArrowRight size={18} />
+              {loading ? "Authenticating..." : "Sign In"}{" "}
+              <ArrowRight size={18} />
             </button>
             <div className="auth-footer">
               <p>
-                First time or lost access? 
-                <button type="button" onClick={() => { setMode('setup'); setError(''); setSuccess(''); }}>
+                First time or lost access?
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode("setup");
+                    setError("");
+                    setSuccess("");
+                  }}
+                >
                   Setup / Forgot Password?
+                </button>
+              </p>
+            </div>
+            <div className="auth-oauth-note">
+              Only verified athletes can access the portal.
+            </div>
+          </form>
+        )}
+
+        {mode === "setup" && (
+          <form className="auth-form" onSubmit={handleRequestOtp}>
+            <div className="input-group">
+              <label>
+                <Mail size={16} /> Registered Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                placeholder="your@email.com"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <button type="submit" className="auth-btn" disabled={loading}>
+              {loading ? "Sending OTP..." : "Get Verification OTP"}
+            </button>
+            <div className="auth-footer">
+              <p>
+                Remember your password?{" "}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode("login");
+                    setError("");
+                    setSuccess("");
+                  }}
+                >
+                  Login Now
                 </button>
               </p>
             </div>
           </form>
         )}
 
-        {mode === 'setup' && (
-          <form className="auth-form" onSubmit={handleRequestOtp}>
-            <div className="input-group">
-              <label><Mail size={16} /> Registered Email</label>
-              <input 
-                type="email" 
-                name="email" 
-                placeholder="your@email.com"
-                value={formData.email}
-                onChange={handleInputChange}
-                required 
-              />
-            </div>
-            <button type="submit" className="auth-btn" disabled={loading}>
-              {loading ? 'Sending OTP...' : 'Get Verification OTP'}
-            </button>
-            <div className="auth-footer">
-              <p>Remember your password? <button type="button" onClick={() => { setMode('login'); setError(''); setSuccess(''); }}>Login Now</button></p>
-            </div>
-          </form>
-        )}
-
-        {mode === 'verify' && (
+        {mode === "verify" && (
           <form className="auth-form" onSubmit={handleVerifyAndSet}>
             <div className="otp-verification-box">
               <div className="otp-title-group">
                 <h4>Email Verification</h4>
                 <p>Enter the code sent to {formData.email}</p>
               </div>
-              
+
               <div className="otp-digit-container">
                 {formData.otpValue.map((digit, idx) => (
                   <input
@@ -288,27 +378,35 @@ const AthleteLogin = () => {
                 ))}
               </div>
 
-              <span 
-                className={`resend-link ${loading || resendTimer > 0 ? 'disabled' : ''}`} 
-                onClick={(!loading && resendTimer === 0) ? handleRequestOtp : null}
+              <span
+                className={`resend-link ${loading || resendTimer > 0 ? "disabled" : ""}`}
+                onClick={
+                  !loading && resendTimer === 0 ? handleRequestOtp : null
+                }
               >
-                {loading ? "Processing..." : (resendTimer > 0 ? `Resend in ${formatTime(resendTimer)}` : "Resend OTP")}
+                {loading
+                  ? "Processing..."
+                  : resendTimer > 0
+                    ? `Resend in ${formatTime(resendTimer)}`
+                    : "Resend OTP"}
               </span>
             </div>
 
             <div className="input-group">
-              <label><Lock size={16} /> New Password</label>
+              <label>
+                <Lock size={16} /> New Password
+              </label>
               <div className="password-wrapper">
-                <input 
-                  type={showNewPassword ? "text" : "password"} 
+                <input
+                  type={showNewPassword ? "text" : "password"}
                   name="newPassword"
                   placeholder="Min. 8 characters"
                   value={formData.newPassword}
                   onChange={handleInputChange}
-                  required 
+                  required
                 />
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="toggle-password"
                   onClick={() => setShowNewPassword(!showNewPassword)}
                 >
@@ -317,35 +415,50 @@ const AthleteLogin = () => {
               </div>
             </div>
             <div className="input-group">
-              <label><Lock size={16} /> Confirm Password</label>
+              <label>
+                <Lock size={16} /> Confirm Password
+              </label>
               <div className="password-wrapper">
-                <input 
-                  type={showConfirmPassword ? "text" : "password"} 
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   placeholder="Confirm your password"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  required 
+                  required
                 />
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="toggle-password"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
-                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showConfirmPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
                 </button>
               </div>
             </div>
             <button type="submit" className="auth-btn" disabled={loading}>
-              {loading ? 'Processing...' : 'Set Password & Verify'}
+              {loading ? "Processing..." : "Set Password & Verify"}
             </button>
             <div className="auth-footer">
-              <button type="button" onClick={() => { setMode('setup'); setError(''); setSuccess(''); }}>Change Email Address</button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("setup");
+                  setError("");
+                  setSuccess("");
+                }}
+              >
+                Change Email Address
+              </button>
             </div>
           </form>
         )}
       </div>
-      
+
       <div className="auth-background">
         <div className="blob"></div>
         <div className="blob"></div>

@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require("joi");
 
 /**
  * Auth Schemas
@@ -12,15 +12,15 @@ const adminCreateSchema = Joi.object({
   email: Joi.string().email().required().trim(),
   password: Joi.string().min(8).required(),
   fullName: Joi.string().required().trim(),
-  role: Joi.string().valid('admin', 'superadmin').default('admin'),
+  role: Joi.string().valid("admin", "superadmin").default("admin"),
 });
 
 const adminUpdateSchema = Joi.object({
   fullName: Joi.string().trim(),
   email: Joi.string().email().trim(),
-  password: Joi.string().min(8).allow('', null),
-  role: Joi.string().valid('admin', 'superadmin'),
-  status: Joi.string().valid('active', 'inactive'),
+  password: Joi.string().min(8).allow("", null),
+  role: Joi.string().valid("admin", "superadmin"),
+  status: Joi.string().valid("active", "inactive"),
 });
 
 /**
@@ -32,8 +32,8 @@ const athleteRegistrationSchema = Joi.object({
   email: Joi.string().email().required().trim(),
   contactNumber: Joi.string().required().trim(),
   dob: Joi.string().required(),
-  age: Joi.string().allow('', null),
-  gender: Joi.string().valid('Male', 'Female', 'Other').required(),
+  age: Joi.string().allow("", null),
+  gender: Joi.string().valid("Male", "Female", "Other").required(),
   sportsDiscipline: Joi.string().required(),
   bloodGroup: Joi.string().required(),
   qualification: Joi.string().required(),
@@ -42,10 +42,16 @@ const athleteRegistrationSchema = Joi.object({
   po: Joi.string().required(),
   ps: Joi.string().required(),
   block: Joi.string().required(),
-  aadharNumber: Joi.string().length(12).pattern(/^[0-9]+$/).required(),
+  aadharNumber: Joi.string()
+    .length(12)
+    .pattern(/^[0-9]+$/)
+    .required(),
   state: Joi.string().required(),
   district: Joi.string().required(),
-  pinCode: Joi.string().length(6).pattern(/^[0-9]+$/).required(),
+  pinCode: Joi.string()
+    .length(6)
+    .pattern(/^[0-9]+$/)
+    .required(),
   transactionId: Joi.string().required().trim(),
   // Files are handled by multer separately
 }).unknown(true); // Allow other fields for now as registration is complex
@@ -76,6 +82,10 @@ const setupPasswordSchema = Joi.object({
   password: Joi.string().min(8).required(),
 });
 
+const googleAuthSchema = Joi.object({
+  idToken: Joi.string().required(),
+});
+
 module.exports = {
   loginSchema,
   adminCreateSchema,
@@ -85,4 +95,5 @@ module.exports = {
   otpVerifySchema,
   athleteLoginSchema,
   setupPasswordSchema,
+  googleAuthSchema,
 };
