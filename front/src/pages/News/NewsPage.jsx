@@ -20,7 +20,12 @@ const NewsPage = () => {
         const res = await fetch(`${API_URL}/news`);
         const data = await res.json();
         if (data.success) {
-          setNews(data.data);
+          // Filter out home notices (Notice & Announcement categories) from the public news page
+          const newsOnly = data.data.filter(
+            (item) =>
+              item.category !== "Notice" && item.category !== "Announcement",
+          );
+          setNews(newsOnly);
         }
       } catch (err) {
         console.error("News Fetch Error:", err);
@@ -42,8 +47,6 @@ const NewsPage = () => {
     "Latest",
     "Tournament",
     "Event",
-    "Notice",
-    "Announcement",
   ];
   const filteredNews =
     filter === "All"

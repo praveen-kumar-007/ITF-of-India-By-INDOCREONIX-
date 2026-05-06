@@ -28,10 +28,8 @@ const Hero = () => {
         const res = await fetch(`${API_URL}/news`);
         const data = await res.json();
         if (data.success) {
-          // Priority to Announcements and Notices for the hero section
-          const filtered = data.data
-            .filter(item => item.category === 'Notice' || item.category === 'Announcement' || item.category === 'Latest' || item.category === 'News')
-            .slice(0, 5);
+          // All news and notices uploads are displayed on the home page scrolling notice board
+          const filtered = data.data.slice(0, 5);
           setNotices(filtered);
         }
       } catch (err) {

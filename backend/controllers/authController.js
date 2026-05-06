@@ -464,9 +464,8 @@ const getSystemHealth = async (req, res, next) => {
     const newsIntegrity = await checkIntegrity(
       "news",
       (item) =>
-        item.category === "News" ||
-        item.category === "General" ||
-        !item.category,
+        item.category !== "Notice" &&
+        item.category !== "Announcement",
     );
     const noticeIntegrity = await checkIntegrity(
       "news",

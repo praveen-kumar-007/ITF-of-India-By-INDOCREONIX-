@@ -45,7 +45,11 @@ const NewsManager = () => {
       const response = await fetch(`${API_URL}/news`);
       const result = await response.json();
       if (result.success) {
-        setNews(result.data);
+        // Filter out home notices (Notice & Announcement categories) from the news manager
+        const newsOnly = result.data.filter(
+          n => n.category !== 'Notice' && n.category !== 'Announcement'
+        );
+        setNews(newsOnly);
       }
     } catch (error) {
       showToast('error', 'Failed to fetch news updates');
@@ -152,7 +156,7 @@ const NewsManager = () => {
     setPreviewImage(null);
   };
 
-  const categories = ['All', 'Latest', 'Tournament', 'Event', 'Notice', 'Announcement'];
+  const categories = ['All', 'Latest', 'Tournament', 'Event'];
   const filteredNews = filter === 'All' ? news : news.filter(n => n.category === filter);
 
   return (
@@ -279,8 +283,6 @@ const NewsManager = () => {
                         <option value="Latest">Latest News</option>
                         <option value="Tournament">Tournament</option>
                         <option value="Event">Event</option>
-                        <option value="Notice">Notice</option>
-                        <option value="Announcement">Announcement</option>
                       </select>
                     </div>
                     <div className="form-group-premium">
