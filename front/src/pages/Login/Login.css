@@ -280,11 +280,11 @@
 }
 
 .google-auth-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border: 1px solid #e2e8f0;
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 55%, #3b82f6 100%);
+  border: 1px solid rgba(37, 99, 235, 0.35);
   border-radius: 16px;
   padding: 0.7rem 0.9rem;
-  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 10px 24px rgba(30, 64, 175, 0.25);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -292,11 +292,35 @@
 }
 
 .google-auth-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 0.75rem;
   font-weight: 900;
-  color: #0f172a;
+  color: #eff6ff;
   letter-spacing: 0.8px;
   text-transform: uppercase;
+}
+
+.google-auth-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+
+.google-auth-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.google-auth-subtext {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(239, 246, 255, 0.9);
+  letter-spacing: 0.3px;
 }
 
 .google-auth-button.loading {

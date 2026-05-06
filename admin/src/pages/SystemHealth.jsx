@@ -1,13 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  ShieldCheck, Database, Mail, Cloud, Server, RefreshCw, 
-  AlertCircle, CheckCircle2, Clock, Cpu, HardDrive, 
-  Users, Trash2, Key, Globe, TrendingUp, Bell,
-  Layout, FileText, Smartphone, Monitor, Link2, Zap, Radio,
-  ToggleLeft, ToggleRight, Power, MessageSquare
-} from 'lucide-react';
-import { useToast } from '../context/ToastContext';
-import './SystemHealth.css';
+import React, { useState, useEffect } from "react";
+import {
+  ShieldCheck,
+  Database,
+  Mail,
+  Cloud,
+  Server,
+  RefreshCw,
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+  Cpu,
+  HardDrive,
+  Users,
+  Trash2,
+  Key,
+  Globe,
+  TrendingUp,
+  Bell,
+  Layout,
+  FileText,
+  Smartphone,
+  Monitor,
+  Link2,
+  Zap,
+  Radio,
+  ToggleLeft,
+  ToggleRight,
+  Power,
+  MessageSquare,
+} from "lucide-react";
+import { useToast } from "../context/ToastContext";
+import "./SystemHealth.css";
 
 const SystemHealth = () => {
   const { showToast } = useToast();
@@ -22,22 +45,25 @@ const SystemHealth = () => {
 
   const fetchHealth = async (force = false) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/system-health?refresh=${force}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/system-health?refresh=${force}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
       const result = await response.json();
       if (result.success) {
         setData(result.data);
         setSecondsSinceSync(0);
         setLiveUptime(result.data.uptime || 0);
       } else {
-        showToast(result.message || 'Failed to fetch health data', 'error');
+        showToast(result.message || "Failed to fetch health data", "error");
       }
     } catch (error) {
-      showToast('Error connecting to backend', 'error');
+      showToast("Error connecting to backend", "error");
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -46,42 +72,48 @@ const SystemHealth = () => {
 
   const fetchControls = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/settings/system-control`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/settings/system-control`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
       const result = await response.json();
       if (result.success) {
         setControls(result.data);
       }
     } catch (error) {
-      console.error('Failed to fetch system controls');
+      console.error("Failed to fetch system controls");
     }
   };
 
   const handleToggle = async (key, currentValue) => {
     try {
       setToggling(key);
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/settings/system-control`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/settings/system-control`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ [key]: !currentValue }),
         },
-        body: JSON.stringify({ [key]: !currentValue })
-      });
+      );
       const result = await response.json();
       if (result.success) {
-        setControls(prev => ({ ...prev, [key]: !currentValue }));
-        showToast('success', 'System control updated');
+        setControls((prev) => ({ ...prev, [key]: !currentValue }));
+        showToast("success", "System control updated");
       } else {
-        showToast('error', result.message);
+        showToast("error", result.message);
       }
     } catch (error) {
-      showToast('error', 'Failed to update system control');
+      showToast("error", "Failed to update system control");
     } finally {
       setToggling(null);
     }
@@ -90,7 +122,7 @@ const SystemHealth = () => {
   useEffect(() => {
     fetchHealth();
     fetchControls();
-    
+
     // Auto-refresh interval (10 seconds)
     const refreshTimer = setInterval(() => {
       fetchHealth();
@@ -132,7 +164,7 @@ const SystemHealth = () => {
     );
   }
 
-  const formatMemory = (bytes) => (bytes / 1024 / 1024).toFixed(2) + ' MB';
+  const formatMemory = (bytes) => (bytes / 1024 / 1024).toFixed(2) + " MB";
   const formatUptime = (seconds) => {
     const days = Math.floor(seconds / (3600 * 24));
     const hours = Math.floor((seconds % (3600 * 24)) / 3600);
@@ -142,10 +174,10 @@ const SystemHealth = () => {
   };
 
   const formatDetailedTime = (date) => {
-    const h = date.getHours().toString().padStart(2, '0');
-    const m = date.getMinutes().toString().padStart(2, '0');
-    const s = date.getSeconds().toString().padStart(2, '0');
-    const ms = date.getMilliseconds().toString().padStart(3, '0');
+    const h = date.getHours().toString().padStart(2, "0");
+    const m = date.getMinutes().toString().padStart(2, "0");
+    const s = date.getSeconds().toString().padStart(2, "0");
+    const ms = date.getMilliseconds().toString().padStart(3, "0");
     return { h, m, s, ms };
   };
 
@@ -166,33 +198,54 @@ const SystemHealth = () => {
               <span>LIVE</span>
             </div>
           </div>
-          
+
           <div className="header-action-row">
-            <div className="master-clock-display" style={{ width: '100%', flex: 1 }}>
+            <div
+              className="master-clock-display"
+              style={{ width: "100%", flex: 1 }}
+            >
               <div className="clock-label">
-                <img 
-                  src="https://flagcdn.com/w40/in.png" 
-                  alt="India Flag" 
-                  style={{ width: '24px', borderRadius: '2px', marginBottom: '4px' }}
+                <img
+                  src="https://flagcdn.com/w40/in.png"
+                  alt="India Flag"
+                  style={{
+                    width: "24px",
+                    borderRadius: "2px",
+                    marginBottom: "4px",
+                  }}
                 />
                 <span className="timezone-text">IST</span>
               </div>
-              <div className="time-unit"><span>{timeParts.h}</span><label>HRS</label></div>
+              <div className="time-unit">
+                <span>{timeParts.h}</span>
+                <label>HRS</label>
+              </div>
               <div className="time-sep">:</div>
-              <div className="time-unit"><span>{timeParts.m}</span><label>MIN</label></div>
+              <div className="time-unit">
+                <span>{timeParts.m}</span>
+                <label>MIN</label>
+              </div>
               <div className="time-sep">:</div>
-              <div className="time-unit"><span>{timeParts.s}</span><label>SEC</label></div>
+              <div className="time-unit">
+                <span>{timeParts.s}</span>
+                <label>SEC</label>
+              </div>
               <div className="time-sep">:</div>
-              <div className="time-unit ms"><span>{timeParts.ms}</span><label>MS</label></div>
+              <div className="time-unit ms">
+                <span>{timeParts.ms}</span>
+                <label>MS</label>
+              </div>
             </div>
-            
-            <button 
-              className={`refresh-btn ${refreshing ? 'spinning' : ''}`} 
+
+            <button
+              className={`refresh-btn ${refreshing ? "spinning" : ""}`}
               onClick={handleRefresh}
               disabled={refreshing}
             >
               <RefreshCw size={22} />
-              <span className="desktop-only">{refreshing ? 'Syncing...' : 'Refresh Status'}</span>
+              <span className="desktop-only">
+                {refreshing ? "Syncing..." : "Refresh Status"}
+              </span>
             </button>
           </div>
         </div>
@@ -203,88 +256,157 @@ const SystemHealth = () => {
         <Power size={18} /> Master System Controls
       </div>
       <div className="system-control-grid">
-        <div className={`control-card ${controls.mail_enabled ? 'active' : 'inactive'}`}>
+        <div
+          className={`control-card ${controls.mail_enabled ? "active" : "inactive"}`}
+        >
           <div className="control-info">
-            <div className="control-icon"><Mail size={20} /></div>
+            <div className="control-icon">
+              <Mail size={20} />
+            </div>
             <div>
               <h4>Mail Service</h4>
-              <p>{controls.mail_enabled ? 'Automated Emails Enabled' : 'Mail Gateway Suspended'}</p>
+              <p>
+                {controls.mail_enabled
+                  ? "Automated Emails Enabled"
+                  : "Mail Gateway Suspended"}
+              </p>
             </div>
           </div>
-          <button 
-            className="toggle-btn" 
-            onClick={() => handleToggle('mail_enabled', controls.mail_enabled)}
-            disabled={toggling === 'mail_enabled'}
+          <button
+            className="toggle-btn"
+            onClick={() => handleToggle("mail_enabled", controls.mail_enabled)}
+            disabled={toggling === "mail_enabled"}
           >
-            {controls.mail_enabled ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
+            {controls.mail_enabled ? (
+              <ToggleRight size={32} />
+            ) : (
+              <ToggleLeft size={32} />
+            )}
           </button>
         </div>
 
-        <div className={`control-card ${controls.registration_enabled ? 'active' : 'inactive'}`}>
+        <div
+          className={`control-card ${controls.registration_enabled ? "active" : "inactive"}`}
+        >
           <div className="control-info">
-            <div className="control-icon"><Zap size={20} /></div>
+            <div className="control-icon">
+              <Zap size={20} />
+            </div>
             <div>
               <h4>Registration Portal</h4>
-              <p>{controls.registration_enabled ? 'Public Registrations Active' : 'Portal Maintenance Mode'}</p>
+              <p>
+                {controls.registration_enabled
+                  ? "Public Registrations Active"
+                  : "Portal Maintenance Mode"}
+              </p>
             </div>
           </div>
-          <button 
-            className="toggle-btn" 
-            onClick={() => handleToggle('registration_enabled', controls.registration_enabled)}
-            disabled={toggling === 'registration_enabled'}
+          <button
+            className="toggle-btn"
+            onClick={() =>
+              handleToggle(
+                "registration_enabled",
+                controls.registration_enabled,
+              )
+            }
+            disabled={toggling === "registration_enabled"}
           >
-            {controls.registration_enabled ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
+            {controls.registration_enabled ? (
+              <ToggleRight size={32} />
+            ) : (
+              <ToggleLeft size={32} />
+            )}
           </button>
         </div>
 
-        <div className={`control-card ${controls.contact_enabled ? 'active' : 'inactive'}`}>
+        <div
+          className={`control-card ${controls.contact_enabled ? "active" : "inactive"}`}
+        >
           <div className="control-info">
-            <div className="control-icon"><MessageSquare size={20} /></div>
+            <div className="control-icon">
+              <MessageSquare size={20} />
+            </div>
             <div>
               <h4>Contact Gateway</h4>
-              <p>{controls.contact_enabled ? 'Public Enquiries Active' : 'Gateway Offline'}</p>
+              <p>
+                {controls.contact_enabled
+                  ? "Public Enquiries Active"
+                  : "Gateway Offline"}
+              </p>
             </div>
           </div>
-          <button 
-            className="toggle-btn" 
-            onClick={() => handleToggle('contact_enabled', controls.contact_enabled)}
-            disabled={toggling === 'contact_enabled'}
+          <button
+            className="toggle-btn"
+            onClick={() =>
+              handleToggle("contact_enabled", controls.contact_enabled)
+            }
+            disabled={toggling === "contact_enabled"}
           >
-            {controls.contact_enabled ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
+            {controls.contact_enabled ? (
+              <ToggleRight size={32} />
+            ) : (
+              <ToggleLeft size={32} />
+            )}
           </button>
         </div>
 
-        <div className={`control-card ${controls.gallery_enabled ? 'active' : 'inactive'}`}>
+        <div
+          className={`control-card ${controls.gallery_enabled ? "active" : "inactive"}`}
+        >
           <div className="control-info">
-            <div className="control-icon"><Globe size={20} /></div>
+            <div className="control-icon">
+              <Globe size={20} />
+            </div>
             <div>
               <h4>Public Gallery</h4>
-              <p>{controls.gallery_enabled ? 'Media Feed Online' : 'Media Feed Hidden'}</p>
+              <p>
+                {controls.gallery_enabled
+                  ? "Media Feed Online"
+                  : "Media Feed Hidden"}
+              </p>
             </div>
           </div>
-          <button 
-            className="toggle-btn" 
-            onClick={() => handleToggle('gallery_enabled', controls.gallery_enabled)}
-            disabled={toggling === 'gallery_enabled'}
+          <button
+            className="toggle-btn"
+            onClick={() =>
+              handleToggle("gallery_enabled", controls.gallery_enabled)
+            }
+            disabled={toggling === "gallery_enabled"}
           >
-            {controls.gallery_enabled ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
+            {controls.gallery_enabled ? (
+              <ToggleRight size={32} />
+            ) : (
+              <ToggleLeft size={32} />
+            )}
           </button>
         </div>
 
-        <div className={`control-card ${controls.news_enabled ? 'active' : 'inactive'}`}>
+        <div
+          className={`control-card ${controls.news_enabled ? "active" : "inactive"}`}
+        >
           <div className="control-info">
-            <div className="control-icon"><Bell size={20} /></div>
+            <div className="control-icon">
+              <Bell size={20} />
+            </div>
             <div>
               <h4>News & Bulletins</h4>
-              <p>{controls.news_enabled ? 'News Archive Active' : 'News Archive Locked'}</p>
+              <p>
+                {controls.news_enabled
+                  ? "News Archive Active"
+                  : "News Archive Locked"}
+              </p>
             </div>
           </div>
-          <button 
-            className="toggle-btn" 
-            onClick={() => handleToggle('news_enabled', controls.news_enabled)}
-            disabled={toggling === 'news_enabled'}
+          <button
+            className="toggle-btn"
+            onClick={() => handleToggle("news_enabled", controls.news_enabled)}
+            disabled={toggling === "news_enabled"}
           >
-            {controls.news_enabled ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
+            {controls.news_enabled ? (
+              <ToggleRight size={32} />
+            ) : (
+              <ToggleLeft size={32} />
+            )}
           </button>
         </div>
       </div>
@@ -295,15 +417,15 @@ const SystemHealth = () => {
       </div>
       <div className="stats-strip">
         <div className="stat-pill">
-          <Users size={16} /> 
+          <Users size={16} />
           <span>Total Athletes:</span> <strong>{stats.totalAthletes}</strong>
         </div>
         <div className="stat-pill">
-          <ShieldCheck size={16} /> 
+          <ShieldCheck size={16} />
           <span>Total Admins:</span> <strong>{stats.totalAdmins}</strong>
         </div>
         <div className="stat-pill">
-          <Trash2 size={16} /> 
+          <Trash2 size={16} />
           <span>Trash Items:</span> <strong>{stats.trashItems}</strong>
         </div>
       </div>
@@ -311,10 +433,16 @@ const SystemHealth = () => {
       <div className="health-grid">
         {/* Firebase Check */}
         <div className={`health-card ${services.firebase?.status}`}>
-          <div className="card-icon"><Database size={28} /></div>
+          <div className="card-icon">
+            <Database size={28} />
+          </div>
           <h3>Firebase Database</h3>
           <div className={`status-badge`}>
-            {services.firebase?.status === 'healthy' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+            {services.firebase?.status === "healthy" ? (
+              <CheckCircle2 size={16} />
+            ) : (
+              <AlertCircle size={16} />
+            )}
             {services.firebase?.message}
           </div>
           <div className="card-footer">
@@ -324,10 +452,16 @@ const SystemHealth = () => {
 
         {/* Cloudinary Check */}
         <div className={`health-card ${services.cloudinary?.status}`}>
-          <div className="card-icon"><Cloud size={28} /></div>
+          <div className="card-icon">
+            <Cloud size={28} />
+          </div>
           <h3>Cloudinary Assets</h3>
           <div className={`status-badge`}>
-            {services.cloudinary?.status === 'healthy' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+            {services.cloudinary?.status === "healthy" ? (
+              <CheckCircle2 size={16} />
+            ) : (
+              <AlertCircle size={16} />
+            )}
             {services.cloudinary?.message}
           </div>
           <div className="card-footer">
@@ -337,24 +471,61 @@ const SystemHealth = () => {
 
         {/* Mail Check */}
         <div className={`health-card ${services.mail?.status}`}>
-          <div className="card-icon"><Mail size={28} /></div>
+          <div className="card-icon">
+            <Mail size={28} />
+          </div>
           <h3>Mail Gateway</h3>
           <div className={`status-badge`}>
-            {services.mail?.status === 'healthy' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
-            {services.mail?.mode === 'production' ? 'Production Ready' : 'Gateway Operational'}
+            {services.mail?.status === "healthy" ? (
+              <CheckCircle2 size={16} />
+            ) : (
+              <AlertCircle size={16} />
+            )}
+            {services.mail?.mode === "production"
+              ? "Production Ready"
+              : "Gateway Operational"}
           </div>
           <div className="card-footer">
             <span>OTP & Notification Delivery</span>
           </div>
         </div>
 
+        {/* Google OAuth Check */}
+        <div
+          className={`health-card ${services.googleAuth?.status || "warning"}`}
+        >
+          <div className="card-icon">
+            <Key size={28} />
+          </div>
+          <h3>Google OAuth</h3>
+          <div className="status-badge">
+            {services.googleAuth?.status === "healthy" ? (
+              <CheckCircle2 size={16} />
+            ) : (
+              <AlertCircle size={16} />
+            )}
+            {services.googleAuth?.message || "OAuth not configured"}
+          </div>
+          <div className="card-footer">
+            <span>Admin & Athlete Login Provider</span>
+          </div>
+        </div>
+
         {/* Redis Mediation Check */}
         <div className={`health-card ${services.redis?.status}`}>
-          <div className="card-icon"><Zap size={28} /></div>
+          <div className="card-icon">
+            <Zap size={28} />
+          </div>
           <h3>Redis Mediation</h3>
           <div className={`status-badge`}>
-            {services.redis?.status === 'healthy' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
-            {services.redis?.mode === 'redis-cloud' ? `Cloud Cache: ${services.redis?.memory_used}` : 'Local Memory Caching'}
+            {services.redis?.status === "healthy" ? (
+              <CheckCircle2 size={16} />
+            ) : (
+              <AlertCircle size={16} />
+            )}
+            {services.redis?.mode === "redis-cloud"
+              ? `Cloud Cache: ${services.redis?.memory_used}`
+              : "Local Memory Caching"}
           </div>
           <div className="card-footer">
             <span>High-Speed DB Mediator</span>
@@ -363,18 +534,36 @@ const SystemHealth = () => {
 
         {/* Server Info */}
         <div className="health-card info">
-          <div className="card-icon"><Server size={28} /></div>
+          <div className="card-icon">
+            <Server size={28} />
+          </div>
           <h3>Node.js Runtime</h3>
           <div className="info-stats">
-            <div className="stat-row"><Clock size={16} /> <span>Uptime:</span> <strong>{formatUptime(liveUptime)}</strong></div>
-            <div className="stat-row"><HardDrive size={16} /> <span>RAM Usage:</span> <strong>{data?.memory?.used ? formatMemory(data.memory.used) : '...'}</strong></div>
-            <div className="stat-row"><Zap size={16} /> <span>RAM Available:</span> <strong>{data?.memory?.free ? formatMemory(data.memory.free) : '...'}</strong></div>
+            <div className="stat-row">
+              <Clock size={16} /> <span>Uptime:</span>{" "}
+              <strong>{formatUptime(liveUptime)}</strong>
+            </div>
+            <div className="stat-row">
+              <HardDrive size={16} /> <span>RAM Usage:</span>{" "}
+              <strong>
+                {data?.memory?.used ? formatMemory(data.memory.used) : "..."}
+              </strong>
+            </div>
+            <div className="stat-row">
+              <Zap size={16} /> <span>RAM Available:</span>{" "}
+              <strong>
+                {data?.memory?.free ? formatMemory(data.memory.free) : "..."}
+              </strong>
+            </div>
           </div>
-          <div className={`status-badge ${data?.memory?.percentageUsed > 80 ? 'unhealthy' : 'healthy'}`} style={{ marginTop: '10px' }}>
-             {data?.memory?.percentageUsed?.toFixed(1)}% Memory Utilized
+          <div
+            className={`status-badge ${data?.memory?.percentageUsed > 80 ? "unhealthy" : "healthy"}`}
+            style={{ marginTop: "10px" }}
+          >
+            {data?.memory?.percentageUsed?.toFixed(1)}% Memory Utilized
           </div>
           <div className="card-footer">
-            <span>System Platform: {data?.platform || '...'}</span>
+            <span>System Platform: {data?.platform || "..."}</span>
           </div>
         </div>
       </div>
@@ -384,32 +573,41 @@ const SystemHealth = () => {
         <Database size={18} /> Content Integrity Monitor
       </div>
       <div className="integrity-grid">
-        <div className={`integrity-card ${data?.integrity?.gallery?.status || 'checking'}`}>
+        <div
+          className={`integrity-card ${data?.integrity?.gallery?.status || "checking"}`}
+        >
           <div className="integrity-header">
             <Globe size={20} />
             <span>Gallery Module</span>
           </div>
           <div className="integrity-body">
             <div className="integrity-status">
-              <CheckCircle2 size={14} /> {data?.integrity?.gallery?.message || 'Validating connectivity...'}
+              <CheckCircle2 size={14} />{" "}
+              {data?.integrity?.gallery?.message ||
+                "Validating connectivity..."}
             </div>
             <div className="integrity-count">
-              <strong>{data?.integrity?.gallery?.count || 0}</strong> Assets Linked
+              <strong>{data?.integrity?.gallery?.count || 0}</strong> Assets
+              Linked
             </div>
           </div>
         </div>
 
-        <div className={`integrity-card ${data?.integrity?.news?.status || 'checking'}`}>
+        <div
+          className={`integrity-card ${data?.integrity?.news?.status || "checking"}`}
+        >
           <div className="integrity-header">
             <TrendingUp size={20} />
             <span>News Module</span>
           </div>
           <div className="integrity-body">
             <div className="integrity-status">
-              <CheckCircle2 size={14} /> {data?.integrity?.news?.message || 'Synchronizing stories...'}
+              <CheckCircle2 size={14} />{" "}
+              {data?.integrity?.news?.message || "Synchronizing stories..."}
             </div>
             <div className="integrity-count">
-              <strong>{data?.integrity?.news?.count || 0}</strong> Active Stories
+              <strong>{data?.integrity?.news?.count || 0}</strong> Active
+              Stories
             </div>
           </div>
         </div>
@@ -439,7 +637,8 @@ const SystemHealth = () => {
               <CheckCircle2 size={14} /> {data.integrity?.contact?.message}
             </div>
             <div className="integrity-count">
-              <strong>{data.integrity?.contact?.count}</strong> Enquiries Received
+              <strong>{data.integrity?.contact?.count}</strong> Enquiries
+              Received
             </div>
           </div>
         </div>
@@ -450,28 +649,36 @@ const SystemHealth = () => {
         <Radio size={18} /> Global Page Connectivity
       </div>
       <div className="connectivity-map">
-        {data.pageConnectivity && Object.entries(data.pageConnectivity).map(([key, page]) => (
-          <div key={key} className={`page-status-card ${page.status}`}>
-            <div className="page-icon">
-              {key === 'home' && <Monitor size={20} />}
-              {key === 'about' && <FileText size={20} />}
-              {key === 'gallery' && <Globe size={20} />}
-              {key === 'news' && <TrendingUp size={20} />}
-              {key === 'registration' && <Zap size={20} />}
-              {key === 'contact' && <Mail size={20} />}
-            </div>
-            <div className="page-info">
-              <h4>{page.title}</h4>
-              <div className="status-indicator">
-                <div className="pulse-dot"></div>
-                <span>{page.status === 'healthy' ? 'Online' : 'Link Down'}</span>
+        {data.pageConnectivity &&
+          Object.entries(data.pageConnectivity).map(([key, page]) => (
+            <div key={key} className={`page-status-card ${page.status}`}>
+              <div className="page-icon">
+                {key === "home" && <Monitor size={20} />}
+                {key === "about" && <FileText size={20} />}
+                {key === "gallery" && <Globe size={20} />}
+                {key === "news" && <TrendingUp size={20} />}
+                {key === "registration" && <Zap size={20} />}
+                {key === "contact" && <Mail size={20} />}
               </div>
+              <div className="page-info">
+                <h4>{page.title}</h4>
+                <div className="status-indicator">
+                  <div className="pulse-dot"></div>
+                  <span>
+                    {page.status === "healthy" ? "Online" : "Link Down"}
+                  </span>
+                </div>
+              </div>
+              <a
+                href={`${import.meta.env.VITE_FRONT_URL}${page.link}`}
+                target="_blank"
+                rel="noreferrer"
+                className="visit-link"
+              >
+                <Link2 size={14} />
+              </a>
             </div>
-            <a href={`${import.meta.env.VITE_FRONT_URL}${page.link}`} target="_blank" rel="noreferrer" className="visit-link">
-              <Link2 size={14} />
-            </a>
-          </div>
-        ))}
+          ))}
       </div>
 
       {/* Environment Config Section */}
@@ -480,25 +687,39 @@ const SystemHealth = () => {
       </div>
       <div className="env-checklist">
         {Object.entries(env).map(([key, value]) => (
-          <div key={key} className={`env-item ${value ? 'configured' : 'missing'}`}>
+          <div
+            key={key}
+            className={`env-item ${value ? "configured" : "missing"}`}
+          >
             <div className="env-status-dot"></div>
             <span className="env-key">{key}</span>
             <span className="env-value">
-              {key === 'NODE_ENV' ? value.toUpperCase() : (value ? 'CONFIGURED' : 'MISSING')}
+              {key === "NODE_ENV"
+                ? value.toUpperCase()
+                : value
+                  ? "CONFIGURED"
+                  : "MISSING"}
             </span>
           </div>
         ))}
       </div>
 
       <div className="security-status">
-        <div className="status-icon"><ShieldCheck size={48} /></div>
+        <div className="status-icon">
+          <ShieldCheck size={48} />
+        </div>
         <div className="status-info">
           <h3>Security Shield: Active</h3>
-          <p>Rate limiting, Helmet protection, and JWT integrity are fully operational.</p>
+          <p>
+            Rate limiting, Helmet protection, and JWT integrity are fully
+            operational.
+          </p>
         </div>
         <div className="last-sync">
           <Clock size={12} />
-          {secondsSinceSync < 5 ? 'Just Now' : `Synced ${secondsSinceSync}s ago`}
+          {secondsSinceSync < 5
+            ? "Just Now"
+            : `Synced ${secondsSinceSync}s ago`}
         </div>
       </div>
     </div>

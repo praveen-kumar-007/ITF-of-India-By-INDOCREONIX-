@@ -1,28 +1,64 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, ArrowLeft, Mail, ShieldCheck, Lock, CheckCircle, AlertCircle } from 'lucide-react';
-import './Login.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Eye,
+  EyeOff,
+  ArrowLeft,
+  Mail,
+  ShieldCheck,
+  Lock,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
+import "./Login.css";
+import GoogleSignInButton from "../components/Auth/GoogleSignInButton";
+import { exchangeGoogleCredential } from "../utils/googleAuth";
 
-import { useToast } from '../context/ToastContext';
+import { useToast } from "../context/ToastContext";
 
 const LoginPage = () => {
   const { showToast } = useToast();
   const navigate = useNavigate();
-  
+
   // App Modes
-  const [mode, setMode] = useState('login'); // 'login', 'forgot', 'reset'
+  const [mode, setMode] = useState("login"); // 'login', 'forgot', 'reset'
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
 
   // Form States
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [otp, setOtp] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const API_URL = import.meta.env.VITE_API_URL;
+
+  const handleGoogleSignIn = async (credential) => {
+    setGoogleLoading(true);
+
+    const result = await exchangeGoogleCredential(credential);
+    if (!result?.success) {
+      showToast(result?.message || "Google sign-in failed", "error");
+      setGoogleLoading(false);
+      return;
+    }
+
+    const token = result?.data?.token;
+    const user = result?.data?.user;
+    if (!token || !user) {
+      showToast("Admin account not found for this Google login", "error");
+      setGoogleLoading(false);
+      return;
+    }
+
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+    showToast(`Welcome back, ${user.fullName || "Admin"}!`, "success");
+    navigate("/");
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -30,23 +66,23 @@ const LoginPage = () => {
 
     try {
       const response = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
 
       const result = await response.json();
 
       if (result.success) {
-        localStorage.setItem('token', result.data.token);
-        localStorage.setItem('user', JSON.stringify(result.data.user));
-        showToast(`Welcome back, ${result.data.user.fullName}!`, 'success');
-        navigate('/');
+        localStorage.setItem("token", result.data.token);
+        localStorage.setItem("user", JSON.stringify(result.data.user));
+        showToast(`Welcome back, ${result.data.user.fullName}!`, "success");
+        navigate("/");
       } else {
-        showToast(result.message || 'Invalid login credentials', 'error');
+        showToast(result.message || "Invalid login credentials", "error");
       }
     } catch (err) {
-      showToast('Connection error. Please try again.', 'error');
+      showToast("Connection error. Please try again.", "error");
     } finally {
       setLoading(false);
     }
@@ -58,20 +94,20 @@ const LoginPage = () => {
 
     try {
       const response = await fetch(`${API_URL}/auth/request-reset`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
 
       const result = await response.json();
       if (result.success) {
-        showToast('Verification OTP sent to your email', 'success');
-        setMode('reset');
+        showToast("Verification OTP sent to your email", "success");
+        setMode("reset");
       } else {
-        showToast(result.message || 'Account not found', 'error');
+        showToast(result.message || "Account not found", "error");
       }
     } catch (err) {
-      showToast('Failed to connect to server', 'error');
+      showToast("Failed to connect to server", "error");
     } finally {
       setLoading(false);
     }
@@ -80,30 +116,30 @@ const LoginPage = () => {
   const handleVerifyReset = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      return showToast('Passwords do not match', 'error');
+      return showToast("Passwords do not match", "error");
     }
     if (newPassword.length < 8) {
-      return showToast('Password must be at least 8 characters', 'error');
+      return showToast("Password must be at least 8 characters", "error");
     }
 
     setLoading(true);
     try {
       const response = await fetch(`${API_URL}/auth/verify-reset`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, otp, password: newPassword })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp, password: newPassword }),
       });
 
       const result = await response.json();
       if (result.success) {
-        showToast('Password updated! You can now login.', 'success');
-        setMode('login');
-        setPassword('');
+        showToast("Password updated! You can now login.", "success");
+        setMode("login");
+        setPassword("");
       } else {
-        showToast(result.message || 'Invalid or expired OTP', 'error');
+        showToast(result.message || "Invalid or expired OTP", "error");
       }
     } catch (err) {
-      showToast('Error resetting password', 'error');
+      showToast("Error resetting password", "error");
     } finally {
       setLoading(false);
     }
@@ -118,36 +154,46 @@ const LoginPage = () => {
           </div>
           <h1>Admin Portal</h1>
           <p>
-            {mode === 'login' ? 'Sign in to manage ITF India athletes' : 
-             mode === 'forgot' ? 'Reset your administrator password' : 
-             'Verify OTP and set new password'}
+            {mode === "login"
+              ? "Sign in to manage ITF India athletes"
+              : mode === "forgot"
+                ? "Reset your administrator password"
+                : "Verify OTP and set new password"}
           </p>
         </div>
 
-        {mode === 'login' && (
+        {mode === "login" && (
           <form onSubmit={handleLogin} className="login-form">
+            <GoogleSignInButton
+              onSuccess={handleGoogleSignIn}
+              onError={(message) => showToast(message, "error")}
+              disabled={loading || googleLoading}
+            />
+            <div className="login-divider">
+              <span>or continue with email</span>
+            </div>
             <div className="input-field">
               <label>Email Address</label>
-              <input 
-                type="email" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@example.com"
-                required 
+                required
               />
             </div>
             <div className="input-field password-field">
               <label>Password</label>
               <div className="input-wrapper">
-                <input 
-                  type={showPassword ? "text" : "password"} 
-                  value={password} 
-                  onChange={(e) => setPassword(e.target.value)} 
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  required 
+                  required
                 />
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="toggle-password"
                   onClick={() => setShowPassword(!showPassword)}
                 >
@@ -155,74 +201,93 @@ const LoginPage = () => {
                 </button>
               </div>
             </div>
-            <div style={{ textAlign: 'right', marginBottom: '15px' }}>
-              <button 
-                type="button" 
-                onClick={() => setMode('forgot')}
-                style={{ background: 'none', border: 'none', color: '#936a00', fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer' }}
+            <div style={{ textAlign: "right", marginBottom: "15px" }}>
+              <button
+                type="button"
+                onClick={() => setMode("forgot")}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#936a00",
+                  fontSize: "0.85rem",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                }}
               >
                 Forgot Password?
               </button>
             </div>
             <button type="submit" className="login-btn" disabled={loading}>
-              {loading ? 'Authenticating...' : 'Sign In'}
+              {loading ? "Authenticating..." : "Sign In"}
             </button>
           </form>
         )}
 
-        {mode === 'forgot' && (
+        {mode === "forgot" && (
           <form onSubmit={handleRequestReset} className="login-form">
             <div className="input-field">
               <label>Administrator Email</label>
               <div className="input-with-icon">
-                <input 
-                  type="email" 
-                  value={email} 
-                  onChange={(e) => setEmail(e.target.value)} 
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your registered email"
-                  required 
+                  required
                 />
               </div>
             </div>
             <button type="submit" className="login-btn" disabled={loading}>
-              {loading ? 'Sending OTP...' : 'Send Verification OTP'}
+              {loading ? "Sending OTP..." : "Send Verification OTP"}
             </button>
-            <button 
-              type="button" 
-              className="back-to-login" 
-              onClick={() => setMode('login')}
-              style={{ width: '100%', marginTop: '15px', background: 'none', border: 'none', color: '#64748b', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}
+            <button
+              type="button"
+              className="back-to-login"
+              onClick={() => setMode("login")}
+              style={{
+                width: "100%",
+                marginTop: "15px",
+                background: "none",
+                border: "none",
+                color: "#64748b",
+                fontSize: "0.85rem",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "5px",
+              }}
             >
               <ArrowLeft size={16} /> Back to Login
             </button>
           </form>
         )}
 
-        {mode === 'reset' && (
+        {mode === "reset" && (
           <form onSubmit={handleVerifyReset} className="login-form">
             <div className="input-field">
               <label>6-Digit OTP</label>
-              <input 
-                type="text" 
-                value={otp} 
-                onChange={(e) => setOtp(e.target.value)} 
+              <input
+                type="text"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
                 placeholder="000000"
                 maxLength={6}
-                required 
+                required
               />
             </div>
             <div className="input-field password-field">
               <label>New Password</label>
               <div className="input-wrapper">
-                <input 
-                  type={showNewPassword ? "text" : "password"} 
-                  value={newPassword} 
-                  onChange={(e) => setNewPassword(e.target.value)} 
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Min. 8 characters"
-                  required 
+                  required
                 />
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="toggle-password"
                   onClick={() => setShowNewPassword(!showNewPassword)}
                 >
@@ -232,16 +297,16 @@ const LoginPage = () => {
             </div>
             <div className="input-field">
               <label>Confirm Password</label>
-              <input 
-                type="password" 
-                value={confirmPassword} 
-                onChange={(e) => setConfirmPassword(e.target.value)} 
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm new password"
-                required 
+                required
               />
             </div>
             <button type="submit" className="login-btn" disabled={loading}>
-              {loading ? 'Updating...' : 'Reset Password & Unlock'}
+              {loading ? "Updating..." : "Reset Password & Unlock"}
             </button>
           </form>
         )}
