@@ -612,32 +612,32 @@ const SystemHealth = () => {
           </div>
         </div>
 
-        <div className={`integrity-card ${data.integrity?.notices?.status}`}>
+        <div className={`integrity-card ${data?.integrity?.notices?.status}`}>
           <div className="integrity-header">
             <Bell size={20} />
             <span>Notice Board</span>
           </div>
           <div className="integrity-body">
             <div className="integrity-status">
-              <CheckCircle2 size={14} /> {data.integrity?.notices?.message}
+              <CheckCircle2 size={14} /> {data?.integrity?.notices?.message}
             </div>
             <div className="integrity-count">
-              <strong>{data.integrity?.notices?.count}</strong> Live Alerts
+              <strong>{data?.integrity?.notices?.count}</strong> Live Alerts
             </div>
           </div>
         </div>
 
-        <div className={`integrity-card ${data.integrity?.contact?.status}`}>
+        <div className={`integrity-card ${data?.integrity?.contact?.status}`}>
           <div className="integrity-header">
             <Mail size={20} />
             <span>Contact Link</span>
           </div>
           <div className="integrity-body">
             <div className="integrity-status">
-              <CheckCircle2 size={14} /> {data.integrity?.contact?.message}
+              <CheckCircle2 size={14} /> {data?.integrity?.contact?.message}
             </div>
             <div className="integrity-count">
-              <strong>{data.integrity?.contact?.count}</strong> Enquiries
+              <strong>{data?.integrity?.contact?.count}</strong> Enquiries
               Received
             </div>
           </div>
@@ -649,8 +649,8 @@ const SystemHealth = () => {
         <Radio size={18} /> Global Page Connectivity
       </div>
       <div className="connectivity-map">
-        {data.pageConnectivity &&
-          Object.entries(data.pageConnectivity).map(([key, page]) => (
+        {data?.pageConnectivity &&
+          Object.entries(data?.pageConnectivity).map(([key, page]) => (
             <div key={key} className={`page-status-card ${page.status}`}>
               <div className="page-icon">
                 {key === "home" && <Monitor size={20} />}

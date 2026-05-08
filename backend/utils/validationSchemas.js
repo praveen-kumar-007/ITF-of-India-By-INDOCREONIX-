@@ -20,7 +20,8 @@ const adminUpdateSchema = Joi.object({
   email: Joi.string().email().trim(),
   password: Joi.string().min(8).allow("", null),
   role: Joi.string().valid("admin", "superadmin"),
-  status: Joi.string().valid("active", "inactive"),
+  status: Joi.string().valid("active", "suspended"),
+  otp: Joi.string().length(6).allow("", null),
 });
 
 /**

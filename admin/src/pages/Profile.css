@@ -126,38 +126,48 @@
 }
 
 .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
 
 .input-group {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
 }
 
 .input-group label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #64748b;
+    width: 160px;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--primary);
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+    opacity: 0.7;
 }
 
 .input-group input {
-    padding: 1rem 1.25rem;
-    border-radius: 16px;
-    border: 1px solid #e2e8f0;
+    flex: 1;
+    padding: 1.1rem 1.5rem;
+    border-radius: 18px;
+    border: 2px solid #f1f5f9;
     background: #f8fafc;
     font-size: 1rem;
-    font-weight: 600;
-    transition: all 0.3s;
+    font-weight: 700;
+    color: var(--primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .input-group input:focus {
     background: white;
-    border-color: var(--secondary);
-    box-shadow: 0 0 0 5px rgba(184, 134, 11, 0.1);
+    border-color: var(--primary);
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
     outline: none;
+    transform: translateY(-2px);
 }
 
 
@@ -214,7 +224,19 @@
     }
 
     .form-grid {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .input-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .input-group label {
+        width: 100%;
+        text-align: left;
     }
 
     .profile-header {
@@ -224,4 +246,113 @@
     .profile-header h2 {
         font-size: 1.5rem;
     }
+}
+
+/* OTP Verification Styles */
+.otp-verification-box {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  animation: slideInDown 0.4s ease;
+}
+
+@keyframes slideInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.otp-title-group {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.otp-title-group h4 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.otp-title-group p {
+  margin: 5px 0 0;
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.otp-digit-container {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  margin-bottom: 1rem !important;
+  width: auto !important;
+}
+
+.otp-digit-box {
+  width: 45px !important;
+  height: 48px !important;
+  min-width: 45px !important;
+  text-align: center;
+  font-size: 1.5rem !important;
+  font-weight: 700;
+  color: #1e293b !important;
+  background: #f8fafc !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  transition: all 0.2s ease;
+  outline: none !important;
+}
+
+.otp-digit-box:hover {
+  border-color: #cbd5e1 !important;
+  background: #ffffff !important;
+}
+
+.otp-digit-box:focus {
+  border-color: var(--secondary) !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 4px rgba(184, 134, 11, 0.1) !important;
+  transform: translateY(-2px);
+}
+
+.request-otp-btn {
+  background: none;
+  border: none;
+  color: var(--secondary);
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: all 0.2s;
+}
+
+.request-otp-btn:hover {
+  color: var(--secondary-light);
+}
+
+.request-otp-btn:disabled {
+  color: #94a3b8;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+@media (max-width: 480px) {
+  .otp-digit-container {
+    gap: 6px !important;
+  }
+
+  .otp-digit-box {
+    width: 38px !important;
+    height: 42px !important;
+    min-width: 38px !important;
+    font-size: 1.2rem !important;
+  }
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, User } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import LoginPage from './pages/Login';
@@ -21,6 +21,23 @@ import { ToastProvider } from './context/ToastContext';
 import './styles/Global.css';
 
 import { useEffect } from 'react';
+
+// Global Fetch Interceptor to handle 401 Unauthorized globally
+(function() {
+  const originalFetch = window.fetch;
+  window.fetch = async (...args) => {
+    try {
+      const response = await originalFetch(...args);
+      if (response.status === 401 && !window.location.pathname.includes('/login')) {
+        localStorage.clear();
+        window.location.href = '/login?expired=true';
+      }
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  };
+})();
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -64,6 +81,7 @@ const IdleTimer = ({ children }) => {
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
@@ -86,10 +104,16 @@ function App() {
                         {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
                       </button>
                       <div className="mobile-logo">
-                        <div className="mobile-logo-wrapper">
-                          <img src="/logo.jpeg" alt="Logo" />
+                        <div className="mobile-logo-wrapper" style={{ cursor: 'pointer' }} onClick={() => window.location.href='/profile'}>
+                          {user.photo ? (
+                            <img src={user.photo} alt="User" />
+                          ) : (
+                            <User size={20} color="var(--primary)" />
+                          )}
                         </div>
-                        <span>ITF Admin</span>
+                        <span style={{ cursor: 'pointer' }} onClick={() => window.location.href='/profile'}>
+                          {user.fullName || 'ITF Admin'}
+                        </span>
                       </div>
                     </header>
 

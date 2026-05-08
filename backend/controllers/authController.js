@@ -314,8 +314,20 @@ const updateProfile = async (req, res, next) => {
     const updateFields = { fullName, email };
 
     if (password) {
+      if (!req.body.otp) {
+        return sendError(res, 400, "OTP is required to change password");
+      }
+      if (
+        !admin.resetOtp ||
+        admin.resetOtp !== req.body.otp ||
+        Date.now() > admin.resetOtpExpiry
+      ) {
+        return sendError(res, 400, "Invalid or expired OTP");
+      }
       const salt = await bcrypt.genSalt(10);
       updateFields.password = await bcrypt.hash(password, salt);
+      updateFields.resetOtp = null;
+      updateFields.resetOtpExpiry = null;
     }
 
     if (file) {
@@ -656,6 +668,42 @@ const verifyAdminReset = async (req, res, next) => {
   }
 };
 
+/**
+ * Request OTP for Profile Update (Logged-in Admin)
+ */
+const requestProfileOTP = async (req, res, next) => {
+  try {
+    const { email } = req.user;
+    const { sendPasswordSetupEmail } = require("../services/mailService");
+
+    const admins = await queryData("admins", "email", email.toLowerCase());
+    if (admins.length === 0)
+      return sendError(res, 404, "Admin account not found");
+
+    const admin = admins[0];
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiry = Date.now() + 10 * 60 * 1000; // 10 mins
+
+    await updateData("admins", admin.id, {
+      resetOtp: otp,
+      resetOtpExpiry: otpExpiry,
+    });
+
+    await sendPasswordSetupEmail(admin.email, admin.fullName, otp);
+
+    await logAudit("PROFILE_UPDATE_OTP_SENT", {
+      id: admin.id,
+      email: admin.email,
+      ip: req.ip,
+    });
+
+    sendSuccess(res, 200, "Verification OTP sent to your email");
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   login,
   loginWithGoogle,
@@ -667,4 +715,5 @@ module.exports = {
   getSystemHealth,
   requestAdminReset,
   verifyAdminReset,
+  requestProfileOTP,
 };

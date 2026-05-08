@@ -20,6 +20,14 @@ const LoginPage = () => {
   const { showToast } = useToast();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('expired') === 'true') {
+      showToast("Your session has expired. Please login again.", "error");
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [showToast]);
+
   // App Modes
   const [mode, setMode] = useState("login"); // 'login', 'forgot', 'reset'
   const [loading, setLoading] = useState(false);
@@ -173,8 +181,10 @@ const LoginPage = () => {
               <span>or continue with email</span>
             </div>
             <div className="input-field">
-              <label>Email Address</label>
+              <label htmlFor="email">Email Address</label>
               <input
+                id="email"
+                name="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -183,9 +193,11 @@ const LoginPage = () => {
               />
             </div>
             <div className="input-field password-field">
-              <label>Password</label>
+              <label htmlFor="password">Password</label>
               <div className="input-wrapper">
                 <input
+                  id="password"
+                  name="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -226,9 +238,11 @@ const LoginPage = () => {
         {mode === "forgot" && (
           <form onSubmit={handleRequestReset} className="login-form">
             <div className="input-field">
-              <label>Administrator Email</label>
+              <label htmlFor="reset-email">Administrator Email</label>
               <div className="input-with-icon">
                 <input
+                  id="reset-email"
+                  name="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -266,8 +280,10 @@ const LoginPage = () => {
         {mode === "reset" && (
           <form onSubmit={handleVerifyReset} className="login-form">
             <div className="input-field">
-              <label>6-Digit OTP</label>
+              <label htmlFor="otp">6-Digit OTP</label>
               <input
+                id="otp"
+                name="otp"
                 type="text"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
@@ -277,9 +293,11 @@ const LoginPage = () => {
               />
             </div>
             <div className="input-field password-field">
-              <label>New Password</label>
+              <label htmlFor="new-password">New Password</label>
               <div className="input-wrapper">
                 <input
+                  id="new-password"
+                  name="new-password"
                   type={showNewPassword ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
@@ -296,8 +314,10 @@ const LoginPage = () => {
               </div>
             </div>
             <div className="input-field">
-              <label>Confirm Password</label>
+              <label htmlFor="confirm-password">Confirm Password</label>
               <input
+                id="confirm-password"
+                name="confirm-password"
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}

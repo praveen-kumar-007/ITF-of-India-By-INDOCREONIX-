@@ -11,6 +11,7 @@ const {
   getSystemHealth,
   requestAdminReset,
   verifyAdminReset,
+  requestProfileOTP,
 } = require("../controllers/authController");
 const { protect, authorize } = require("../middleware/authMiddleware");
 const { authLimiter } = require("../middleware/rateLimiter");
@@ -60,5 +61,6 @@ router.put(
   validate(adminUpdateSchema),
   updateProfile,
 );
+router.post("/request-profile-otp", protect, requestProfileOTP);
 
 module.exports = router;

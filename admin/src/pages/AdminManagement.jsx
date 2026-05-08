@@ -253,8 +253,10 @@ const AdminManagement = () => {
             
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label>Full Name</label>
+                <label htmlFor="admin-fullName">Full Name</label>
                 <input 
+                  id="admin-fullName"
+                  name="fullName"
                   type="text" 
                   required 
                   value={formData.fullName}
@@ -263,8 +265,10 @@ const AdminManagement = () => {
                 />
               </div>
               <div className="form-group">
-                <label>Email Address</label>
+                <label htmlFor="admin-email">Email Address</label>
                 <input 
+                  id="admin-email"
+                  name="email"
                   type="email" 
                   required 
                   value={formData.email}
@@ -274,8 +278,10 @@ const AdminManagement = () => {
               </div>
               <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div className="form-group">
-                  <label>Role</label>
+                  <label htmlFor="admin-role">Role</label>
                   <select 
+                    id="admin-role"
+                    name="role"
                     className="role-select"
                     value={formData.role}
                     onChange={(e) => setFormData({...formData, role: e.target.value})}
@@ -288,8 +294,10 @@ const AdminManagement = () => {
                   </select>
                 </div>
                 <div className="form-group">
-                  <label>Status</label>
+                  <label htmlFor="admin-status">Status</label>
                   <select 
+                    id="admin-status"
+                    name="status"
                     value={formData.status}
                     onChange={(e) => setFormData({...formData, status: e.target.value})}
                     required
@@ -300,9 +308,11 @@ const AdminManagement = () => {
                 </div>
               </div>
               <div className="form-group password-field">
-                <label>{editAdmin ? 'New Password (optional)' : 'Initial Password'}</label>
+                <label htmlFor="admin-password">{editAdmin ? 'New Password (optional)' : 'Initial Password'}</label>
                 <div className="input-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                   <input 
+                    id="admin-password"
+                    name="password"
                     type={showPassword ? "text" : "password"} 
                     required={!editAdmin} 
                     minLength={6}
