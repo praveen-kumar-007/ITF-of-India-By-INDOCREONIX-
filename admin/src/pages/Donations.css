@@ -1,61 +1,75 @@
-.donations-page { padding:2rem }
-.donations-table { width:100%; border-collapse:collapse; margin-top:1rem }
-.donations-table th, .donations-table td { text-align:left; padding:10px; border-bottom:1px solid #eef2f7 }
-.donations-table thead th { background:#fbfbfb; font-weight:800 }
+.donations-page {
+  padding: 2rem;
+}
+.donations-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+.donations-table th,
+.donations-table td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #eef2f7;
+}
+.donations-table thead th {
+  background: #fbfbfb;
+  font-weight: 800;
+}
 
 .status-badge {
-	display:inline-flex;
-	align-items:center;
-	justify-content:center;
-	padding:4px 10px;
-	border-radius:999px;
-	font-size:0.76rem;
-	font-weight:800;
-	letter-spacing:0.03em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
 }
 
 .status-badge.pending {
-	background:#fffbeb;
-	color:#b45309;
-	border:1px solid #fcd34d;
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fcd34d;
 }
 
 .status-badge.approved {
-	background:#ecfdf3;
-	color:#166534;
-	border:1px solid #86efac;
+  background: #ecfdf3;
+  color: #166534;
+  border: 1px solid #86efac;
 }
 
 .status-badge.rejected {
-	background:#fef2f2;
-	color:#991b1b;
-	border:1px solid #fca5a5;
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
 }
 
 .action-wrap {
-	display:flex;
-	gap:8px;
+  display: flex;
+  gap: 8px;
 }
 
 .btn-status {
-	border:none;
-	padding:7px 12px;
-	border-radius:8px;
-	font-weight:700;
-	cursor:pointer;
+  border: none;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .btn-status:disabled {
-	opacity:0.6;
-	cursor:not-allowed;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btn-status.approve {
-	background:#16a34a;
-	color:#fff;
+  background: #16a34a;
+  color: #fff;
 }
 
 .btn-status.reject {
-	background:#dc2626;
-	color:#fff;
+  background: #dc2626;
+  color: #fff;
 }

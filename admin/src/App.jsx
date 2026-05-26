@@ -1,40 +1,48 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Menu, X, User } from 'lucide-react';
-import Sidebar from './components/Sidebar';
-import Dashboard from './pages/Dashboard';
-import LoginPage from './pages/Login';
-import AdminManagement from './pages/AdminManagement';
-import Profile from './pages/Profile';
-import PlayerDetails from './pages/PlayerDetails';
-import Athletes from './pages/Athletes';
-import Applications from './pages/Applications';
-import Billing from './pages/Billing';
-import RecycleBin from './pages/RecycleBin';
-import SystemHealth from './pages/SystemHealth';
-import PaymentSettings from './pages/PaymentSettings';
-import ReceiptGenerator from './pages/ReceiptGenerator';
-import ReceiptView from './pages/ReceiptView';
-import GalleryManager from './pages/GalleryManager';
-import NewsManager from './pages/NewsManager';
-import NoticeManager from './pages/NoticeManager';
-import ContactManager from './pages/ContactManager';
-import Donations from './pages/Donations';
-import { ToastProvider } from './context/ToastContext';
+import React, { useState } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { Menu, X, User } from "lucide-react";
+import Sidebar from "./components/Sidebar";
+import Dashboard from "./pages/Dashboard";
+import LoginPage from "./pages/Login";
+import AdminManagement from "./pages/AdminManagement";
+import Profile from "./pages/Profile";
+import PlayerDetails from "./pages/PlayerDetails";
+import Athletes from "./pages/Athletes";
+import Applications from "./pages/Applications";
+import Billing from "./pages/Billing";
+import RecycleBin from "./pages/RecycleBin";
+import SystemHealth from "./pages/SystemHealth";
+import PaymentSettings from "./pages/PaymentSettings";
+import ReceiptGenerator from "./pages/ReceiptGenerator";
+import ReceiptView from "./pages/ReceiptView";
+import GalleryManager from "./pages/GalleryManager";
+import NewsManager from "./pages/NewsManager";
+import NoticeManager from "./pages/NoticeManager";
+import ContactManager from "./pages/ContactManager";
+import Donations from "./pages/Donations";
+import { ToastProvider } from "./context/ToastContext";
 
-import './styles/Global.css';
+import "./styles/Global.css";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 // Global Fetch Interceptor to handle 401 Unauthorized globally
-(function() {
+(function () {
   const originalFetch = window.fetch;
   window.fetch = async (...args) => {
     try {
       const response = await originalFetch(...args);
-      if (response.status === 401 && !window.location.pathname.includes('/login')) {
+      if (
+        response.status === 401 &&
+        !window.location.pathname.includes("/login")
+      ) {
         localStorage.clear();
-        window.location.href = '/login?expired=true';
+        window.location.href = "/login?expired=true";
       }
       return response;
     } catch (error) {
@@ -45,7 +53,7 @@ import { useEffect } from 'react';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   if (!token) {
     return <Navigate to="/login" replace />;
   }
@@ -60,7 +68,7 @@ const IdleTimer = ({ children }) => {
 
     const logout = () => {
       localStorage.clear(); // Clear all session data
-      window.location.href = '/login'; // Redirect to login
+      window.location.href = "/login"; // Redirect to login
     };
 
     const resetTimer = () => {
@@ -69,14 +77,20 @@ const IdleTimer = ({ children }) => {
     };
 
     // Track user activity
-    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
-    events.forEach(event => window.addEventListener(event, resetTimer));
+    const events = [
+      "mousedown",
+      "mousemove",
+      "keypress",
+      "scroll",
+      "touchstart",
+    ];
+    events.forEach((event) => window.addEventListener(event, resetTimer));
 
     resetTimer(); // Initialize timer
 
     return () => {
       clearTimeout(timeout);
-      events.forEach(event => window.removeEventListener(event, resetTimer));
+      events.forEach((event) => window.removeEventListener(event, resetTimer));
     };
   }, []);
 
@@ -85,7 +99,7 @@ const IdleTimer = ({ children }) => {
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
@@ -94,71 +108,108 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          <Route 
-            path="/*" 
+          <Route
+            path="/*"
             element={
               <ProtectedRoute>
                 <IdleTimer>
-                  <div className={`admin-layout ${sidebarOpen ? 'sidebar-open' : ''}`}>
-                    <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-                    
+                  <div
+                    className={`admin-layout ${sidebarOpen ? "sidebar-open" : ""}`}
+                  >
+                    <Sidebar
+                      isOpen={sidebarOpen}
+                      onClose={() => setSidebarOpen(false)}
+                    />
+
                     {/* Mobile Header */}
                     <header className="mobile-header">
                       <button className="menu-toggle" onClick={toggleSidebar}>
                         {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
                       </button>
                       <div className="mobile-logo">
-                        <div className="mobile-logo-wrapper" style={{ cursor: 'pointer' }} onClick={() => window.location.href='/profile'}>
+                        <div
+                          className="mobile-logo-wrapper"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => (window.location.href = "/profile")}
+                        >
                           {user.photo ? (
                             <img src={user.photo} alt="User" />
                           ) : (
                             <User size={20} color="var(--primary)" />
                           )}
                         </div>
-                        <span style={{ cursor: 'pointer' }} onClick={() => window.location.href='/profile'}>
-                          {user.fullName || 'ITF Admin'}
+                        <span
+                          style={{ cursor: "pointer" }}
+                          onClick={() => (window.location.href = "/profile")}
+                        >
+                          {user.fullName || "ITF Admin"}
                         </span>
                       </div>
                     </header>
 
-
                     {/* Overlay for mobile sidebar */}
-                    {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)}></div>}
+                    {sidebarOpen && (
+                      <div
+                        className="sidebar-overlay"
+                        onClick={() => setSidebarOpen(false)}
+                      ></div>
+                    )}
 
                     <div className="admin-main-content">
                       <Routes>
                         <Route path="/" element={<Dashboard />} />
-                        <Route path="/athletes/:id" element={<PlayerDetails />} />
+                        <Route
+                          path="/athletes/:id"
+                          element={<PlayerDetails />}
+                        />
                         <Route path="/athletes" element={<Athletes />} />
-                        <Route path="/applications" element={<Applications />} />
-                        <Route path="/registrations" element={<Applications />} />
+                        <Route
+                          path="/applications"
+                          element={<Applications />}
+                        />
+                        <Route
+                          path="/registrations"
+                          element={<Applications />}
+                        />
                         <Route path="/billing" element={<Billing />} />
-                        <Route path="/manage-admins" element={<AdminManagement />} />
-                        <Route path="/system-health" element={<SystemHealth />} />
+                        <Route
+                          path="/manage-admins"
+                          element={<AdminManagement />}
+                        />
+                        <Route
+                          path="/system-health"
+                          element={<SystemHealth />}
+                        />
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/recycle-bin" element={<RecycleBin />} />
-                        <Route path="/payment-settings" element={<PaymentSettings />} />
-                        <Route path="/receipt-generator" element={<ReceiptGenerator />} />
-                        <Route path="/receipt-preview" element={<ReceiptView />} />
+                        <Route
+                          path="/payment-settings"
+                          element={<PaymentSettings />}
+                        />
+                        <Route
+                          path="/receipt-generator"
+                          element={<ReceiptGenerator />}
+                        />
+                        <Route
+                          path="/receipt-preview"
+                          element={<ReceiptView />}
+                        />
                         <Route path="/donations" element={<Donations />} />
                         <Route path="/gallery" element={<GalleryManager />} />
                         <Route path="/news" element={<NewsManager />} />
                         <Route path="/notices" element={<NoticeManager />} />
                         <Route path="/enquiries" element={<ContactManager />} />
                       </Routes>
-
                     </div>
                   </div>
                 </IdleTimer>
               </ProtectedRoute>
-            } 
+            }
           />
         </Routes>
       </Router>
     </ToastProvider>
   );
 }
-
-
 
 export default App;

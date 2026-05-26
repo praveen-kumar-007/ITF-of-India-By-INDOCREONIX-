@@ -1,53 +1,53 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import TopBar from './components/TopBar/TopBar';
-import Navbar from './components/Navbar/Navbar';
-import Footer from './components/Footer/Footer';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import TopBar from "./components/TopBar/TopBar";
+import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/Footer/Footer";
 
 // Pages
-import Home from './pages/Home/Home';
-import AboutPage from './pages/About/AboutPage';
-import SportsPage from './pages/Sports/SportsPage';
-import Registration from './pages/Registration/Registration';
-import GalleryPage from './pages/Gallery/GalleryPage';
-import NewsPage from './pages/News/NewsPage';
-import ContactPage from './pages/Contact/ContactPage';
-import AthleteLogin from './pages/Login/Login';
-import AthleteProfile from './pages/Login/AthleteProfile';
-import PasswordSetup from './pages/Login/PasswordSetup';
-import Donate from './pages/Donate/Donate';
-import { LanguageProvider } from './context/LanguageContext';
+import Home from "./pages/Home/Home";
+import AboutPage from "./pages/About/AboutPage";
+import SportsPage from "./pages/Sports/SportsPage";
+import Registration from "./pages/Registration/Registration";
+import GalleryPage from "./pages/Gallery/GalleryPage";
+import NewsPage from "./pages/News/NewsPage";
+import ContactPage from "./pages/Contact/ContactPage";
+import AthleteLogin from "./pages/Login/Login";
+import AthleteProfile from "./pages/Login/AthleteProfile";
+import PasswordSetup from "./pages/Login/PasswordSetup";
+import Donate from "./pages/Donate/Donate";
+import { LanguageProvider } from "./context/LanguageContext";
 
-import './App.css'; // Global styles
+import "./App.css"; // Global styles
 
 const App = () => {
   return (
     <LanguageProvider>
       <Router>
         <div className="sport-app">
-        <TopBar />
-        <Navbar />
-        
-        {/* Main Content Area */}
-        <main style={{ minHeight: '80vh' }}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/sports" element={<SportsPage />} />
-            <Route path="/registration" element={<Registration />} />
-            <Route path="/gallery" element={<GalleryPage />} />
-            <Route path="/news" element={<NewsPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/donate" element={<Donate />} />
-            <Route path="/login" element={<AthleteLogin />} />
-            <Route path="/forgot-password" element={<PasswordSetup />} />
-            <Route path="/setup-password" element={<PasswordSetup />} />
-            <Route path="/athlete/profile" element={<AthleteProfile />} />
-          </Routes>
-        </main>
+          <TopBar />
+          <Navbar />
 
-        <Footer />
-      </div>
+          {/* Main Content Area */}
+          <main style={{ minHeight: "80vh" }}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/sports" element={<SportsPage />} />
+              <Route path="/registration" element={<Registration />} />
+              <Route path="/gallery" element={<GalleryPage />} />
+              <Route path="/news" element={<NewsPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/donate" element={<Donate />} />
+              <Route path="/login" element={<AthleteLogin />} />
+              <Route path="/forgot-password" element={<PasswordSetup />} />
+              <Route path="/setup-password" element={<PasswordSetup />} />
+              <Route path="/athlete/profile" element={<AthleteProfile />} />
+            </Routes>
+          </main>
+
+          <Footer />
+        </div>
       </Router>
     </LanguageProvider>
   );

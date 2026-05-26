@@ -1,5 +1,5 @@
-import React from 'react';
-import './Dashboard.css';
+import React from "react";
+import "./Dashboard.css";
 
 const Billing = () => {
   return (
@@ -15,7 +15,10 @@ const Billing = () => {
       <section style={{ padding: 20 }}>
         <div className="glass-panel">
           <h3>Current Plan</h3>
-          <p>Enterprise — contact your account manager for plan details and support.</p>
+          <p>
+            Enterprise — contact your account manager for plan details and
+            support.
+          </p>
         </div>
       </section>
     </main>

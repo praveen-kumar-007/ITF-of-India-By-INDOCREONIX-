@@ -1,13 +1,18 @@
-const { Resend } = require('resend');
-const { isServiceEnabled } = require('../utils/systemControl');
-const dotenv = require('dotenv');
+const { Resend } = require("resend");
+const { isServiceEnabled } = require("../utils/systemControl");
+const dotenv = require("dotenv");
 
 dotenv.config();
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
 
 if (!resend) {
-  console.warn('\x1b[33m%s\x1b[0m', 'WARNING: RESEND_API_KEY is missing. Email service will run in MOCK mode.');
+  console.warn(
+    "\x1b[33m%s\x1b[0m",
+    "WARNING: RESEND_API_KEY is missing. Email service will run in MOCK mode.",
+  );
 }
 
 /**
@@ -19,33 +24,41 @@ if (!resend) {
 const sendEmail = async (to, subject, html) => {
   try {
     // Check if mail service is enabled in system control
-    const enabled = await isServiceEnabled('mail_enabled');
+    const enabled = await isServiceEnabled("mail_enabled");
     if (!enabled) {
-      console.warn(`\x1b[33m%s\x1b[0m`, `[SYSTEM CONTROL] Mail service is DISABLED. Email to ${to} blocked.`);
-      return { id: 'disabled-id', message: 'Mail service disabled by administrator' };
+      console.warn(
+        `\x1b[33m%s\x1b[0m`,
+        `[SYSTEM CONTROL] Mail service is DISABLED. Email to ${to} blocked.`,
+      );
+      return {
+        id: "disabled-id",
+        message: "Mail service disabled by administrator",
+      };
     }
 
     if (!resend) {
-      throw new Error('Mail Service Unconfigured: RESEND_API_KEY is missing. Transactional emails cannot be sent.');
+      throw new Error(
+        "Mail Service Unconfigured: RESEND_API_KEY is missing. Transactional emails cannot be sent.",
+      );
     }
 
     const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'ITF OF INDIA <onboarding@resend.dev>',
+      from: process.env.EMAIL_FROM || "ITF OF INDIA <onboarding@resend.dev>",
       to: [to],
       subject: subject,
       html: html,
-      text: html.replace(/<[^>]*>?/gm, '').trim(), // Basic text version extraction
-      reply_to: 'support@itfindia.com'
+      text: html.replace(/<[^>]*>?/gm, "").trim(), // Basic text version extraction
+      reply_to: "support@itfindia.com",
     });
 
     if (error) {
-      console.error('Resend Error:', error);
-      throw new Error('Failed to send email');
+      console.error("Resend Error:", error);
+      throw new Error("Failed to send email");
     }
 
     return data;
   } catch (error) {
-    console.error('Mail Service Error:', error);
+    console.error("Mail Service Error:", error);
     throw error;
   }
 };
@@ -375,15 +388,16 @@ const getEmailStyles = () => `
   </style>
 `;
 
-const LOGO_URL = 'https://res.cloudinary.com/dgfpfxkpk/image/upload/q_auto/f_auto/v1777829890/logo_hdbywh.png';
+const LOGO_URL =
+  "https://res.cloudinary.com/dgfpfxkpk/image/upload/q_auto/f_auto/v1777829890/logo_hdbywh.png";
 
-const escapeHtml = (value = '') =>
+const escapeHtml = (value = "") =>
   String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 
 /**
  * Send OTP Email
@@ -446,8 +460,8 @@ const sendPendingEmail = async (to, name, regNo, data = {}) => {
           <table class="data-table">
             <tr><td class="data-label">Athlete Name:</td><td class="data-value">${name}</td></tr>
             <tr><td class="data-label">Reference ID:</td><td class="data-value">${regNo}</td></tr>
-            ${data.sportsDiscipline ? `<tr><td class="data-label">Discipline:</td><td class="data-value">${data.sportsDiscipline}</td></tr>` : ''}
-            ${data.district ? `<tr><td class="data-label">District/State:</td><td class="data-value">${data.district}, ${data.state}</td></tr>` : ''}
+            ${data.sportsDiscipline ? `<tr><td class="data-label">Discipline:</td><td class="data-value">${data.sportsDiscipline}</td></tr>` : ""}
+            ${data.district ? `<tr><td class="data-label">District/State:</td><td class="data-value">${data.district}, ${data.state}</td></tr>` : ""}
             <tr><td class="data-label">Status:</td><td class="data-value">Technical Verification</td></tr>
           </table>
 
@@ -489,7 +503,7 @@ const sendApprovalEmail = async (to, name, regNo, data = {}) => {
           <table class="data-table">
             <tr><td class="data-label">Registration ID:</td><td class="data-value">${regNo}</td></tr>
             <tr><td class="data-label">Athlete Name:</td><td class="data-value">${name}</td></tr>
-            ${data.sportsDiscipline ? `<tr><td class="data-label">Sport/Discipline:</td><td class="data-value">${data.sportsDiscipline}</td></tr>` : ''}
+            ${data.sportsDiscipline ? `<tr><td class="data-label">Sport/Discipline:</td><td class="data-value">${data.sportsDiscipline}</td></tr>` : ""}
             <tr><td class="data-label">Membership:</td><td class="data-value">Lifetime Athlete Access</td></tr>
           </table>
 
@@ -519,7 +533,11 @@ const sendApprovalEmail = async (to, name, regNo, data = {}) => {
 /**
  * Send Rejection Email
  */
-const sendRejectionEmail = async (to, name, reason = "Documentation criteria not met") => {
+const sendRejectionEmail = async (
+  to,
+  name,
+  reason = "Documentation criteria not met",
+) => {
   const subject = `Registration Update: ${name} | ITF OF INDIA`;
   const html = `
     <!DOCTYPE html>
@@ -578,7 +596,7 @@ const sendContactConfirmation = async (to, name, messageSnippet) => {
           
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 25px 0;">
             <p style="margin: 0; font-weight: 700; color: #64748b; text-transform: uppercase; font-size: 11px;">Your Message Preview:</p>
-            <p style="margin: 8px 0 0; color: #334155; font-size: 14px; font-style: italic;">"${messageSnippet.length > 150 ? messageSnippet.substring(0, 150) + '...' : messageSnippet}"</p>
+            <p style="margin: 8px 0 0; color: #334155; font-size: 14px; font-style: italic;">"${messageSnippet.length > 150 ? messageSnippet.substring(0, 150) + "..." : messageSnippet}"</p>
           </div>
 
           <p style="color: #64748b; font-size: 14px;">If your enquiry is time-sensitive, please feel free to contact us directly via the details provided on our website.</p>
@@ -600,9 +618,11 @@ const sendContactConfirmation = async (to, name, messageSnippet) => {
  */
 const checkMailHealth = () => {
   return {
-    status: resend ? 'healthy' : 'warning',
-    mode: resend ? 'production' : 'unconfigured',
-    message: resend ? 'Mail service is ready' : 'Mail service is unconfigured (RESEND_API_KEY is missing)'
+    status: resend ? "healthy" : "warning",
+    mode: resend ? "production" : "unconfigured",
+    message: resend
+      ? "Mail service is ready"
+      : "Mail service is unconfigured (RESEND_API_KEY is missing)",
   };
 };
 
@@ -648,10 +668,10 @@ const sendPasswordSetupEmail = async (to, name, otp) => {
  * Send Donation Under Verification Email
  */
 const sendDonationUnderVerificationEmail = async (to, donation = {}) => {
-  const donorName = escapeHtml(donation.name || 'Donor');
-  const donationId = escapeHtml(donation.id || '-');
-  const amount = escapeHtml(donation.amount || '-');
-  const paymentMethod = escapeHtml(donation.paymentMethod || 'UPI');
+  const donorName = escapeHtml(donation.name || "Donor");
+  const donationId = escapeHtml(donation.id || "-");
+  const amount = escapeHtml(donation.amount || "-");
+  const paymentMethod = escapeHtml(donation.paymentMethod || "UPI");
 
   const subject = `Donation Received: ${donorName} (ID: ${donationId}) | ITF OF INDIA`;
   const html = `
@@ -693,10 +713,12 @@ const sendDonationUnderVerificationEmail = async (to, donation = {}) => {
  * Send Donation Approved Email
  */
 const sendDonationApprovedEmail = async (to, donation = {}) => {
-  const donorName = escapeHtml(donation.name || 'Donor');
-  const donationId = escapeHtml(donation.id || '-');
-  const amount = escapeHtml(donation.amount || '-');
-  const reviewedAt = donation.reviewedAt ? new Date(donation.reviewedAt).toLocaleString() : '-';
+  const donorName = escapeHtml(donation.name || "Donor");
+  const donationId = escapeHtml(donation.id || "-");
+  const amount = escapeHtml(donation.amount || "-");
+  const reviewedAt = donation.reviewedAt
+    ? new Date(donation.reviewedAt).toLocaleString()
+    : "-";
 
   const subject = `Donation Approved: ${donationId} | ITF OF INDIA`;
   const html = `
@@ -735,11 +757,11 @@ const sendDonationApprovedEmail = async (to, donation = {}) => {
 /**
  * Send Donation Rejected Email
  */
-const sendDonationRejectedEmail = async (to, donation = {}, reason = '') => {
-  const donorName = escapeHtml(donation.name || 'Donor');
-  const donationId = escapeHtml(donation.id || '-');
-  const amount = escapeHtml(donation.amount || '-');
-  const safeReason = escapeHtml(reason || 'Verification criteria not met');
+const sendDonationRejectedEmail = async (to, donation = {}, reason = "") => {
+  const donorName = escapeHtml(donation.name || "Donor");
+  const donationId = escapeHtml(donation.id || "-");
+  const amount = escapeHtml(donation.amount || "-");
+  const safeReason = escapeHtml(reason || "Verification criteria not met");
 
   const subject = `Donation Review Update: ${donationId} | ITF OF INDIA`;
   const html = `
@@ -792,5 +814,5 @@ module.exports = {
   sendDonationUnderVerificationEmail,
   sendDonationApprovedEmail,
   sendDonationRejectedEmail,
-  checkMailHealth
+  checkMailHealth,
 };
