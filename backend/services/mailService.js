@@ -56,16 +56,26 @@ const sendEmail = async (to, subject, html) => {
 const getEmailStyles = () => `
   <style>
     /* Reset styles for better client compatibility */
+    html, body { width: 100% !important; }
     body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
     table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
     img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
     table { border-collapse: collapse !important; }
-    body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
+    body {
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 16px 12px !important;
+      width: 100% !important;
+      background: #e2e8f0;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      box-sizing: border-box;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
 
     .email-container {
       font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       width: 100%;
-      max-width: 600px;
+      max-width: 640px;
       margin: 0 auto;
       background-color: #ffffff;
       border: 1px solid #e2e8f0;
@@ -101,6 +111,11 @@ const getEmailStyles = () => `
       padding: 45px 40px;
       color: #1e293b;
       line-height: 1.7;
+    }
+    .content p {
+      margin: 0 0 14px;
+      font-size: 15px;
+      color: #334155;
     }
     .title {
       font-size: 26px;
@@ -199,6 +214,13 @@ const getEmailStyles = () => `
       color: #64748b;
       border-top: 1px solid #e2e8f0;
     }
+    .footer p {
+      margin: 0 0 8px;
+      line-height: 1.55;
+    }
+    .footer p:last-child {
+      margin-bottom: 0;
+    }
     .org-name {
       color: #fbbf24;
       font-weight: 800;
@@ -208,28 +230,64 @@ const getEmailStyles = () => `
       font-size: 18px;
     }
 
-    /* Tablet Styles */
-    @media only screen and (max-width: 620px) {
+    /* Large tablet styles */
+    @media only screen and (max-width: 768px) {
+      body {
+        padding: 12px 10px !important;
+      }
       .email-container {
-        width: 95% !important;
-        margin: 10px auto !important;
+        max-width: 100% !important;
+      }
+      .content {
+        padding: 36px 26px !important;
+      }
+      .header {
+        padding: 38px 18px !important;
       }
     }
 
-    /* Mobile Styles */
-    @media only screen and (max-width: 480px) {
+    /* Tablet Styles */
+    @media only screen and (max-width: 620px) {
+      body {
+        padding: 10px 8px !important;
+      }
       .email-container {
         width: 100% !important;
-        border-radius: 0 !important;
-        border-left: none !important;
-        border-right: none !important;
-        margin: 0 !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        border-radius: 16px !important;
       }
       .content {
         padding: 30px 20px !important;
       }
       .title {
-        font-size: 22px !important;
+        font-size: 23px !important;
+      }
+    }
+
+    /* Mobile Styles */
+    @media only screen and (max-width: 480px) {
+      body {
+        padding: 0 !important;
+        background: #ffffff !important;
+      }
+      .email-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 0 !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-top: none !important;
+        border-bottom: none !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+      }
+      .content {
+        padding: 24px 16px !important;
+      }
+      .title {
+        font-size: 20px !important;
+        margin-bottom: 14px !important;
       }
       .otp-code {
         font-size: 32px !important;
@@ -239,41 +297,76 @@ const getEmailStyles = () => `
         padding: 15px !important;
         margin: 20px 0 !important;
       }
+      .data-table {
+        border-radius: 12px !important;
+        margin: 18px 0 !important;
+      }
+      .data-table,
+      .data-table tbody,
+      .data-table tr,
       .data-table td {
-        padding: 12px 10px !important;
+        display: block !important;
+        width: 100% !important;
+      }
+      .data-table tr {
+        border-bottom: 1px solid #e2e8f0 !important;
+      }
+      .data-table tr:last-child {
+        border-bottom: none !important;
+      }
+      .data-table td {
+        padding: 10px 12px !important;
         font-size: 13px !important;
+        border-bottom: none !important;
       }
       .data-label {
-        width: 40% !important;
+        width: 100% !important;
+        font-size: 11px !important;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 2px;
       }
       .data-value {
-        width: 60% !important;
+        width: 100% !important;
+        font-size: 14px !important;
       }
       .header {
-        padding: 30px 20px !important;
+        padding: 24px 16px !important;
       }
       .logo {
-        width: 70px !important;
-        height: 70px !important;
+        width: 64px !important;
+        height: 64px !important;
       }
       .action-button {
-        padding: 14px 20px !important;
+        padding: 12px 16px !important;
         font-size: 12px !important;
         display: block !important;
-        width: auto !important;
-        margin: 20px 0 !important;
+        width: 100% !important;
+        margin: 16px 0 !important;
+        border-radius: 10px !important;
       }
       .status-badge {
-        padding: 8px 15px !important;
+        padding: 8px 12px !important;
         font-size: 11px !important;
+        letter-spacing: 0.06em !important;
+      }
+      .footer {
+        padding: 20px 16px !important;
+        font-size: 12px !important;
       }
     }
 
     /* Small Mobile Styles */
-    @media only screen and (max-width: 320px) {
+    @media only screen and (max-width: 360px) {
       .otp-code {
-        font-size: 26px !important;
-        letter-spacing: 4px !important;
+        font-size: 24px !important;
+        letter-spacing: 3px !important;
+      }
+      .content {
+        padding: 20px 12px !important;
+      }
+      .title {
+        font-size: 18px !important;
       }
       .data-table td {
         font-size: 12px !important;
@@ -283,6 +376,14 @@ const getEmailStyles = () => `
 `;
 
 const LOGO_URL = 'https://res.cloudinary.com/dgfpfxkpk/image/upload/q_auto/f_auto/v1777829890/logo_hdbywh.png';
+
+const escapeHtml = (value = '') =>
+  String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 
 /**
  * Send OTP Email
@@ -543,6 +644,143 @@ const sendPasswordSetupEmail = async (to, name, otp) => {
   return sendEmail(to, subject, html);
 };
 
+/**
+ * Send Donation Under Verification Email
+ */
+const sendDonationUnderVerificationEmail = async (to, donation = {}) => {
+  const donorName = escapeHtml(donation.name || 'Donor');
+  const donationId = escapeHtml(donation.id || '-');
+  const amount = escapeHtml(donation.amount || '-');
+  const paymentMethod = escapeHtml(donation.paymentMethod || 'UPI');
+
+  const subject = `Donation Received: ${donorName} (ID: ${donationId}) | ITF OF INDIA`;
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8">${getEmailStyles()}</head>
+    <body>
+      <div class="email-container">
+        <div class="header">
+          <img src="${LOGO_URL}" alt="ITF Logo" class="logo">
+          <span class="org-name">ITF OF INDIA</span>
+        </div>
+        <div class="content">
+          <div style="text-align: center;"><span class="status-badge status-pending">Under Verification</span></div>
+          <h1 class="title">Thank You for Your Donation</h1>
+          <p>Hello <strong>${donorName}</strong>,</p>
+          <p>We have received your donation payment details. Your contribution is currently under verification by our finance team.</p>
+
+          <table class="data-table">
+            <tr><td class="data-label">Donation ID:</td><td class="data-value">${donationId}</td></tr>
+            <tr><td class="data-label">Amount:</td><td class="data-value">Rs. ${amount}</td></tr>
+            <tr><td class="data-label">Payment Method:</td><td class="data-value">${paymentMethod}</td></tr>
+            <tr><td class="data-label">Status:</td><td class="data-value">Under Verification</td></tr>
+          </table>
+
+          <p style="color:#475569; font-size:14px;">Verification generally takes 24 to 48 hours. You will receive another email once review is completed.</p>
+        </div>
+        <div class="footer">
+          <p>© ${new Date().getFullYear()} ITF OF INDIA - National Multi-Sport Organization Trust</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+  return sendEmail(to, subject, html);
+};
+
+/**
+ * Send Donation Approved Email
+ */
+const sendDonationApprovedEmail = async (to, donation = {}) => {
+  const donorName = escapeHtml(donation.name || 'Donor');
+  const donationId = escapeHtml(donation.id || '-');
+  const amount = escapeHtml(donation.amount || '-');
+  const reviewedAt = donation.reviewedAt ? new Date(donation.reviewedAt).toLocaleString() : '-';
+
+  const subject = `Donation Approved: ${donationId} | ITF OF INDIA`;
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8">${getEmailStyles()}</head>
+    <body>
+      <div class="email-container">
+        <div class="header">
+          <img src="${LOGO_URL}" alt="ITF Logo" class="logo">
+          <span class="org-name">ITF OF INDIA</span>
+        </div>
+        <div class="content">
+          <div style="text-align: center;"><span class="status-badge status-approved">Approved</span></div>
+          <h1 class="title" style="color:#166534;">Donation Verified Successfully</h1>
+          <p>Hello <strong>${donorName}</strong>,</p>
+          <p>Thank you for supporting ITF OF INDIA. Your donation has been verified and approved.</p>
+
+          <table class="data-table">
+            <tr><td class="data-label">Donation ID:</td><td class="data-value">${donationId}</td></tr>
+            <tr><td class="data-label">Amount:</td><td class="data-value">Rs. ${amount}</td></tr>
+            <tr><td class="data-label">Status:</td><td class="data-value">Approved</td></tr>
+            <tr><td class="data-label">Verified On:</td><td class="data-value">${escapeHtml(reviewedAt)}</td></tr>
+          </table>
+        </div>
+        <div class="footer">
+          <p>© ${new Date().getFullYear()} ITF OF INDIA - National Multi-Sport Organization Trust</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+  return sendEmail(to, subject, html);
+};
+
+/**
+ * Send Donation Rejected Email
+ */
+const sendDonationRejectedEmail = async (to, donation = {}, reason = '') => {
+  const donorName = escapeHtml(donation.name || 'Donor');
+  const donationId = escapeHtml(donation.id || '-');
+  const amount = escapeHtml(donation.amount || '-');
+  const safeReason = escapeHtml(reason || 'Verification criteria not met');
+
+  const subject = `Donation Review Update: ${donationId} | ITF OF INDIA`;
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8">${getEmailStyles()}</head>
+    <body>
+      <div class="email-container">
+        <div class="header">
+          <img src="${LOGO_URL}" alt="ITF Logo" class="logo">
+          <span class="org-name">ITF OF INDIA</span>
+        </div>
+        <div class="content">
+          <div style="text-align: center;"><span class="status-badge status-rejected">Rejected</span></div>
+          <h1 class="title">Donation Verification Update</h1>
+          <p>Hello <strong>${donorName}</strong>,</p>
+          <p>We reviewed your submitted donation payment details, but we could not verify this transaction at this time.</p>
+
+          <table class="data-table">
+            <tr><td class="data-label">Donation ID:</td><td class="data-value">${donationId}</td></tr>
+            <tr><td class="data-label">Amount:</td><td class="data-value">Rs. ${amount}</td></tr>
+            <tr><td class="data-label">Status:</td><td class="data-value">Rejected</td></tr>
+          </table>
+
+          <div style="background: #fff1f2; border-left: 4px solid #e11d48; padding: 20px; margin: 25px 0; border-radius: 0 8px 8px 0;">
+            <p style="margin: 0; font-weight: 700; color: #9f1239; text-transform: uppercase; font-size: 12px;">Reason from Admin:</p>
+            <p style="margin: 8px 0 0; color: #be123c; font-size: 15px; line-height: 1.5;">${safeReason}</p>
+          </div>
+
+          <p style="color:#475569; font-size:14px;">You may submit donation details again with correct payment information.</p>
+        </div>
+        <div class="footer">
+          <p>© ${new Date().getFullYear()} ITF OF INDIA - National Multi-Sport Organization Trust</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+  return sendEmail(to, subject, html);
+};
+
 module.exports = {
   sendEmail,
   sendOTPEmail,
@@ -551,5 +789,8 @@ module.exports = {
   sendRejectionEmail,
   sendContactConfirmation,
   sendPasswordSetupEmail,
+  sendDonationUnderVerificationEmail,
+  sendDonationApprovedEmail,
+  sendDonationRejectedEmail,
   checkMailHealth
 };

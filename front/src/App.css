@@ -224,6 +224,76 @@ body.hide-footer .footer-main {
   color: var(--secondary);
 }
 
+.links li {
+  list-style: none;
+}
+
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: "Outfit", sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: white;
+  padding: 0;
+}
+
+.sport-nav.scrolled .nav-dropdown-toggle {
+  color: var(--text-dark);
+}
+
+.nav-dropdown-toggle:hover {
+  color: var(--secondary);
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  min-width: 210px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.14);
+  padding: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: all 0.2s ease;
+  z-index: 1200;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.nav-dropdown-item {
+  display: block;
+  text-decoration: none;
+  color: #1e293b !important;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-transform: none !important;
+  letter-spacing: 0.02em !important;
+  font-size: 0.88rem !important;
+}
+
+.nav-dropdown-item:hover,
+.nav-dropdown-item.active {
+  background: #f8fafc;
+  color: var(--secondary) !important;
+}
+
 .nav-cta-btn {
   background: var(--secondary) !important;
   color: white !important;
@@ -440,6 +510,20 @@ body.hide-footer .footer-main {
 
 .mobile-link:active {
   background: #fdfdfd;
+}
+
+.mobile-link-group-title {
+  padding: 16px 20px 10px;
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+}
+
+.mobile-sublink {
+  padding-left: 34px;
 }
 
 .mobile-menu-footer {

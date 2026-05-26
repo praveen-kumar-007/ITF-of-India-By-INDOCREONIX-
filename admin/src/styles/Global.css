@@ -361,3 +361,36 @@ body {
     top: 20px;
   }
 }
+
+/* Responsive table and panel tweaks */
+.activity-table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid #eef2f7;
+}
+
+@media (max-width: 768px) {
+  .athlete-cell {
+    gap: 8px;
+  }
+  .hero-content h1 {
+    font-size: 1.2rem;
+  }
+  .welcome-hero { padding: 12px; }
+  th, td { padding: 10px 6px; }
+}
+
+@media (max-width: 480px) {
+  .athlete-cell img { width: 36px; height: 36px; }
+  .activity-filters { display: flex; flex-direction: column; gap: 8px; }
+  .premium-btn { padding: 0.6rem 1rem; }
+}

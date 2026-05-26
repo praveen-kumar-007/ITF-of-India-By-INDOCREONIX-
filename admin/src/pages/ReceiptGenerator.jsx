@@ -120,7 +120,7 @@ const ReceiptGenerator = () => {
                   />
                   <button 
                     type="button" 
-                    className="action-btn" 
+                    className="action-icon-btn" 
                     onClick={fetchUniqueId} 
                     title="Generate New ID"
                     disabled={loadingId}

@@ -49,8 +49,18 @@ const Navbar = () => {
             <li><Link to="/sports" className={isActive('/sports') ? 'active' : ''}>Sports</Link></li>
             <li><Link to="/news" className={isActive('/news') ? 'active' : ''}>{t('nav.news')}</Link></li>
             <li><Link to="/gallery" className={isActive('/gallery') ? 'active' : ''}>{t('nav.gallery')}</Link></li>
+            <li><Link to="/donate" className={isActive('/donate') ? 'active' : ''}>Donate</Link></li>
             <li><Link to="/contact" className={isActive('/contact') ? 'active' : ''}>{t('nav.contact')}</Link></li>
-            <li><Link to="/registration" className={`nav-cta-btn ${isActive('/registration') ? 'active' : ''}`}>{t('nav.registration')}</Link></li>
+            <li className={`nav-dropdown ${isActive('/registration') ? 'active' : ''}`}>
+              <button type="button" className="nav-dropdown-toggle">
+                Registration
+              </button>
+              <div className="nav-dropdown-menu">
+                <Link to="/registration" className={`nav-dropdown-item ${isActive('/registration') ? 'active' : ''}`}>
+                  Player Registration
+                </Link>
+              </div>
+            </li>
             
             {athlete ? (
               <li>
@@ -120,12 +130,17 @@ const Navbar = () => {
               {t('nav.gallery')}
             </Link>
 
-            <Link to="/registration" className={`mobile-link ${isActive('/registration') ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
-              {t('nav.registration')}
+            <div className="mobile-link-group-title">Registration</div>
+            <Link to="/registration" className={`mobile-link mobile-sublink ${isActive('/registration') ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
+              Player Registration
             </Link>
 
             <Link to="/contact" className={`mobile-link ${isActive('/contact') ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
               {t('nav.contact')}
+            </Link>
+
+            <Link to="/donate" className={`mobile-link ${isActive('/donate') ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
+              Donate
             </Link>
 
             {athlete ? (

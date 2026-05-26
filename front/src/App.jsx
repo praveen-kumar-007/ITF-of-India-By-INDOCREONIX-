@@ -15,6 +15,7 @@ import ContactPage from './pages/Contact/ContactPage';
 import AthleteLogin from './pages/Login/Login';
 import AthleteProfile from './pages/Login/AthleteProfile';
 import PasswordSetup from './pages/Login/PasswordSetup';
+import Donate from './pages/Donate/Donate';
 import { LanguageProvider } from './context/LanguageContext';
 
 import './App.css'; // Global styles
@@ -37,6 +38,7 @@ const App = () => {
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/news" element={<NewsPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/donate" element={<Donate />} />
             <Route path="/login" element={<AthleteLogin />} />
             <Route path="/forgot-password" element={<PasswordSetup />} />
             <Route path="/setup-password" element={<PasswordSetup />} />

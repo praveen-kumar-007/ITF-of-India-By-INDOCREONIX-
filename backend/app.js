@@ -92,6 +92,7 @@ const settingRoutes = require('./routes/settingRoutes');
 const galleryRoutes = require('./routes/galleryRoutes');
 const newsRoutes = require('./routes/newsRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const donationRoutes = require('./routes/donationRoutes');
 
 app.use('/api/registrations', registrationRoutes);
 app.use('/api/otp', otpRoutes);
@@ -100,6 +101,7 @@ app.use('/api/settings', settingRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/donations', donationRoutes);
 
 // 404 Handler
 app.use((req, res, next) => {

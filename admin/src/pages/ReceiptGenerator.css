@@ -285,6 +285,34 @@
   .generator-form-card {
     padding: 1.5rem;
   }
+
+  /* Mobile: make the small action button more compact so it doesn't cover the input */
+  .input-with-action {
+    align-items: center;
+  }
+
+  .input-with-action input {
+    padding: 10px 12px;
+  }
+
+  /* Use a dedicated icon button class to avoid global `.action-btn` collisions */
+  .action-icon-btn {
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    border-radius: 8px !important;
+    min-width: 0 !important;
+    gap: 0 !important;
+    font-size: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .action-icon-btn svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
 }
 
 @media print {

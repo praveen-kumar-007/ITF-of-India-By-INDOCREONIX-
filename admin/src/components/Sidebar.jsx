@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, FileText, LogOut, Shield, User, 
   Trash2, Activity, CreditCard, Printer, Image as ImageIcon, 
-  Bell, Megaphone, MessageSquare 
+  Bell, Megaphone, MessageSquare
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -54,10 +54,15 @@ const Sidebar = ({ isOpen, onClose }) => {
           <Printer size={20} />
           Receipt Generator
         </Link>
+        <Link to="/donations" className={`nav-item ${location.pathname === '/donations' ? 'active' : ''}`} onClick={handleLinkClick}>
+          <CreditCard size={20} />
+          Donations
+        </Link>
         <Link to="/gallery" className={`nav-item ${location.pathname === '/gallery' ? 'active' : ''}`} onClick={handleLinkClick}>
           <ImageIcon size={20} />
           Gallery
         </Link>
+        
         <Link to="/news" className={`nav-item ${location.pathname === '/news' ? 'active' : ''}`} onClick={handleLinkClick}>
           <Bell size={20} />
           News & Notices
@@ -84,8 +89,13 @@ const Sidebar = ({ isOpen, onClose }) => {
               <CreditCard size={20} />
               Payment Gateway
             </Link>
+            <Link to="/billing" className={`nav-item ${location.pathname === '/billing' ? 'active' : ''}`} onClick={handleLinkClick}>
+              <CreditCard size={20} />
+              Billing
+            </Link>
           </>
         )}
+        
         <Link to="/profile" className={`nav-item ${location.pathname === '/profile' ? 'active' : ''}`} onClick={handleLinkClick}>
           <User size={20} />
           My Profile

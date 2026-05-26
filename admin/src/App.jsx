@@ -7,6 +7,9 @@ import LoginPage from './pages/Login';
 import AdminManagement from './pages/AdminManagement';
 import Profile from './pages/Profile';
 import PlayerDetails from './pages/PlayerDetails';
+import Athletes from './pages/Athletes';
+import Applications from './pages/Applications';
+import Billing from './pages/Billing';
 import RecycleBin from './pages/RecycleBin';
 import SystemHealth from './pages/SystemHealth';
 import PaymentSettings from './pages/PaymentSettings';
@@ -16,6 +19,7 @@ import GalleryManager from './pages/GalleryManager';
 import NewsManager from './pages/NewsManager';
 import NoticeManager from './pages/NoticeManager';
 import ContactManager from './pages/ContactManager';
+import Donations from './pages/Donations';
 import { ToastProvider } from './context/ToastContext';
 
 import './styles/Global.css';
@@ -125,6 +129,10 @@ function App() {
                       <Routes>
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/athletes/:id" element={<PlayerDetails />} />
+                        <Route path="/athletes" element={<Athletes />} />
+                        <Route path="/applications" element={<Applications />} />
+                        <Route path="/registrations" element={<Applications />} />
+                        <Route path="/billing" element={<Billing />} />
                         <Route path="/manage-admins" element={<AdminManagement />} />
                         <Route path="/system-health" element={<SystemHealth />} />
                         <Route path="/profile" element={<Profile />} />
@@ -132,6 +140,7 @@ function App() {
                         <Route path="/payment-settings" element={<PaymentSettings />} />
                         <Route path="/receipt-generator" element={<ReceiptGenerator />} />
                         <Route path="/receipt-preview" element={<ReceiptView />} />
+                        <Route path="/donations" element={<Donations />} />
                         <Route path="/gallery" element={<GalleryManager />} />
                         <Route path="/news" element={<NewsManager />} />
                         <Route path="/notices" element={<NoticeManager />} />
